@@ -1,0 +1,381 @@
+<peripheral>
+  <name>DBI</name>
+  <description>Display Bus Interface (Parallel/SPI-like Display Interface)</description>
+  <groupName>DBI</groupName>
+  <baseAddress>0x3001B000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x100</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>DBI</name>
+    <description>Display DBI Interrupt</description>
+    <value>69</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>DBI_CONFIG</name>
+      <description>DBI Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x00052C1C</resetValue>
+      <fields>
+        <field>
+          <name>cr_dbi_en</name>
+          <description>DBI module enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_sel</name>
+          <description>DBI interface selection (0: Type B, 1: Type C)</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_cmd_en</name>
+          <description>Command phase enable</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dat_en</name>
+          <description>Data phase enable</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dat_wr</name>
+          <description>Data write operation mode</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dat_tp</name>
+          <description>Data phase type (0: 8-bit, 1: 16-bit packed)</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dat_bc</name>
+          <description>Data phase byte count (0:1 byte, 1:2 bytes, 2:3 bytes, 3:4 bytes)</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_cmd</name>
+          <description>8-bit Command value for transfer</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_scl_pol</name>
+          <description>SCL Clock polarity (0: Active High, 1: Active Low)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_scl_ph</name>
+          <description>SCL Clock phase</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_cont_en</name>
+          <description>Continuous transfer enable (for large data payload)</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dmy_en</name>
+          <description>Dummy cycle enable</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_dmy_cnt</name>
+          <description>Dummy cycle count</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_tc_3w_mode</name>
+          <description>3-wire TC mode select (if applicable)</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_tc_deg_en</name>
+          <description>Timing control deglitch enable</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_tc_deg_cnt</name>
+          <description>Timing control deglitch cycle count</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_INT_STS</name>
+      <description>DBI Interrupt Status and Control</description>
+      <addressOffset>0x04</addressOffset>
+      <resetValue>0x07000702</resetValue>
+      <fields>
+        <field>
+          <name>dbi_end_int</name>
+          <description>Transfer end interrupt status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>dbi_txf_int</name>
+          <description>TX FIFO ready interrupt status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>dbi_fer_int</name>
+          <description>FIFO error interrupt status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_dbi_end_mask</name>
+          <description>Mask transfer end interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_txf_mask</name>
+          <description>Mask TX FIFO ready interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_fer_mask</name>
+          <description>Mask FIFO error interrupt</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_end_clr</name>
+          <description>Clear transfer end interrupt</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_dbi_end_en</name>
+          <description>Enable transfer end interrupt</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_txf_en</name>
+          <description>Enable TX FIFO ready interrupt</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_fer_en</name>
+          <description>Enable FIFO error interrupt</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_BUS_BUSY</name>
+      <description>DBI Bus Busy Status</description>
+      <addressOffset>0x08</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sts_dbi_bus_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_PIX_CNT</name>
+      <description>DBI Pixel Count and Format</description>
+      <addressOffset>0x0C</addressOffset>
+      <fields>
+        <field>
+          <name>cr_dbi_pix_cnt</name>
+          <description>Pixel count for current transfer</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>24</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_pix_format</name>
+          <description>Pixel format selection (likely RGB565/RGB888)</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_PRD</name>
+      <description>DBI Timing Period Configuration</description>
+      <addressOffset>0x10</addressOffset>
+      <resetValue>0x0F0F0F0F</resetValue>
+      <fields>
+        <field>
+          <name>cr_dbi_prd_s</name>
+          <description>Start condition duration (cycles)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_prd_i</name>
+          <description>Interval period duration (cycles)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_prd_d_ph_0</name>
+          <description>Data phase 0 duration (cycles)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_dbi_prd_d_ph_1</name>
+          <description>Data phase 1 duration (cycles)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_WDATA</name>
+      <description>DBI Write Data Register (Manual/FIFO Bypass)</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>cr_dbi_wdata</name>
+          <description>Manual write data or read back of last written command.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_RDATA</name>
+      <description>DBI Read Data Register</description>
+      <addressOffset>0x1C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sts_dbi_rdata</name>
+          <description>Data read from the display module</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_FIFO_CONFIG_0</name>
+      <description>DBI FIFO Configuration 0</description>
+      <addressOffset>0x80</addressOffset>
+      <fields>
+        <field>
+          <name>dbi_dma_tx_en</name>
+          <description>TX DMA enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_fifo_clr</name>
+          <description>Clear TX FIFO</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>tx_fifo_overflow</name>
+          <description>TX FIFO overflow status</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_underflow</name>
+          <description>TX FIFO underflow status</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>fifo_format</name>
+          <description>FIFO data format selection</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_FIFO_CONFIG_1</name>
+      <description>DBI FIFO Status and Thresholds</description>
+      <addressOffset>0x84</addressOffset>
+      <resetValue>0x00000008</resetValue>
+      <fields>
+        <field>
+          <name>tx_fifo_cnt</name>
+          <description>TX FIFO count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_th</name>
+          <description>TX FIFO interrupt threshold</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DBI_FIFO_WDATA</name>
+      <description>DBI FIFO Write Data Register</description>
+      <addressOffset>0x88</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>dbi_fifo_wdata</name>
+          <description>Write data to the DBI FIFO</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

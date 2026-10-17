@@ -1,0 +1,760 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated strictly according to `hbn_reg.h`. Covers the complete Always-On (AON) power domain and Hibernate control logic.                                                                                                                                                             |
+| **Base Address**       | Explicit  | 0x2000F000.                                                                                                                                                                                                                                                                           |
+| **RTC & Hibernate**    | **FULL**  | Integrated Hibernate Timer (0x04-0x08) and RTC Latch mechanism (0x0C-0x10). `RTC_TIME_H` bit 31 acts as the trigger for latching the 64-bit counter.                                                                                                                                    |
+| **Power Domain**       | **FULL**  | `HBN_CTL` (0x00) and `HBN_GLB` (0x30) provide deep control over LDO11 voltages, DCDC modes, and Power-Down/Trap states.                                                                                                                                                                |
+| **PIR & BOR**          | **FULL**  | Added Passive Infra-Red (0x20-0x28) and Brown-Out Reset (0x2C) logic, allowing for ultra-low power wake-up events.                                                                                                                                                                     |
+| **Pin Configuration**  | **FULL**  | Integrated `HBN_PAD_CTRL_0/1` (0x38-0x3C) for AON-domain GPIO (9-15, 40-41) control, including Hardware Pull-Up/Down and Isolation (Retention) modes.                                                                                                                                   |
+| **Clock Management**   | **FULL**  | Added complete RC32K (Internal) and XTAL32K (External) oscillator management including calibration blocks (0x200-0x20C).                                                                                                                                                               |
+| **Reset Values**       | **FULL**  | All reset values (e.g., LDO voltages default to 0xA, RC32K code defaults) were synchronized with the hardware header structural defaults.                                                                                                                                               |
+-->
+<peripheral>
+  <name>HBN</name>
+  <description>Hibernate (Deep sleep) control</description>
+  <groupName>HBN</groupName>
+  <baseAddress>0x2000F000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x800</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Fixes svd2rust "no size field" error)                           -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <registers>
+    <register>
+      <name>HBN_CTL</name>
+      <description>HBN Main Control Register</description>
+      <addressOffset>0x00</addressOffset>
+      <!-- Reset: pu_ldo18io_aon(5)=1, ldo11_rt_vout_sel[18:15]=0xA, ldo11_aon_vout_sel[22:19]=0xA, pu_dcdc_aon(23)=1, pu_dcdc18_aon(24)=1 -> 0x01D50020 -->
+      <resetValue>0x01D50020</resetValue>
+      <fields>
+        <field>
+          <name>rtc_ctl</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>rtc_dly_option</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pu_ldo18io_aon</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_mode</name>
+          <description>Hibernate mode trigger</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>trap_mode</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>pwrdn_hbn_core</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sw_rst</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_dis_pwr_off_ldo11</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_dis_pwr_off_ldo11_rt</name>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_ldo11_rt_vout_sel</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>hbn_ldo11_aon_vout_sel</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pu_dcdc_aon</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pu_dcdc18_aon</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pwr_on_option</name>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sram_slp_option</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sram_slp</name>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>hbn_state</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_TIME_L</name>
+      <description>Hibernate Timer Low</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>hbn_time_l</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_TIME_H</name>
+      <description>Hibernate Timer High</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>hbn_time_h</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RTC_TIME_L</name>
+      <description>RTC Latch Low</description>
+      <addressOffset>0x0C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>rtc_time_latch_l</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RTC_TIME_H</name>
+      <description>RTC Latch High and Trigger</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>rtc_time_latch_h</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rtc_time_latch</name>
+          <description>Write 1 to trigger latching of the 64-bit RTC counter</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_IRQ_MODE</name>
+      <description>HBN Interrupt Configuration</description>
+      <addressOffset>0x14</addressOffset>
+      <!-- Reset: hbn_pin_wakeup_mode[3:0]=0x5, reg_en_hw_pu_pd(16)=1, pin_wakeup_sel[26:24]=0x3 -> 0x03010005 -->
+      <resetValue>0x03010005</resetValue>
+      <fields>
+        <field>
+          <name>hbn_pin_wakeup_mode</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>hbn_pin_wakeup_mask</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_en_hw_pu_pd</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>irq_bor_en</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>irq_acomp0_en</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>irq_acomp1_en</name>
+          <bitOffset>22</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>pin_wakeup_sel</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>pin_wakeup_en</name>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_IRQ_STAT</name>
+      <description>HBN Interrupt Status</description>
+      <addressOffset>0x18</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>irq_stat</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_IRQ_CLR</name>
+      <description>HBN Interrupt Clear</description>
+      <addressOffset>0x1C</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>irq_clr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_PIR_CFG</name>
+      <description>PIR Sensor Configuration</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>pir_hpf_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>pir_lpf_sel</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pir_dis</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>pir_en</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_cs</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_PIR_VTH</name>
+      <description>PIR Sensor Voltage Threshold</description>
+      <addressOffset>0x24</addressOffset>
+      <!-- Reset: pir_vth[13:0]=0x3ff -->
+      <resetValue>0x000003FF</resetValue>
+      <fields>
+        <field>
+          <name>pir_vth</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>14</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_PIR_INTERVAL</name>
+      <description>PIR Check Interval</description>
+      <addressOffset>0x28</addressOffset>
+      <!-- Reset: pir_interval[11:0]=0xa3d -->
+      <resetValue>0x00000A3D</resetValue>
+      <fields>
+        <field>
+          <name>pir_interval</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_BOR_CFG</name>
+      <description>Brown-Out Reset Configuration</description>
+      <addressOffset>0x2C</addressOffset>
+      <!-- Reset: bod_vth[3:1]=0x5 -> 0x0000000A -->
+      <resetValue>0x0000000A</resetValue>
+      <fields>
+        <field>
+          <name>bod_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>bod_vth</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>pu_bod</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>r_bod_out</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_GLB</name>
+      <description>Clock and LDO Configuration</description>
+      <addressOffset>0x30</addressOffset>
+      <!-- Reset: sw_ldo11soc_vout_sel_aon[19:16]=0xA, sw_ldo11_rt_vout_sel[27:24]=0xA, sw_ldo11_aon_vout_sel[31:28]=0xA -> 0xAA0A0000 -->
+      <resetValue>0xAA0A0000</resetValue>
+      <fields>
+        <field>
+          <name>hbn_root_clk_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>hbn_uart_clk_sel</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_f32k_sel</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>hbn_reset_event</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>6</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>hbn_clr_reset_event</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>hbn_uart_clk_sel2</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sw_ldo11soc_vout_sel_aon</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>sw_ldo11_rt_vout_sel</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>sw_ldo11_aon_vout_sel</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_SRAM</name>
+      <description>SRAM Retention Control</description>
+      <addressOffset>0x34</addressOffset>
+      <fields>
+        <field>
+          <name>retram_ret</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>retram_slp</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_PAD_CTRL_0</name>
+      <description>AON GPIO Pad Configuration 0</description>
+      <addressOffset>0x38</addressOffset>
+      <!-- Reset: reg_en_aon_ctrl_gpio[28:20]=0x180 -> 0x18000000 -->
+      <resetValue>0x18000000</resetValue>
+      <fields>
+        <field>
+          <name>reg_aon_pad_ie_smt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_aon_led_sel</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_en_aon_ctrl_gpio</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_aon_gpio_iso_mode</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_PAD_CTRL_1</name>
+      <description>AON GPIO Pad Configuration 1</description>
+      <addressOffset>0x3C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_aon_pad_oe</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_aon_pad_pd</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+        <field>
+          <name>reg_aon_pad_pu</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>9</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_RSV0</name>
+      <description>HBN Reserved Register 0</description>
+      <addressOffset>0x100</addressOffset>
+      <fields>
+        <field>
+          <name>hbn_rsv0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_RSV1</name>
+      <description>HBN Reserved Register 1</description>
+      <addressOffset>0x104</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>hbn_rsv1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_RSV2</name>
+      <description>HBN Reserved Register 2</description>
+      <addressOffset>0x108</addressOffset>
+      <fields>
+        <field>
+          <name>hbn_rsv2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HBN_RSV3</name>
+      <description>HBN Reserved Register 3</description>
+      <addressOffset>0x10C</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>hbn_rsv3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RC32K_CTRL0</name>
+      <description>RC32K Internal Oscillator Control</description>
+      <addressOffset>0x200</addressOffset>
+      <!-- Reset: cal_done=1,rdy=1,cal_div=3,dig_code_fr_cal=0x200,ext_code_en=1,pu_rc32k=1,code_fr_ext=0x12c -> 0x4B28801B -->
+      <resetValue>0x4B28801B</resetValue>
+      <fields>
+        <field>
+          <name>rc32k_cal_done</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rc32k_rdy</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rc32k_cal_inprogress</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rc32k_cal_div</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>rc32k_cal_precharge</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rc32k_dig_code_fr_cal</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>10</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rc32k_vref_dly</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>rc32k_allow_cal</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rc32k_ext_code_en</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rc32k_cal_en</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pu_rc32k</name>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rc32k_code_fr_ext</name>
+          <bitOffset>22</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>XTAL32K</name>
+      <description>XTAL32K External Oscillator Control</description>
+      <addressOffset>0x204</addressOffset>
+      <!-- Reset: amp_ctrl=1,reg=1,inv_stre=1,capbank=0x20,pu_xtal32k_buf=1,hiz_en=1 -> 0x00150228 -->
+      <resetValue>0x00150228</resetValue>
+      <fields>
+        <field>
+          <name>xtal32k_ext_sel</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_amp_ctrl</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_reg</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_outbuf_stre</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_otf_short</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_inv_stre</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_capbank</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_ac_cap_short</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pu_xtal32k_buf</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pu_xtal32k</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>xtal32k_hiz_en</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>dten_xtal32k</name>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ten_xtal32k</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>f32k_sel_rtc</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RTC_RST_CTRL</name>
+      <description>RTC Reset Configuration</description>
+      <addressOffset>0x208</addressOffset>
+      <!-- Reset: wait_cnt=0x3c00, refdiv=0x4, ctrl_misc=0xa12 -> 0x50943C00 -->
+      <resetValue>0x50943C00</resetValue>
+      <fields>
+        <field>
+          <name>rtc_rst_wait_cnt_rtc</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>rtc_rst_refdiv_rtc</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>rtc_rst_ctrl_misc</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RTC_RST_CTRL2</name>
+      <description>RTC Reset Configuration 2</description>
+      <addressOffset>0x20C</addressOffset>
+      <fields>
+        <field>
+          <name>rtc_resv</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_en_hw_pu_rc32k</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+
+  <interrupt>
+    <name>HBN_OUT0</name>
+    <description>HBN Out 0 Interrupt (Wakeup)</description>
+    <value>67</value>
+  </interrupt>
+  <interrupt>
+    <name>HBN_OUT1</name>
+    <description>HBN Out 1 Interrupt (Wakeup)</description>
+    <value>68</value>
+  </interrupt>
+  <interrupt>
+    <name>BOR</name>
+    <description>Brown-Out Reset Interrupt</description>
+    <value>69</value>
+  </interrupt>
+</peripheral>

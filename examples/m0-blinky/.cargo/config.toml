@@ -1,0 +1,10 @@
+[build]
+target = "riscv32imac-unknown-none-elf"
+
+[target.riscv32imac-unknown-none-elf]
+rustflags = ["-C", "link-arg=-Tmemory.x", "-C", "link-arg=-Tlink.x"]
+
+[env]
+# Tell riscv-rt the base ISA for the E907 (M0) core — RV32IMAFC, base = rv32i.
+# riscv-rt reads this from the environment in its own build script.
+RISCV_RT_BASE_ISA = "rv32i"

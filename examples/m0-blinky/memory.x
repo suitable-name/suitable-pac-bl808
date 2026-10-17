@@ -1,0 +1,18 @@
+MEMORY
+{
+  /* M0 (E907) executes XIP from flash. Partition FW: flash offset 0x10000. */
+  FLASH : ORIGIN = 0x58000000, LENGTH = 16M
+  /* M0 local RAM: xram (16K @ 0x22020000) + ram_memory (48K @ 0x22024000) = 64K.
+   * Stop at 0x22030000; beyond that is wifi RAM (0x22030000-0x22048000). */
+  RAM   : ORIGIN = 0x22020000, LENGTH = 64K
+}
+
+REGION_ALIAS("REGION_TEXT",   FLASH);
+REGION_ALIAS("REGION_RODATA", FLASH);
+REGION_ALIAS("REGION_DATA",   RAM);
+REGION_ALIAS("REGION_BSS",    RAM);
+REGION_ALIAS("REGION_HEAP",   RAM);
+REGION_ALIAS("REGION_STACK",  RAM);
+
+/* Standard stack pointer for E907 */
+_stack_start = ORIGIN(RAM) + LENGTH(RAM);

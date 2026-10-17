@@ -1,0 +1,1040 @@
+<?xml version="1.0" encoding="utf-8"?>
+<peripheral>
+    <name>CCI</name>
+    <description>Coherent Cache Interface and Analog PLL Configuration</description>
+    <groupName>CCI</groupName>
+    <baseAddress>0x20008000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x1000</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <!-- CCI Interface Registers (Offsets 0x00 - 0x10) -->
+        <register>
+            <name>CCI_CFG</name>
+            <description>CCI Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x00000261</resetValue>
+            <fields>
+                <field>
+                    <name>cci_en</name>
+                    <description>CCI module enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cci_slv_sel_cci2</name>
+                    <description>Slave select control (for internal routing to CCI2/D0 side)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cci_mas_sel_cci2</name>
+                    <description>Master select control (for internal routing from CCI2/D0 side)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cci_mas_hw_mode</name>
+                    <description>Master hardware mode enable</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_m_cci_sclk_en</name>
+                    <description>Master CCI SCLK enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_div_m_cci_sclk</name>
+                    <description>Master CCI SCLK clock division ratio</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cfg_cci1_pre_read</name>
+                    <description>CCI1 pre-read configuration</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_scci_clk_inv</name>
+                    <description>Slave CCI clock inversion</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcci_clk_inv</name>
+                    <description>Master CCI clock inversion</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CCI_ADDR</name>
+            <description>CCI Access Address Register</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>apb_cci_addr</name>
+                    <description>Target memory address for CCI access</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CCI_WDATA</name>
+            <description>CCI Write Data Register</description>
+            <addressOffset>0x08</addressOffset>
+            <fields>
+                <field>
+                    <name>apb_cci_wdata</name>
+                    <description>Data to be written to the target address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CCI_RDATA</name>
+            <description>CCI Read Data Register</description>
+            <addressOffset>0x0C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>apb_cci_rdata</name>
+                    <description>Data read from the target address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CCI_CTL</name>
+            <description>CCI Control and Status</description>
+            <addressOffset>0x10</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>cci_write_flag</name>
+                    <description>Write operation busy flag</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cci_read_flag</name>
+                    <description>Read operation busy flag</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ahb_state</name>
+                    <description>AHB state machine status</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- Audio PLL Configuration (Offsets 0x750 - 0x77C) -->
+        <register>
+            <name>AUDIO_PLL_CFG0</name>
+            <description>Audio PLL Configuration 0 - Resets and Power Up</description>
+            <addressOffset>0x750</addressOffset>
+            <resetValue>0x000009FF</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_sdm_rstb</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_postdiv_rstb</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_fbdv_rstb</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_refdiv_rstb</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_postdiv</name>
+                    <description>Power up post divider</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_fbdv</name>
+                    <description>Power up feedback divider</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_clamp_op</name>
+                    <description>Power up clamp operation</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_pfd</name>
+                    <description>Power up Phase Frequency Detector (PFD)</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_cp</name>
+                    <description>Power up Charge Pump (CP)</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_sfreg</name>
+                    <description>Power up SF regulator</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll</name>
+                    <description>Power up Audio PLL</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_aupll_clktree</name>
+                    <description>Power up clock tree</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG1</name>
+            <description>Audio PLL Configuration 1 - Dividers</description>
+            <addressOffset>0x754</addressOffset>
+            <resetValue>0x01100412</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_postdiv</name>
+                    <description>Post divider ratio</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>7</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_refdiv_ratio</name>
+                    <description>Reference clock divider ratio</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_refclk_sel</name>
+                    <description>Reference clock source selection</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_vg11_sel</name>
+                    <description>VG11 selection</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_vg13_sel</name>
+                    <description>VG13 selection</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG2</name>
+            <description>Audio PLL Configuration 2 - Charge Pump and Control</description>
+            <addressOffset>0x758</addressOffset>
+            <resetValue>0x00000741</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_sel_cp_bias</name>
+                    <description>Select charge pump bias</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_icp_5u</name>
+                    <description>Charge pump current (5uA)</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_icp_1u</name>
+                    <description>Charge pump current (1uA)</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_int_frac_sw</name>
+                    <description>Integer/Fractional mode switch</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_cp_startup_en</name>
+                    <description>Charge pump startup enable</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_cp_opamp_en</name>
+                    <description>Charge pump opamp enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG3</name>
+            <description>Audio PLL Configuration 3 - Loop Filter</description>
+            <addressOffset>0x75C</addressOffset>
+            <resetValue>0x0005A021</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_c4_en</name>
+                    <description>C4 loop filter capacitor enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_r4</name>
+                    <description>R4 resistor trimming</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_r4_short</name>
+                    <description>R4 short connection control</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_c3</name>
+                    <description>C3 capacitor trimming</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_cz</name>
+                    <description>CZ capacitor trimming</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_rz</name>
+                    <description>RZ resistor trimming</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG4</name>
+            <description>Audio PLL Configuration 4 - Clock Select</description>
+            <addressOffset>0x760</addressOffset>
+            <resetValue>0x00000111</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_sel_sample_clk</name>
+                    <description>Sample clock selection</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_sel_fb_clk</name>
+                    <description>Feedback clock selection</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_sdmclk_sel</name>
+                    <description>SDM clock selection</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG5</name>
+            <description>Audio PLL Configuration 5 - VCO Speed</description>
+            <addressOffset>0x764</addressOffset>
+            <resetValue>0x00000003</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_vco_speed</name>
+                    <description>VCO speed control</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG6</name>
+            <description>Audio PLL Configuration 6 - SDM Input</description>
+            <addressOffset>0x768</addressOffset>
+            <resetValue>0x000161E5</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_sdmin</name>
+                    <description>SDM fractional input value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>19</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_sdm_bypass</name>
+                    <description>SDM bypass enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG7</name>
+            <description>Audio PLL Configuration 7 - SDM Control</description>
+            <addressOffset>0x76C</addressOffset>
+            <resetValue>0x00000001</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_sdm_order_sel</name>
+                    <description>SDM modulator order selection</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_sdm_sig_dith_sel</name>
+                    <description>SDM signal dithering selection</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG8</name>
+            <description>Audio PLL Configuration 8 - Output Dividers</description>
+            <addressOffset>0x770</addressOffset>
+            <fields>
+                <field>
+                    <name>aupll_en_div1</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div2</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div2p5</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div3</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div4</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div5</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div6</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div10</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_en_div15</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_sel_div1_div2</name>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG9</name>
+            <description>Audio PLL Configuration 9 - Test and Digital Enable</description>
+            <addressOffset>0x774</addressOffset>
+            <resetValue>0x00000400</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_dc_tp_out_en</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ten_aupll</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ten_aupll_sfreg</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_fin</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_fref</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_fsdm</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_div15</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_div5</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dten_aupll_postdiv_clk</name>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dtest_aupll_pulldown</name>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG10</name>
+            <description>Audio PLL Configuration 10 - SSC Control</description>
+            <addressOffset>0x778</addressOffset>
+            <resetValue>0x00104640</resetValue>
+            <fields>
+                <field>
+                    <name>aupll_ssc_en</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_ssc_cnt</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_ssc_gain</name>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_ssc_start_gate_en</name>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_ssc_start</name>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>AUDIO_PLL_CFG11</name>
+            <description>Audio PLL Configuration 11 - Reserved and DL Control</description>
+            <addressOffset>0x77C</addressOffset>
+            <fields>
+                <field>
+                    <name>aupll_resv</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_15</name>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_10</name>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_6</name>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_5</name>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_4</name>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_3</name>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_2p5</name>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_2</name>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>aupll_dl_ctrl_1</name>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- CPU PLL Configuration (Offsets 0x7D0 - 0x7FC) -->
+        <register>
+            <name>CPU_PLL_CFG0</name>
+            <description>CPU PLL Configuration 0 - Resets and Power Up</description>
+            <addressOffset>0x7D0</addressOffset>
+            <resetValue>0x000009EF</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_sdm_rstb</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_postdiv_rstb</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_fbdv_rstb</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_refdiv_rstb</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_postdiv</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_fbdv</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_clamp_op</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_pfd</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_cp</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_sfreg</name>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll</name>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>pu_cpupll_clktree</name>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG1</name>
+            <description>CPU PLL Configuration 1 - Dividers</description>
+            <addressOffset>0x7D4</addressOffset>
+            <resetValue>0x01100418</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_postdiv</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>7</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_refdiv_ratio</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_refclk_sel</name>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_vg11_sel</name>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_vg13_sel</name>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG2</name>
+            <description>CPU PLL Configuration 2 - Charge Pump</description>
+            <addressOffset>0x7D8</addressOffset>
+            <resetValue>0x00000741</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_sel_cp_bias</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_icp_5u</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_icp_1u</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_int_frac_sw</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_cp_startup_en</name>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_cp_opamp_en</name>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG3</name>
+            <description>CPU PLL Configuration 3 - Loop Filter</description>
+            <addressOffset>0x7DC</addressOffset>
+            <resetValue>0x0005A021</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_c4_en</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_r4</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_r4_short</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_c3</name>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_cz</name>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_rz</name>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG4</name>
+            <description>CPU PLL Configuration 4 - Clock Select</description>
+            <addressOffset>0x7E0</addressOffset>
+            <resetValue>0x00000111</resetValue>
+            <fields>
+                <field><name>cpupll_sel_sample_clk</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+                <field><name>cpupll_sel_fb_clk</name><bitOffset>4</bitOffset><bitWidth>2</bitWidth></field>
+                <field><name>cpupll_sdmclk_sel</name><bitOffset>8</bitOffset><bitWidth>1</bitWidth></field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG5</name>
+            <description>CPU PLL Configuration 5 - VCO Speed</description>
+            <addressOffset>0x7E4</addressOffset>
+            <resetValue>0x00000003</resetValue>
+            <fields>
+                <field><name>cpupll_vco_speed</name><bitOffset>0</bitOffset><bitWidth>3</bitWidth></field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG6</name>
+            <description>CPU PLL Configuration 6 - SDM Input</description>
+            <addressOffset>0x7E8</addressOffset>
+            <resetValue>0x000161E5</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_sdmin</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>19</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_sdm_bypass</name>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG7</name>
+            <description>CPU PLL Configuration 7 - SDM Control</description>
+            <addressOffset>0x7EC</addressOffset>
+            <resetValue>0x00000001</resetValue>
+            <fields>
+                <field><name>cpupll_sdm_order_sel</name><bitOffset>0</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>cpupll_sdm_sig_dith_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG8</name>
+            <description>CPU PLL Configuration 8 - Output Dividers</description>
+            <addressOffset>0x7F0</addressOffset>
+            <resetValue>0x00000001</resetValue>
+            <fields>
+                <field>
+                    <name>cpupll_en_div1</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div2</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div2p5</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div3</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div4</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div5</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div6</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div10</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_en_div15</name>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_sel_div1_div2</name>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG9</name>
+            <description>CPU PLL Configuration 9 - Test and Digital Enable</description>
+            <addressOffset>0x7F4</addressOffset>
+            <resetValue>0x00000400</resetValue>
+            <fields>
+                <field><name>cpupll_dc_tp_out_en</name><bitOffset>0</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>ten_cpupll</name><bitOffset>1</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>ten_cpupll_sfreg</name><bitOffset>2</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_fin</name><bitOffset>4</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_fref</name><bitOffset>5</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_fsdm</name><bitOffset>6</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_div15</name><bitOffset>7</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_div5</name><bitOffset>8</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dten_cpupll_postdiv_clk</name><bitOffset>9</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>dtest_cpupll_pulldown</name><bitOffset>10</bitOffset><bitWidth>1</bitWidth></field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG10</name>
+            <description>CPU PLL Configuration 10 - SSC Control</description>
+            <addressOffset>0x7F8</addressOffset>
+            <resetValue>0x00104640</resetValue>
+            <fields>
+                <field><name>cpupll_ssc_en</name><bitOffset>0</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>cpupll_ssc_cnt</name><bitOffset>4</bitOffset><bitWidth>8</bitWidth></field>
+                <field><name>cpupll_ssc_gain</name><bitOffset>12</bitOffset><bitWidth>3</bitWidth></field>
+                <field><name>cpupll_ssc_start_gate_en</name><bitOffset>16</bitOffset><bitWidth>1</bitWidth></field>
+                <field><name>cpupll_ssc_start</name><bitOffset>20</bitOffset><bitWidth>1</bitWidth></field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_PLL_CFG11</name>
+            <description>CPU PLL Configuration 11 - Reserved and DL Control</description>
+            <addressOffset>0x7FC</addressOffset>
+            <fields>
+                <field>
+                    <name>cpupll_resv</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_15</name>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_10</name>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_6</name>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_5</name>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_4</name>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_3</name>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_2p5</name>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_2</name>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpupll_dl_ctrl_1</name>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

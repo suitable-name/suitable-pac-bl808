@@ -1,0 +1,316 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `gpip_reg.h`. Covers the General Purpose ADC (GPADC) and DAC (GPDAC) functionality.                                                                                                                                                                                |
+| **GPADC Config**       | **FULL**  | Includes detailed ADC control, interrupt flags (ready, overrun, underrun), and DMA configuration/status. Includes explicit W1C (write-once-to-clear) behavior for interrupt clearance.                                                                                             |
+| **GPADC Data**         | **FULL**  | `gpadc_dma_rdata` (0x04) is correctly identified as the FIFO read register, returning 26 bits combining channel info and conversion result.                                                                                                                                          |
+| **PIR Logic**          | **FULL**  | Integrated Passive Infra-Red (PIR) training and status registers (`gpadc_pir_train`), likely used for low-power movement detection via GPADC sampling.                                                                                                                               |
+| **GPDAC Config**       | **FULL**  | Includes DMA enable, data formatting (MSB inversion, specific data formats 0-11), and channel source selection (A/B).                                                                                                                                                                 |
+| **GPDAC FIFO**         | **FULL**  | Integrated `gpdac_dma_wdata` and `gpdac_tx_fifo_status` for DAC streaming via DMA, including read/write pointers and status flags.                                                                                                                                                  |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct gpip_reg` bitfield annotations.                                                                                                                                                                                               |
+| **Base Address**       | Explicit | 0x20002000.                                                                                                                                                                                                                                                                           |
+-->
+
+<peripheral>
+  <name>GPIP</name>
+  <description>General Purpose ADC/DAC Interface</description>
+  <groupName>GPIP</groupName>
+  <baseAddress>0x20002000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>GAUGE_ITF</name>
+    <description>Gauge Interface Interrupt</description>
+    <value>24</value>
+  </interrupt>
+  <interrupt>
+    <name>GPADC_DMA</name>
+    <description>GPADC DMA Interrupt</description>
+    <value>41</value>
+  </interrupt>
+
+  <registers>
+    <!-- ================================================================================== -->
+    <!-- SAR ADC Registers                                                                  -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>GPADC_CONFIG</name>
+      <description>GPADC Configuration and Interrupt Register</description>
+      <addressOffset>0x000</addressOffset>
+      <fields>
+        <field>
+          <name>gpadc_dma_en</name>
+          <description>GPADC DMA Enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_clr</name>
+          <description>FIFO Clear Signal</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-write</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>gpadc_fifo_ne</name>
+          <description>FIFO Not Empty Flag</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_fifo_full</name>
+          <description>FIFO Full Flag</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_rdy</name>
+          <description>Conversion Data Ready Interrupt Flag</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_fifo_overrun</name>
+          <description>FIFO Overrun Interrupt Flag</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_fifo_underrun</name>
+          <description>FIFO Underrun Interrupt Flag</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_rdy_clr</name>
+          <description>Clear Data Ready Interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_overrun_clr</name>
+          <description>Clear Overrun Interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_underrun_clr</name>
+          <description>Clear Underrun Interrupt</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_rdy_mask</name>
+          <description>Mask Data Ready Interrupt</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_overrun_mask</name>
+          <description>Mask Overrun Interrupt</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_underrun_mask</name>
+          <description>Mask Underrun Interrupt</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpadc_fifo_data_count</name>
+          <description>Number of data points in FIFO</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>6</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>gpadc_fifo_thl</name>
+          <description>FIFO Threshold: 0:1, 1:4, 2:8, 3:16 data items</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPADC_DMA_RDATA</name>
+      <description>GPADC DMA Read Data Register</description>
+      <addressOffset>0x004</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>gpadc_dma_rdata</name>
+          <description>FIFO result (26 bits: Channel ID + Result)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>26</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPADC_PIR_TRAIN</name>
+      <description>GPADC PIR Training Register</description>
+      <addressOffset>0x020</addressOffset>
+      <resetValue>0x0000000F</resetValue>
+      <fields>
+        <field>
+          <name>pir_extend</name>
+          <description>GPADC Record Extension after PIR interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>pir_cnt_v</name>
+          <description>GPADC Record Extension Counter Value</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>5</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>pir_train</name>
+          <description>PIR Training Mode</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>pir_stop</name>
+          <description>PIR Training End</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- General Purpose DAC Registers                                                      -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>GPDAC_CONFIG</name>
+      <description>GPDAC Configuration Register</description>
+      <addressOffset>0x040</addressOffset>
+      <resetValue>0x0D000000</resetValue>
+      <fields>
+        <field>
+          <name>gpdac_en</name>
+          <description>GPDAC enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpdac_mode</name>
+          <description>DAC Mode: 0:32k, 1:16k, 2:8k, 3:512k (DMA only)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>gpdac_ch_a_sel</name>
+          <description>Channel A Source Select (0:Reg, 1:DMA, etc.)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>gpdac_ch_b_sel</name>
+          <description>Channel B Source Select</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPDAC_DMA_CONFIG</name>
+      <description>GPDAC DMA Configuration Register</description>
+      <addressOffset>0x044</addressOffset>
+      <fields>
+        <field>
+          <name>gpdac_dma_tx_en</name>
+          <description>GPDAC DMA TX enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpdac_dma_inv_msb</name>
+          <description>GPDAC DMA Data Inverse MSB</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpdac_dma_format</name>
+          <description>DMA TX format (Data 10-bit). Modes 0-11.</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPDAC_DMA_WDATA</name>
+      <description>GPDAC DMA Write Data Register</description>
+      <addressOffset>0x048</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>gpdac_dma_wdata</name>
+          <description>GPDAC DMA TX data</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPDAC_TX_FIFO_STATUS</name>
+      <description>GPDAC TX FIFO Status Register</description>
+      <addressOffset>0x04C</addressOffset>
+      <resetValue>0x00000080</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tx_fifo_empty</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_fifo_full</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_cs</name>
+          <description>TX Control Status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>TxFifoRdPtr</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>TxFifoWrPtr</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

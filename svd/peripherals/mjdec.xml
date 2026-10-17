@@ -1,0 +1,557 @@
+<!-- | Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Peripheral Type**    | **Decoder**| Hardware Motion JPEG Decoder (JDEC). Used for frame decompression in the Multimedia (D0) domain.                                                                                                                                                                                       |
+| **Control Registers**  | **FULL**  | `jdec_control_1` (0x00) controls core features like YUV format, swap mode, U/V order, and burst lengths (XLEN). `jdec_control_3` (0x1C) handles interrupt enable/status and operational flags (idle, func).                                                                           |
+| **Frame Buffers**      | **FULL**  | `jdec_yy_frame_addr` (0x08) and `jdec_uv_frame_addr` (0x0C) define the start addresses for Y (luminance) and UV (chrominance) output buffers.                                                                                                                                           |
+| **Address Pointers**   | **FULL**  | Registers `jp_addr0` through `jp_addr_f` (0x40-0x7C) form a crucial 16-entry table of pointers, likely used by the hardware for linked-list JPEG stream processing or multi-frame decoding. These are read-only status registers based on the header.                                      |
+| **Frame Dimensions**   | **FULL**  | `jdec_frame_size` (0x2C) defines the image resolution in MCU blocks (WBLK/HBLK). `jdec_header_skip` (0x30) allows skipping header bytes if the JPEG stream is partially pre-processed.                                                                                                   |
+| **Interrupts/Status**  | **FULL**  | Explicit W1P (`reg_int_clr`, `reg_yuv_frame_pop`) for clearing status. `jp_frame_cnt` provides the count of JPEG frames ready for processing.                                                                                                                                            |
+| **Base Address**       | Explicit | 0x30023000 (MJDEC_BASE in `bl808.h`).                                                                                                                                                                                                                                                 |
+-->
+<peripheral>
+    <name>MJDEC</name>
+    <description>Motion JPEG Decoder (Multimedia Subsystem)</description>
+    <groupName>MJDEC</groupName>
+    <baseAddress>0x30023000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x200</size>
+        <usage>registers</usage>
+    </addressBlock>
+    <registers>
+        <register>
+            <name>JDEC_CONTROL_1</name>
+            <description>JPEG Decoder Configuration Register 1</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x00323304</resetValue>
+            <fields>
+                <field>
+                    <name>reg_mj_dec_enable</name>
+                    <description>MJPEG Decoder module enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_swap_mode</name>
+                    <description>Swap mode (frame buffer swapping)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_u_even</name>
+                    <description>Chroma component U/V order (U/Cb is even)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_yuv_mode</name>
+                    <description>YUV format mode (e.g., 4:2:2, 4:2:0)</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_last_hf_wblk_dmy</name>
+                    <description>Dummy control for last horizontal MCU block</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_last_hf_hblk_dmy</name>
+                    <description>Dummy control for last vertical MCU block</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_w_xlen</name>
+                    <description>AXI write burst length (XLEN)</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_last_hf_blk_dmy</name>
+                    <description>Dummy control for last MCU block</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_r_xlen</name>
+                    <description>AXI read burst length (XLEN)</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_q_mode</name>
+                    <description>Quantization Table Mode</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>7</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_YY_FRAME_ADDR</name>
+            <description>Luminance (Y) Frame Buffer Start Address</description>
+            <addressOffset>0x08</addressOffset>
+            <resetValue>0x80000000</resetValue>
+            <fields>
+                <field>
+                    <name>reg_yy_addr_start</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_UV_FRAME_ADDR</name>
+            <description>Chrominance (UV) Frame Buffer Start Address</description>
+            <addressOffset>0x0C</addressOffset>
+            <resetValue>0x80000000</resetValue>
+            <fields>
+                <field>
+                    <name>reg_uv_addr_start</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_CONTROL_3</name>
+            <description>JPEG Decoder Status and Interrupt Control</description>
+            <addressOffset>0x1C</addressOffset>
+            <resetValue>0x00000101</resetValue>
+            <fields>
+                <field>
+                    <name>reg_int_normal_en</name>
+                    <description>Normal interrupt enable (Frame done)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_int_idle_en</name>
+                    <description>Idle status interrupt enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>sts_normal_int</name>
+                    <description>Normal interrupt status</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_idle_int</name>
+                    <description>Idle interrupt status</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>mjpeg_idle</name>
+                    <description>MJPEG state machine idle status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>mjpeg_func</name>
+                    <description>MJPEG state machine functional status</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>mjpeg_flsh</name>
+                    <description>MJPEG flush status</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>axi_read_idle</name>
+                    <description>AXI Read Channel Idle status</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>axi_write_idle</name>
+                    <description>AXI Write Channel Idle status</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_frame_cnt_trgr_int</name>
+                    <description>Frame count threshold to trigger interrupt</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>5</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>frame_valid_cnt</name>
+                    <description>Count of valid frames processed</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_INT_CLR</name>
+            <description>JPEG Decoder Interrupt Clear and Frame Pop</description>
+            <addressOffset>0x20</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_int_clr</name>
+                    <description>Clear interrupt status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>reg_yuv_frame_pop</name>
+                    <description>Pop YUV frame (release output buffer pointer)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_FRAM_PUSH</name>
+            <description>JPEG Frame Push (Input Address)</description>
+            <addressOffset>0x24</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_jp_push</name>
+                    <description>Trigger JPEG frame push (start decode)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>reg_jp_addr</name>
+                    <description>JPEG stream start address for push (30 bits)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>30</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_FRAM_STS</name>
+            <description>JPEG Frame Status</description>
+            <addressOffset>0x28</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_frame_cnt</name>
+                    <description>Number of JPEG frames waiting to be processed (R/O)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>5</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_FRAME_SIZE</name>
+            <description>JPEG Frame Dimensions (in MCU Blocks)</description>
+            <addressOffset>0x2C</addressOffset>
+            <resetValue>0x0014000F</resetValue>
+            <fields>
+                <field>
+                    <name>reg_frame_wblk</name>
+                    <description>Frame width in MCU blocks (12 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_frame_hblk</name>
+                    <description>Frame height in MCU blocks (12 bits)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JDEC_HEADER_SKIP</name>
+            <description>JPEG Header Skip Configuration</description>
+            <addressOffset>0x30</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_hder_skip_byte</name>
+                    <description>Number of header bytes to skip (16 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_hder_skip</name>
+                    <description>Enable header skip logic</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR0</name>
+            <description>JPEG Frame Address Queue Entry 0</description>
+            <addressOffset>0x40</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_0</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR1</name>
+            <description>JPEG Frame Address Queue Entry 1</description>
+            <addressOffset>0x44</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_1</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR2</name>
+            <description>JPEG Frame Address Queue Entry 2</description>
+            <addressOffset>0x48</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_2</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR3</name>
+            <description>JPEG Frame Address Queue Entry 3</description>
+            <addressOffset>0x4C</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_3</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR4</name>
+            <description>JPEG Frame Address Queue Entry 4</description>
+            <addressOffset>0x50</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_4</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR5</name>
+            <description>JPEG Frame Address Queue Entry 5</description>
+            <addressOffset>0x54</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_5</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR6</name>
+            <description>JPEG Frame Address Queue Entry 6</description>
+            <addressOffset>0x58</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_6</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR7</name>
+            <description>JPEG Frame Address Queue Entry 7</description>
+            <addressOffset>0x5C</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_7</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_8</name>
+            <description>JPEG Frame Address Queue Entry 8</description>
+            <addressOffset>0x60</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_8</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_9</name>
+            <description>JPEG Frame Address Queue Entry 9</description>
+            <addressOffset>0x64</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_9</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_A</name>
+            <description>JPEG Frame Address Queue Entry A</description>
+            <addressOffset>0x68</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_a</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_B</name>
+            <description>JPEG Frame Address Queue Entry B</description>
+            <addressOffset>0x6C</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_b</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_C</name>
+            <description>JPEG Frame Address Queue Entry C</description>
+            <addressOffset>0x70</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_c</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_D</name>
+            <description>JPEG Frame Address Queue Entry D</description>
+            <addressOffset>0x74</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_d</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_E</name>
+            <description>JPEG Frame Address Queue Entry E</description>
+            <addressOffset>0x78</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_e</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>JP_ADDR_F</name>
+            <description>JPEG Frame Address Queue Entry F</description>
+            <addressOffset>0x7C</addressOffset>
+            <fields>
+                <field>
+                    <name>jp_addr_f</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>MJDEC_DEBUG</name>
+            <description>MJDEC Debug Control</description>
+            <addressOffset>0x1F0</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mjdec_dbg_en</name>
+                    <description>Debug enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>reg_mjdec_dbg_sel</name>
+                    <description>Debug signal select</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>MJDEC_DUMMY_REG</name>
+            <description>Dummy Register for Reserved Space</description>
+            <addressOffset>0x1FC</addressOffset>
+            <fields>
+                <field>
+                    <name>jdec_dummy_reg</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

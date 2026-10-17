@@ -1,0 +1,1245 @@
+<peripheral>
+  <name>SEC_ENG</name>
+  <description>Security Engine (AES, SHA, TRNG, PKA, GMAC)</description>
+  <groupName>SEC_ENG</groupName>
+  <baseAddress>0x20004000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>SEC_ENG_ID1_SHA_AES_TRNG_PKA_GMAC</name>
+    <description>Security Engine ID1 SHA/AES/TRNG/PKA/GMAC Interrupt</description>
+    <value>25</value>
+  </interrupt>
+  <interrupt>
+    <name>SEC_ENG_ID0_SHA_AES_TRNG_PKA_GMAC</name>
+    <description>Security Engine ID0 SHA/AES/TRNG/PKA/GMAC Interrupt</description>
+    <value>26</value>
+  </interrupt>
+  <interrupt>
+    <name>SEC_ENG_ID1_CDET</name>
+    <description>Security Engine ID1 CDET Interrupt</description>
+    <value>27</value>
+  </interrupt>
+  <interrupt>
+    <name>SEC_ENG_ID0_CDET</name>
+    <description>Security Engine ID0 CDET Interrupt</description>
+    <value>28</value>
+  </interrupt>
+
+  <registers>
+    <!-- ================================================================================== -->
+    <!-- SHA Sub-module (0x000)                                                             -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_SHA_0_CTRL</name>
+      <description>SHA Control Register</description>
+      <addressOffset>0x00</addressOffset>
+      <fields>
+        <field>
+          <name>se_sha_0_busy</name>
+          <description>SHA engine busy status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_sha_0_trig_1t</name>
+          <description>Trigger SHA calculation (Pulse)</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_sha_0_mode</name>
+          <description>SHA mode: 0:SHA-256, 1:SHA-224, 2:SHA-1, 4:SHA-512, 5:SHA-384</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_en</name>
+          <description>Enable SHA engine</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_hash_sel</name>
+          <description>0:New hash, 1:Accumulate from previous result</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_int</name>
+          <description>SHA interrupt status</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_sha_0_int_clr_1t</name>
+          <description>Clear SHA interrupt (Pulse)</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_sha_0_int_set_1t</name>
+          <description>Set SHA interrupt for debug (Pulse)</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_sha_0_int_mask</name>
+          <description>Mask SHA interrupt</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_mode_ext</name>
+          <description>Extended mode: 0:SHA, 1:MD5, 2:CRC16, 3:CRC32</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_link_mode</name>
+          <description>Enable link list mode</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_0_msg_len</name>
+          <description>Message length in 512-bit/1024-bit blocks</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_MSA</name>
+      <description>SHA Message Source Address</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>se_sha_0_msa</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_STATUS</name>
+      <description>SHA Engine Status</description>
+      <addressOffset>0x08</addressOffset>
+      <resetValue>0x00000041</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_sha_0_status</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_ENDIAN</name>
+      <description>SHA Output Endian Control</description>
+      <addressOffset>0x0C</addressOffset>
+      <resetValue>0x00000001</resetValue>
+      <fields>
+        <field>
+          <name>se_sha_0_dout_endian</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_HASH_L_%s</name>
+      <description>SHA Hash Result Low [255:0]</description>
+      <addressOffset>0x10</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>4</dimIncrement>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_sha_0_hash_l</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_HASH_H_%s</name>
+      <description>SHA Hash Result High [511:256]</description>
+      <addressOffset>0x30</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>4</dimIncrement>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_sha_0_hash_h</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_LINK</name>
+      <description>SHA Link List Address</description>
+      <addressOffset>0x50</addressOffset>
+      <fields>
+        <field>
+          <name>se_sha_0_lca</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_SHA_0_CTRL_PROT</name>
+      <description>SHA Engine Protection</description>
+      <addressOffset>0xFC</addressOffset>
+      <resetValue>0x00000006</resetValue>
+      <fields>
+        <field>
+          <name>se_sha_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- AES Sub-module (0x100)                                                             -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_AES_0_CTRL</name>
+      <description>AES Control Register</description>
+      <addressOffset>0x100</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_0_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_aes_0_trig_1t</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_aes_0_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_mode</name>
+          <description>0:128-bit, 1:256-bit, 2:192-bit</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_dec_en</name>
+          <description>0:Encrypt, 1:Decrypt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_dec_key_sel</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_hw_key_en</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_int</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_aes_0_int_clr_1t</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_aes_0_int_set_1t</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_aes_0_int_mask</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_block_mode</name>
+          <description>0:ECB, 1:CTR, 2:CBC, 3:XTS</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_iv_sel</name>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_link_mode</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_msg_len</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_MSA</name>
+      <description>AES Message Source Address</description>
+      <addressOffset>0x104</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_0_msa</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_MDA</name>
+      <description>AES Message Destination Address</description>
+      <addressOffset>0x108</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_0_mda</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_STATUS</name>
+      <description>AES Engine Status</description>
+      <addressOffset>0x10C</addressOffset>
+      <resetValue>0x00004100</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_aes_0_status</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_IV_%s</name>
+      <description>AES IV Register %s</description>
+      <addressOffset>0x110</addressOffset>
+      <dim>4</dim>
+      <dimIncrement>4</dimIncrement>
+      <fields>
+        <field>
+          <name>se_aes_0_iv</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_KEY_%s</name>
+      <description>AES Key Register %s</description>
+      <addressOffset>0x120</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>4</dimIncrement>
+      <fields>
+        <field>
+          <name>se_aes_0_key</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_KEY_SEL</name>
+      <description>AES-0 HW Key Selection</description>
+      <addressOffset>0x140</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_0_key_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_1_KEY_SEL</name>
+      <description>AES-1 HW Key Selection</description>
+      <addressOffset>0x144</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_1_key_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_ENDIAN</name>
+      <description>AES Endian and CTR Configuration</description>
+      <addressOffset>0x148</addressOffset>
+      <resetValue>0x0000001F</resetValue>
+      <fields>
+        <field>
+          <name>se_aes_0_dout_endian</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_din_endian</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_key_endian</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_iv_endian</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_twk_endian</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_ctr_len</name>
+          <bitOffset>30</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_SBOOT</name>
+      <description>AES Secure Boot Configuration</description>
+      <addressOffset>0x14C</addressOffset>
+      <resetValue>0x00020000</resetValue>
+      <fields>
+        <field>
+          <name>se_aes_sboot_key_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_xts_mode</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_0_uni_len</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_LINK</name>
+      <description>AES Link List Address</description>
+      <addressOffset>0x150</addressOffset>
+      <fields>
+        <field>
+          <name>se_aes_0_lca</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_AES_0_CTRL_PROT</name>
+      <description>AES Engine Protection</description>
+      <addressOffset>0x1FC</addressOffset>
+      <resetValue>0x00000006</resetValue>
+      <fields>
+        <field>
+          <name>se_aes_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- TRNG Sub-module (0x200)                                                            -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_TRNG_0_CTRL_0</name>
+      <description>TRNG Control Register 0</description>
+      <addressOffset>0x200</addressOffset>
+      <fields>
+        <field>
+          <name>se_trng_0_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_trig_1t</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_dout_clr_1t</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_ht_error</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_int</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_int_clr_1t</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_int_set_1t</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_trng_0_int_mask</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_manual_fun_sel</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_manual_reseed</name>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_manual_en</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_STATUS</name>
+      <description>TRNG Engine Status</description>
+      <addressOffset>0x204</addressOffset>
+      <resetValue>0x00100020</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_trng_0_status</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_DOUT_%s</name>
+      <description>TRNG Output Data %s</description>
+      <addressOffset>0x208</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>4</dimIncrement>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_trng_0_dout</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_TEST</name>
+      <description>TRNG Test Configuration</description>
+      <addressOffset>0x228</addressOffset>
+      <fields>
+        <field>
+          <name>se_trng_0_test_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_cp_test_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_cp_bypass</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_ht_dis</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_ht_alarm_n</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_CTRL_1</name>
+      <description>TRNG Reseed Parameter LSB</description>
+      <addressOffset>0x22C</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>se_trng_0_reseed_n_lsb</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_CTRL_2</name>
+      <description>TRNG Reseed Parameter MSB</description>
+      <addressOffset>0x230</addressOffset>
+      <resetValue>0x000000FF</resetValue>
+      <fields>
+        <field>
+          <name>se_trng_0_reseed_n_msb</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_CTRL_3</name>
+      <description>TRNG HT and ROSC Control</description>
+      <addressOffset>0x234</addressOffset>
+      <resetValue>0x037A4203</resetValue>
+      <fields>
+        <field>
+          <name>se_trng_0_cp_ratio</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_ht_rct_c</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_ht_apt_c</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_ht_od_en</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_0_rosc_en</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_TEST_OUT_%s</name>
+      <description>TRNG Test Output %s</description>
+      <addressOffset>0x240</addressOffset>
+      <dim>4</dim>
+      <dimIncrement>4</dimIncrement>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_trng_0_test_out</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_TRNG_0_CTRL_PROT</name>
+      <description>TRNG Engine Protection</description>
+      <addressOffset>0x2FC</addressOffset>
+      <resetValue>0x00000006</resetValue>
+      <fields>
+        <field>
+          <name>se_trng_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- PKA Sub-module (0x300)                                                             -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_PKA_0_CTRL_0</name>
+      <description>PKA Control Register 0</description>
+      <addressOffset>0x300</addressOffset>
+      <fields>
+        <field>
+          <name>se_pka_0_done</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_done_clr_1t</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_busy</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_en</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_prot_md</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_int</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_int_clr_1t</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_int_set</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_int_mask</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_endian</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_ram_clr_md</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_status_clr_1t</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_pka_0_status</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_PKA_0_SEED</name>
+      <description>PKA Random Seed</description>
+      <addressOffset>0x30C</addressOffset>
+      <fields>
+        <field>
+          <name>se_pka_0_seed</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_PKA_0_CTRL_1</name>
+      <description>PKA Burst Configuration</description>
+      <addressOffset>0x310</addressOffset>
+      <resetValue>0x00000005</resetValue>
+      <fields>
+        <field>
+          <name>se_pka_0_hburst</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_0_hbypass</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_PKA_0_RW</name>
+      <description>PKA Register Read/Write</description>
+      <addressOffset>0x340</addressOffset>
+      <fields>
+        <field>
+          <name>se_pka_0_rw</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_PKA_0_RW_BURST</name>
+      <description>PKA Register Burst Read/Write</description>
+      <addressOffset>0x360</addressOffset>
+      <fields>
+        <field>
+          <name>se_pka_0_rw_burst</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_PKA_0_CTRL_PROT</name>
+      <description>PKA Engine Protection</description>
+      <addressOffset>0x3FC</addressOffset>
+      <resetValue>0x00000006</resetValue>
+      <fields>
+        <field>
+          <name>se_pka_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- CDET Sub-module (0x400)                                                            -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_CDET_0_CTRL_0</name>
+      <description>Clock Detection Control 0</description>
+      <addressOffset>0x400</addressOffset>
+      <resetValue>0x21640004</resetValue>
+      <fields>
+        <field>
+          <name>se_cdet_0_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_0_error</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_cdet_0_status</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>14</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_cdet_0_g_loop_max</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_0_g_loop_min</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_CDET_0_CTRL_1</name>
+      <description>Clock Detection Control 1</description>
+      <addressOffset>0x404</addressOffset>
+      <resetValue>0x00FF0332</resetValue>
+      <fields>
+        <field>
+          <name>se_cdet_0_t_loop_n</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_0_t_dly_n</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_0_g_slp_n</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_CDET_0_CTRL_PROT</name>
+      <description>CDET Engine Protection</description>
+      <addressOffset>0x4FC</addressOffset>
+      <resetValue>0x00000007</resetValue>
+      <fields>
+        <field>
+          <name>se_cdet_prot_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- GMAC Sub-module (0x500)                                                            -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_GMAC_0_CTRL_0</name>
+      <description>GMAC Control Register 0</description>
+      <addressOffset>0x500</addressOffset>
+      <resetValue>0x00007000</resetValue>
+      <fields>
+        <field>
+          <name>se_gmac_0_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_gmac_0_trig_1t</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_gmac_0_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_0_int</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>se_gmac_0_int_clr_1t</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_gmac_0_int_set_1t</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>se_gmac_0_int_mask</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_0_t_endian</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_0_h_endian</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_0_x_endian</name>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_GMAC_0_LCA</name>
+      <description>GMAC Link List Address</description>
+      <addressOffset>0x504</addressOffset>
+      <fields>
+        <field>
+          <name>se_gmac_0_lca</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_GMAC_0_STATUS</name>
+      <description>GMAC Status Register</description>
+      <addressOffset>0x508</addressOffset>
+      <resetValue>0xF1000000</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_gmac_0_status</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_GMAC_0_CTRL_PROT</name>
+      <description>GMAC Engine Protection</description>
+      <addressOffset>0x5FC</addressOffset>
+      <resetValue>0x00000006</resetValue>
+      <fields>
+        <field>
+          <name>se_gmac_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- Global Protection and Control (0xF00)                                              -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>SE_CTRL_PROT_RD</name>
+      <description>Global Sub-engine Access Right Status</description>
+      <addressOffset>0xF00</addressOffset>
+      <resetValue>0x00000FFF</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_sha_id0_en_rd</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_sha_id1_en_rd</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_id0_en_rd</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_aes_id1_en_rd</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_id0_en_rd</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_trng_id1_en_rd</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_id0_en_rd</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_pka_id1_en_rd</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_id0_en_rd</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_cdet_id1_en_rd</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_id0_en_rd</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_gmac_id1_en_rd</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>se_dbg_dis</name>
+          <description>1:Disable AES debug mode</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_CTRL_RESERVED_0</name>
+      <description>Security engine internal bus configuration. Reserved for hardware-specific arbitration and timing tuning.</description>
+      <addressOffset>0xF04</addressOffset>
+      <fields>
+        <field>
+          <name>se_ctrl_reserved_0</name>
+          <description>Internal configuration word 0.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_CTRL_RESERVED_1</name>
+      <description>Security engine internal status and control. Reserved for factory-specific hardware configuration.</description>
+      <addressOffset>0xF08</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>se_ctrl_reserved_1</name>
+          <description>Internal configuration word 1.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SE_CTRL_RESERVED_2</name>
+      <description>Security engine hardware revision identification. Returns the silicon-specific version code for the encryption accelerators.</description>
+      <addressOffset>0xF0C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>se_ctrl_reserved_2</name>
+          <description>Hardware Version/Revision ID code.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

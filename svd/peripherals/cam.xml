@@ -1,0 +1,635 @@
+<peripheral>
+  <name>DVP0</name>
+  <description>Camera Interface / DVP to AXI Controller Channel 0</description>
+  <groupName>CAM</groupName>
+  <baseAddress>0x30012000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x100</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>SEOF_INT0</name>
+    <value>26</value>
+  </interrupt>
+  <interrupt>
+    <name>SEOF_INT1</name>
+    <value>27</value>
+  </interrupt>
+  <interrupt>
+    <name>SEOF_INT2</name>
+    <value>28</value>
+  </interrupt>
+  <interrupt>
+    <name>DVP2BUS_INT0</name>
+    <value>29</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>DVP2AXI_CONFIGUE</name>
+      <description>DVP to AXI Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x4000083C</resetValue>
+      <fields>
+        <field>
+          <name>reg_dvp_enable</name>
+          <description>Module Enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_sw_mode</name>
+          <description>DVP2BUS SW manual mode</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_fram_vld_pol</name>
+          <description>Frame Valid Polarity. 0: Active Low, 1: Active High</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_line_vld_pol</name>
+          <description>Line Valid Polarity. 0: Active Low, 1: Active High</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_xlen</name>
+          <description>Burst Length: 0:Single, 1:INCR4, 2:INCR8, 3:INCR16, 5:INCR32, 6:INCR64</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_mode</name>
+          <description>DVP Mode: 0:Vsync/Hsync, 1:Vsync|Hsync, 2:Vsync, 3:Hsync</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_hw_mode_fwrap</name>
+          <description>Frame wrap in HW mode</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_drop_en</name>
+          <description>Enable frame drop</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_drop_even</name>
+          <description>Drop even frames</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_qos_sw_mode</name>
+          <description>QOS software mode</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_qos_sw</name>
+          <description>QOS software value</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_data_mode</name>
+          <description>Data Mode: 0:16-bit, 1:24-bit, 2:24-bit comp 16, 3:24-bit exp 32, 4:8-bit</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_data_bsel</name>
+          <description>Byte select for 8-bit mode</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_pix_clk_cg</name>
+          <description>Pixel clock gate enable</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_v_subsample_en</name>
+          <description>Vertical subsample enable</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_v_subsample_pol</name>
+          <description>Vertical subsample polarity</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_wait_cycle</name>
+          <description>Wait cycles in FSM</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_ADDR_START</name>
+      <description>AXI Start Address</description>
+      <addressOffset>0x04</addressOffset>
+      <resetValue>0x80000000</resetValue>
+      <fields>
+        <field>
+          <name>reg_addr_start</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_MEM_BCNT</name>
+      <description>AXI Burst Count</description>
+      <addressOffset>0x08</addressOffset>
+      <resetValue>0x0000C000</resetValue>
+      <fields>
+        <field>
+          <name>reg_mem_burst_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP_STATUS_AND_ERROR</name>
+      <description>DVP Status and Error Register</description>
+      <addressOffset>0x0C</addressOffset>
+      <resetValue>0x31000800</resetValue>
+      <fields>
+        <field>
+          <name>reg_frame_cnt_trgr_int</name>
+          <description>Frame count to trigger interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_hcnt_en</name>
+          <description>HSYNC count interrupt enable</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_vcnt_en</name>
+          <description>VSYNC count interrupt enable</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_normal_en</name>
+          <description>Normal interrupt enable</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_mem_en</name>
+          <description>Memory overrun interrupt enable</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_frame_en</name>
+          <description>Frame complete interrupt enable</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_fifo_en</name>
+          <description>FIFO overrun interrupt enable</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_normal_int</name>
+          <description>Normal interrupt status</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_mem_int</name>
+          <description>Memory overrun interrupt status</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_frame_int</name>
+          <description>Frame complete interrupt status</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_fifo_int</name>
+          <description>FIFO overrun interrupt status</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>frame_valid_cnt</name>
+          <description>Number of valid frames received</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>5</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_hcnt_int</name>
+          <description>HSYNC count interrupt status</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_vcnt_int</name>
+          <description>VSYNC count interrupt status</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>st_bus_idle</name>
+          <description>Bus idle status</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>st_bus_func</name>
+          <description>Bus functional status</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>st_bus_wait</name>
+          <description>Bus wait status</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>st_bus_flsh</name>
+          <description>Bus flush status</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>axi_idle</name>
+          <description>AXI idle status</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>st_dvp_idle</name>
+          <description>DVP idle status</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_FRAME_BCNT</name>
+      <description>Single Frame Byte Count</description>
+      <addressOffset>0x10</addressOffset>
+      <resetValue>0x00007E90</resetValue>
+      <fields>
+        <field>
+          <name>reg_frame_byte_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP_FRAME_FIFO_POP</name>
+      <description>FIFO Pop and Interrupt Clear</description>
+      <addressOffset>0x14</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>rfifo_pop</name>
+          <description>Read FIFO pop</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_normal_clr</name>
+          <description>Clear normal interrupt</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_mem_clr</name>
+          <description>Clear memory interrupt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_frame_clr</name>
+          <description>Clear frame interrupt</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_fifo_clr</name>
+          <description>Clear FIFO interrupt</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_hcnt_clr</name>
+          <description>Clear HSYNC count interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_vcnt_clr</name>
+          <description>Clear VSYNC count interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_FRAME_VLD</name>
+      <description>Frame Valid Period</description>
+      <addressOffset>0x18</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>reg_frame_n_vld</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_FRAME_PERIOD</name>
+      <description>Frame Period</description>
+      <addressOffset>0x1C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_frame_period</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_MISC</name>
+      <description>Miscellaneous Configuration</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>reg_alpha</name>
+          <description>Alpha value for data expansion</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_format_565</name>
+          <description>RGB565 format selection</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_HSYNC_CROP</name>
+      <description>HSYNC Active Region Crop</description>
+      <addressOffset>0x30</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>reg_hsync_act_end</name>
+          <description>HSYNC active end position</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>reg_hsync_act_start</name>
+          <description>HSYNC active start position</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_VSYNC_CROP</name>
+      <description>VSYNC Active Region Crop</description>
+      <addressOffset>0x34</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>reg_vsync_act_end</name>
+          <description>VSYNC active end position</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>reg_vsync_act_start</name>
+          <description>VSYNC active start position</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP2AXI_FRAM_EXM</name>
+      <description>Frame Examination (Total H/V Count)</description>
+      <addressOffset>0x38</addressOffset>
+      <fields>
+        <field>
+          <name>reg_total_hcnt</name>
+          <description>Total HSYNC count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>reg_total_vcnt</name>
+          <description>Total VSYNC count</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_START_ADDR0</name>
+      <description>Frame Buffer 0 Start Address Status</description>
+      <addressOffset>0x40</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_START_ADDR1</name>
+      <description>Frame Buffer 1 Start Address Status</description>
+      <addressOffset>0x48</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_START_ADDR2</name>
+      <description>Frame Buffer 2 Start Address Status</description>
+      <addressOffset>0x50</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_START_ADDR3</name>
+      <description>Frame Buffer 3 Start Address Status</description>
+      <addressOffset>0x58</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_ID_STS01</name>
+      <description>Frame ID Status for Buffers 0 and 1</description>
+      <addressOffset>0x60</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_id_0</name>
+          <description>Frame ID for buffer 0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>frame_id_1</name>
+          <description>Frame ID for buffer 1</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>FRAME_ID_STS23</name>
+      <description>Frame ID Status for Buffers 2 and 3</description>
+      <addressOffset>0x64</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_id_2</name>
+          <description>Frame ID for buffer 2</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>frame_id_3</name>
+          <description>Frame ID for buffer 3</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP_DEBUG</name>
+      <description>DVP Debug Configuration</description>
+      <addressOffset>0xF0</addressOffset>
+      <resetValue>0x00000500</resetValue>
+      <fields>
+        <field>
+          <name>reg_dvp_dbg_en</name>
+          <description>Debug enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dvp_dbg_sel</name>
+          <description>Debug signal selection</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_id_latch_line</name>
+          <description>Frame ID latch line</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DVP_DUMMY_REG</name>
+      <description>DVP Dummy Register</description>
+      <addressOffset>0xFC</addressOffset>
+      <resetValue>0xF0F0F0F0</resetValue>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>DUMMY</name>
+          <description>Dummy bits (reserved)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

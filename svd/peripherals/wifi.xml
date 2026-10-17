@@ -1,0 +1,289 @@
+<peripheral>
+  <name>WIFI</name>
+  <!-- No dedicated wifi_reg.h in the BL808 C SDK; the WiFi MAC/coexistence IP is
+       part of the proprietary wireless subsystem. Interrupt numbers verified
+       against bl808.h (IRQ_NUM_BASE=16, CPU_M0). Register map is best-effort. -->
+  <description>Wireless Fidelity (WiFi) Coexistence Control</description>
+  <groupName>WIFI</groupName>
+  <baseAddress>0x24B00000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>BT</name>
+    <description>Bluetooth Interrupt</description>
+    <value>62</value>
+  </interrupt>
+  <interrupt>
+    <name>M154_REQ_ACK</name>
+    <description>802.15.4 Request Ack Interrupt</description>
+    <value>63</value>
+  </interrupt>
+  <interrupt>
+    <name>M154_INT</name>
+    <description>802.15.4 Interrupt</description>
+    <value>64</value>
+  </interrupt>
+  <interrupt>
+    <name>M154_AES</name>
+    <description>802.15.4 AES Interrupt</description>
+    <value>65</value>
+  </interrupt>
+  <interrupt>
+    <name>WIFI</name>
+    <description>WiFi To CPU Interrupt</description>
+    <value>70</value>
+  </interrupt>
+  <interrupt>
+    <name>BZ_PHY_INT</name>
+    <description>BZ PHY Interrupt</description>
+    <value>71</value>
+  </interrupt>
+  <interrupt>
+    <name>BLE</name>
+    <description>BLE Interrupt</description>
+    <value>72</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_TXRX_TIMER</name>
+    <description>MAC TXRX Timer Interrupt</description>
+    <value>73</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_TXRX_MISC</name>
+    <description>MAC TXRX Misc Interrupt</description>
+    <value>74</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_RX_TRG</name>
+    <description>MAC RX Trigger Interrupt</description>
+    <value>75</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_TX_TRG</name>
+    <description>MAC TX Trigger Interrupt</description>
+    <value>76</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_GEN</name>
+    <description>MAC General Interrupt</description>
+    <value>77</value>
+  </interrupt>
+  <interrupt>
+    <name>MAC_PORT_TRG</name>
+    <description>MAC Port Trigger Interrupt</description>
+    <value>78</value>
+  </interrupt>
+  <interrupt>
+    <name>WIFI_IPC_PUBLIC</name>
+    <description>WiFi IPC Public Interrupt</description>
+    <value>79</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>coex_control_0</name>
+      <description>Coexistence Control Register 0 (Arbitration)</description>
+      <addressOffset>0x400</addressOffset>
+      <fields>
+        <field>
+          <name>coex_enable</name>
+          <description>Master coexistence module enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wifi_tx_prio</name>
+          <description>Set WiFi TX priority level</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>wifi_rx_prio</name>
+          <description>Set WiFi RX priority level</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ext_high_prio_req</name>
+          <description>External high priority request flag</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>arb_mode</name>
+          <description>Coexistence arbitration mode selection</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>coex_pti</name>
+      <description>Coexistence Packet Traffic Interface Priority Configuration</description>
+      <addressOffset>0x404</addressOffset>
+      <fields>
+        <field>
+          <name>pti_ack</name>
+          <description>ACK packet traffic priority level</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_cntrl</name>
+          <description>Control packet traffic priority level</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_mgt</name>
+          <description>Management packet traffic priority level</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_vo</name>
+          <description>Voice (VO) packet traffic priority level</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_vi</name>
+          <description>Video (VI) packet traffic priority level</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_be</name>
+          <description>Best Effort (BE) packet traffic priority level</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_bk</name>
+          <description>Background (BK) packet traffic priority level</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>pti_bcn</name>
+          <description>Beacon (BCN) packet traffic priority level</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>coex_state</name>
+      <description>Coexistence State Register (Read-Only)</description>
+      <addressOffset>0x408</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sts_wifi_tx_active</name>
+          <description>Status: WiFi TX is active</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_wifi_rx_active</name>
+          <description>Status: WiFi RX is active</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_ext_busy</name>
+          <description>Status: External radio (BT/Zigbee) is asserting busy</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_current_grant</name>
+          <description>Status: Which radio currently holds the grant (0=WiFi, 1=External)</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>coex_interrupt</name>
+      <description>Coexistence Interrupt Status/Control</description>
+      <addressOffset>0x40C</addressOffset>
+      <fields>
+        <field>
+          <name>sts_coex_int</name>
+          <description>Coexistence state change interrupt status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>coex_int_en</name>
+          <description>Interrupt enable mask</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>coex_int_clr</name>
+          <description>Write 1 to clear interrupt</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>coex_control_2</name>
+      <description>Coexistence Control Register 2 (Traffic Class Force Grants)</description>
+      <addressOffset>0x410</addressOffset>
+      <fields>
+        <field>
+          <name>force_bk</name>
+          <description>Force grant for Background (BK) traffic class</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>force_be</name>
+          <description>Force grant for Best Effort (BE) traffic class</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>force_vi</name>
+          <description>Force grant for Video (VI) traffic class</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>force_vo</name>
+          <description>Force grant for Voice (VO) traffic class</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>force_bcn</name>
+          <description>Force grant for Beacon (BCN) traffic class</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

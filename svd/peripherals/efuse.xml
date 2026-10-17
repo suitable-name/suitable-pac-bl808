@@ -1,0 +1,2030 @@
+<?xml version="1.0" encoding="utf-8"?>
+<peripheral>
+  <name>EFUSE</name>
+  <description>eFuse Controller Interface and Data Array</description>
+  <groupName>EFUSE</groupName>
+  <baseAddress>0x20056000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>EFUSE</name>
+    <description>EFUSE Interrupt</description>
+    <value>42</value>
+  </interrupt>
+
+  <registers>
+    <!-- EF_DATA_0 Registers (Offset 0x0 - 0x7F) - Configuration, MAC, and Key Slot 0-3 -->
+    <register>
+      <name>EF_CFG_0</name>
+      <description>eFuse Configuration Settings (Bitstream Data)</description>
+      <addressOffset>0x000</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sf_aes_mode</name>
+          <description>Flash AES mode: 0:None, 1:AES-128, 2:AES-256, 3:AES-192</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_ai_dis</name>
+          <description>Analog/audio interface disable</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_cpu0_dis</name>
+          <description>CPU0 (M0) disable</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sboot_en</name>
+          <description>Secure boot enable</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_uart_dis</name>
+          <description>UART disable mask (4 UARTs)</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>ef_ble2_dis</name>
+          <description>BLE 2.0 disable</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_m1542_dis</name>
+          <description>M154_2 disable</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sf_key_re_sel</name>
+          <description>SF key reuse selection</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sdu_dis</name>
+          <description>SDU disable</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_btdm_dis</name>
+          <description>BTDM disable</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_wifi_dis</name>
+          <description>WiFi disable</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_0_key_enc_en</name>
+          <description>Key encryption enable</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_cam_dis</name>
+          <description>CAM disable</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_m154_dis</name>
+          <description>M154 disable</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_cpu1_dis</name>
+          <description>CPU1 (D0) disable</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_cpu_rst_dbg_dis</name>
+          <description>CPU reset debug disable</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_se_dbg_dis</name>
+          <description>Security engine debug disable</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_efuse_dbg_dis</name>
+          <description>eFuse debug disable</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_dbg_jtag_1_dis</name>
+          <description>JTAG 1 disable status</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_dbg_jtag_0_dis</name>
+          <description>JTAG 0 disable status</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_dbg_mode</name>
+          <description>Debug mode selection</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DBG_PWD_LOW</name>
+      <description>Debug Password Low Word</description>
+      <addressOffset>0x004</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dbg_pwd_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DBG_PWD_HIGH</name>
+      <description>Debug Password High Word</description>
+      <addressOffset>0x008</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dbg_pwd_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DBG_PWD2_LOW</name>
+      <description>Debug Password 2 Low Word</description>
+      <addressOffset>0x00C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dbg_pwd2_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DBG_PWD2_HIGH</name>
+      <description>Debug Password 2 High Word</description>
+      <addressOffset>0x010</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dbg_pwd2_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_WIFI_MAC_LOW</name>
+      <description>Wi-Fi MAC Address Low Word (Bits 31:0)</description>
+      <addressOffset>0x014</addressOffset>
+      <fields>
+        <field>
+          <name>ef_wifi_mac_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_WIFI_MAC_HIGH</name>
+      <description>Wi-Fi MAC Address High Word (Bits 47:32)</description>
+      <addressOffset>0x018</addressOffset>
+      <fields>
+        <field>
+          <name>ef_wifi_mac_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- EF_DATA_0: Key Slot 0-3 (Offsets 0x1C - 0x58) -->
+    <register>
+      <name>EF_KEY_SLOT_0_W0</name>
+      <description>Key Slot 0 Word 0</description>
+      <addressOffset>0x01C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_0_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_0_W1</name>
+      <description>Key Slot 0 Word 1</description>
+      <addressOffset>0x020</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_0_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_0_W2</name>
+      <description>Key Slot 0 Word 2</description>
+      <addressOffset>0x024</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_0_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_0_W3</name>
+      <description>Key Slot 0 Word 3</description>
+      <addressOffset>0x028</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_0_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_1_W0</name>
+      <description>Key Slot 1 Word 0</description>
+      <addressOffset>0x02C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_1_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_1_W1</name>
+      <description>Key Slot 1 Word 1</description>
+      <addressOffset>0x030</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_1_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_1_W2</name>
+      <description>Key Slot 1 Word 2</description>
+      <addressOffset>0x034</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_1_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_1_W3</name>
+      <description>Key Slot 1 Word 3</description>
+      <addressOffset>0x038</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_1_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_2_W0</name>
+      <description>Key Slot 2 Word 0</description>
+      <addressOffset>0x03C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_2_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_2_W1</name>
+      <description>Key Slot 2 Word 1</description>
+      <addressOffset>0x040</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_2_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_2_W2</name>
+      <description>Key Slot 2 Word 2</description>
+      <addressOffset>0x044</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_2_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_2_W3</name>
+      <description>Key Slot 2 Word 3</description>
+      <addressOffset>0x048</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_2_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_3_W0</name>
+      <description>Key Slot 3 Word 0</description>
+      <addressOffset>0x04C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_3_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_3_W1</name>
+      <description>Key Slot 3 Word 1</description>
+      <addressOffset>0x050</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_3_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_3_W2</name>
+      <description>Key Slot 3 Word 2</description>
+      <addressOffset>0x054</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_3_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_3_W3</name>
+      <description>Key Slot 3 Word 3</description>
+      <addressOffset>0x058</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_3_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_SW_USAGE_0</name>
+      <description>Software Usage Slot 0 (eFuse Data)</description>
+      <addressOffset>0x05C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sw_usage_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_SW_USAGE_1</name>
+      <description>Software Usage Slot 1 (eFuse Data)</description>
+      <addressOffset>0x060</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sw_usage_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_SW_USAGE_2</name>
+      <description>Software Usage Slot 2 (eFuse Data)</description>
+      <addressOffset>0x064</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sw_usage_2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_SW_USAGE_3</name>
+      <description>Software Usage Slot 3 (eFuse Data)</description>
+      <addressOffset>0x068</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sw_usage_3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_11_W0</name>
+      <description>Key Slot 11 Word 0 (eFuse Data)</description>
+      <addressOffset>0x06C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_11_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_11_W1</name>
+      <description>Key Slot 11 Word 1 (eFuse Data)</description>
+      <addressOffset>0x070</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_11_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_11_W2</name>
+      <description>Key Slot 11 Word 2 (eFuse Data)</description>
+      <addressOffset>0x074</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_11_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_11_W3</name>
+      <description>Key Slot 11 Word 3 (eFuse Data)</description>
+      <addressOffset>0x078</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_11_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DATA_0_LOCK</name>
+      <description>eFuse Data 0 Write/Read Lock Register</description>
+      <addressOffset>0x07C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sec_lifecycle</name>
+          <description>Security Life Cycle (SBLC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_rsvd_0</name>
+          <description>Write lock for reserved data bits</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_boot_mode</name>
+          <description>Write lock for boot mode/SF AES fields</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_dbg_pwd</name>
+          <description>Write lock for debug password slots 1 &amp; 2</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_wifi_mac</name>
+          <description>Write lock for Wi-Fi MAC address</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_0</name>
+          <description>Write lock for Key Slot 0</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_1</name>
+          <description>Write lock for Key Slot 1</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_2</name>
+          <description>Write lock for Key Slot 2</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_3</name>
+          <description>Write lock for Key Slot 3</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_sw_usage_0</name>
+          <description>Write lock for Software Usage 0</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_sw_usage_1</name>
+          <description>Write lock for Software Usage 1</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_sw_usage_2</name>
+          <description>Write lock for Software Usage 2</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_sw_usage_3</name>
+          <description>Write lock for Software Usage 3</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_11</name>
+          <description>Write lock for Key Slot 11</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_dbg_pwd</name>
+          <description>Read lock for debug password</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_0</name>
+          <description>Read lock for Key Slot 0</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_1</name>
+          <description>Read lock for Key Slot 1</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_2</name>
+          <description>Read lock for Key Slot 2</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_3</name>
+          <description>Read lock for Key Slot 3</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_11</name>
+          <description>Read lock for Key Slot 11</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- EF_DATA_1: Key Slot 4-10 (Offsets 0x80 - 0xFC) -->
+    <register>
+      <name>EF_KEY_SLOT_4_W0</name>
+      <description>Key Slot 4 Word 0 (eFuse Data)</description>
+      <addressOffset>0x080</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_4_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_4_W1</name>
+      <description>Key Slot 4 Word 1 (eFuse Data)</description>
+      <addressOffset>0x084</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_4_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_4_W2</name>
+      <description>Key Slot 4 Word 2 (eFuse Data)</description>
+      <addressOffset>0x088</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_4_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_4_W3</name>
+      <description>Key Slot 4 Word 3 (eFuse Data)</description>
+      <addressOffset>0x08C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_4_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_5_W0</name>
+      <description>Key Slot 5 Word 0 (eFuse Data)</description>
+      <addressOffset>0x090</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_5_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_5_W1</name>
+      <description>Key Slot 5 Word 1 (eFuse Data)</description>
+      <addressOffset>0x094</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_5_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_5_W2</name>
+      <description>Key Slot 5 Word 2 (eFuse Data)</description>
+      <addressOffset>0x098</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_5_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_5_W3</name>
+      <description>Key Slot 5 Word 3 (eFuse Data)</description>
+      <addressOffset>0x09C</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_5_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_6_W0</name>
+      <description>Key Slot 6 Word 0 (eFuse Data)</description>
+      <addressOffset>0x0A0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_6_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_6_W1</name>
+      <description>Key Slot 6 Word 1 (eFuse Data)</description>
+      <addressOffset>0x0A4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_6_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_6_W2</name>
+      <description>Key Slot 6 Word 2 (eFuse Data)</description>
+      <addressOffset>0x0A8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_6_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_6_W3</name>
+      <description>Key Slot 6 Word 3 (eFuse Data)</description>
+      <addressOffset>0x0AC</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_6_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_7_W0</name>
+      <description>Key Slot 7 Word 0 (eFuse Data)</description>
+      <addressOffset>0x0B0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_7_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_7_W1</name>
+      <description>Key Slot 7 Word 1 (eFuse Data)</description>
+      <addressOffset>0x0B4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_7_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_7_W2</name>
+      <description>Key Slot 7 Word 2 (eFuse Data)</description>
+      <addressOffset>0x0B8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_7_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_7_W3</name>
+      <description>Key Slot 7 Word 3 (eFuse Data)</description>
+      <addressOffset>0x0BC</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_7_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_8_W0</name>
+      <description>Key Slot 8 Word 0 (eFuse Data)</description>
+      <addressOffset>0x0C0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_8_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_8_W1</name>
+      <description>Key Slot 8 Word 1 (eFuse Data)</description>
+      <addressOffset>0x0C4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_8_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_8_W2</name>
+      <description>Key Slot 8 Word 2 (eFuse Data)</description>
+      <addressOffset>0x0C8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_8_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_8_W3</name>
+      <description>Key Slot 8 Word 3 (eFuse Data)</description>
+      <addressOffset>0x0CC</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_8_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_9_W0</name>
+      <description>Key Slot 9 Word 0 (eFuse Data)</description>
+      <addressOffset>0x0D0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_9_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_9_W1</name>
+      <description>Key Slot 9 Word 1 (eFuse Data)</description>
+      <addressOffset>0x0D4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_9_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_9_W2</name>
+      <description>Key Slot 9 Word 2 (eFuse Data)</description>
+      <addressOffset>0x0D8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_9_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_9_W3</name>
+      <description>Key Slot 9 Word 3 (eFuse Data)</description>
+      <addressOffset>0x0DC</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_9_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_10_W0</name>
+      <description>Key Slot 10 Word 0 (eFuse Data)</description>
+      <addressOffset>0x0E0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_10_w0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_10_W1</name>
+      <description>Key Slot 10 Word 1 (eFuse Data)</description>
+      <addressOffset>0x0E4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_10_w1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_10_W2</name>
+      <description>Key Slot 10 Word 2 (eFuse Data)</description>
+      <addressOffset>0x0E8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_10_w2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_KEY_SLOT_10_W3</name>
+      <description>Key Slot 10 Word 3 (eFuse Data)</description>
+      <addressOffset>0x0EC</addressOffset>
+      <fields>
+        <field>
+          <name>ef_key_slot_10_w3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DAT_1_RSVD_0</name>
+      <description>eFuse Data 1 Reserved Word 0</description>
+      <addressOffset>0x0F0</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dat_1_rsvd_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DAT_1_RSVD_1</name>
+      <description>eFuse Data 1 Reserved Word 1</description>
+      <addressOffset>0x0F4</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dat_1_rsvd_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DAT_1_RSVD_2</name>
+      <description>eFuse Data 1 Reserved Word 2</description>
+      <addressOffset>0x0F8</addressOffset>
+      <fields>
+        <field>
+          <name>ef_dat_1_rsvd_2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_DATA_1_LOCK</name>
+      <description>eFuse Data 1 Write/Read Lock Register</description>
+      <addressOffset>0x0FC</addressOffset>
+      <fields>
+        <field>
+          <name>wr_lock_rsvd_1</name>
+          <description>Write lock for reserved data bits</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>15</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_4</name>
+          <description>Write lock for Key Slot 4</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_5</name>
+          <description>Write lock for Key Slot 5</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_6</name>
+          <description>Write lock for Key Slot 6</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_7</name>
+          <description>Write lock for Key Slot 7</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_8</name>
+          <description>Write lock for Key Slot 8</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_9</name>
+          <description>Write lock for Key Slot 9</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_key_slot_10</name>
+          <description>Write lock for Key Slot 10</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_dat_1_rsvd_0</name>
+          <description>Write lock for Reserved Word 0</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_dat_1_rsvd_1</name>
+          <description>Write lock for Reserved Word 1</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wr_lock_dat_1_rsvd_2</name>
+          <description>Write lock for Reserved Word 2</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_4</name>
+          <description>Read lock for Key Slot 4</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_5</name>
+          <description>Read lock for Key Slot 5</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_6</name>
+          <description>Read lock for Key Slot 6</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_7</name>
+          <description>Read lock for Key Slot 7</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_8</name>
+          <description>Read lock for Key Slot 8</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_9</name>
+          <description>Read lock for Key Slot 9</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rd_lock_key_slot_10</name>
+          <description>Read lock for Key Slot 10</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+
+    <!-- EFUSE Controller Registers (Offset 0x800 - 0xA14) -->
+    <register>
+      <name>EF_CTRL_IF_CTRL_0</name>
+      <description>eFuse Interface 0 Control Register</description>
+      <addressOffset>0x800</addressOffset>
+      <resetValue>0x00240003</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_0_autoload_p1_done</name>
+          <description>Autoload Phase 1 completion status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_0_autoload_done</name>
+          <description>Autoload complete status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_0_busy</name>
+          <description>eFuse interface busy status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_0_rw</name>
+          <description>0: Read operation, 1: Write/Program operation</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_0_trig</name>
+          <description>Trigger read/write operation (active high)</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_0_manual_en</name>
+          <description>Manual mode enable (disables hardware sequencer)</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_0_cyc_modify</name>
+          <description>eFuse cycle timing modification enable</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_prot_code_ctrl</name>
+          <description>eFuse protection code for control interface</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_por_dig</name>
+          <description>Power on reset digital logic</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_pclk_force_on</name>
+          <description>Force peripheral clock on</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_auto_rd_en</name>
+          <description>Auto read enable after program</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_modify_lock</name>
+          <description>Lock eFuse cycle modification</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_0_int</name>
+          <description>eFuse interface 0 interrupt status</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_0_int_clr</name>
+          <description>Clear eFuse interface 0 interrupt</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>ef_if_0_int_set</name>
+          <description>Set eFuse interface 0 interrupt</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_prot_code_cyc</name>
+          <description>eFuse protection code for cycle modification</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_CYC_0</name>
+      <description>eFuse Interface Cycle Timing 0</description>
+      <addressOffset>0x804</addressOffset>
+      <resetValue>0x16000040</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_cyc_rd_dmy</name>
+          <description>Read dummy cycle count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_rd_dat</name>
+          <description>Read data cycle count</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_rd_adr</name>
+          <description>Read address cycle count</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_cs</name>
+          <description>Chip select setup cycle count</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_pd_cs_s</name>
+          <description>Power down to chip select start cycle count</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_CYC_1</name>
+      <description>eFuse Interface Cycle Timing 1</description>
+      <addressOffset>0x808</addressOffset>
+      <resetValue>0x00206609</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_cyc_pi</name>
+          <description>Program initialization cycle count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_pp</name>
+          <description>Program pulse width cycle count</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_wr_adr</name>
+          <description>Write address cycle count</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_ps_cs</name>
+          <description>Program setup to chip select cycle count</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_cyc_pd_cs_h</name>
+          <description>Power down to chip select high cycle count</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_0_MANUAL</name>
+      <description>eFuse Interface 0 Manual Operation Register</description>
+      <addressOffset>0x80C</addressOffset>
+      <resetValue>0x0000E400</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_a</name>
+          <description>Manual access address</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_pd</name>
+          <description>Manual power down control</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_ps</name>
+          <description>Manual program voltage switch</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_strobe</name>
+          <description>Manual strobe signal</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_pgenb</name>
+          <description>Manual program enable bar</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_load</name>
+          <description>Manual load signal</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_csb</name>
+          <description>Manual chip select bar</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_0_q</name>
+          <description>Manual read data output</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_prot_code_manual</name>
+          <description>Protection code for manual mode</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_0_STATUS</name>
+      <description>eFuse Interface 0 Status Register</description>
+      <addressOffset>0x810</addressOffset>
+      <resetValue>0x0000E400</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_0_status</name>
+          <description>Overall IF0 status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_CFG_0</name>
+      <description>eFuse Interface Configuration (Read values from array)</description>
+      <addressOffset>0x814</addressOffset>
+      <fields>
+        <field>
+          <name>ef_if_sf_aes_mode</name>
+          <description>Flash AES mode read from eFuse</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_ai_dis</name>
+          <description>Analog/audio interface disable read from eFuse</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_cpu0_dis</name>
+          <description>CPU0 disable read from eFuse</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_sboot_en</name>
+          <description>Secure boot enable read from eFuse</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_uart_dis</name>
+          <description>UART disable read from eFuse</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_ble2_dis</name>
+          <description>BLE2 disable read from eFuse</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_m1542_dis</name>
+          <description>M154_2 disable read from eFuse</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_sf_key_re_sel</name>
+          <description>SF key reuse selection read from eFuse</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_sdu_dis</name>
+          <description>SDU disable read from eFuse</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_btdm_dis</name>
+          <description>BTDM disable read from eFuse</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_wifi_dis</name>
+          <description>WiFi disable read from eFuse</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_0_key_enc_en</name>
+          <description>Key encryption enable read from eFuse</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_cam_dis</name>
+          <description>CAM disable read from eFuse</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_m154_dis</name>
+          <description>M154 disable read from eFuse</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_cpu1_dis</name>
+          <description>CPU1 disable read from eFuse</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_cpu_rst_dbg_dis</name>
+          <description>CPU reset debug disable read from eFuse</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_se_dbg_dis</name>
+          <description>Security engine debug disable read from eFuse</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_efuse_dbg_dis</name>
+          <description>eFuse debug disable read from eFuse</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_dbg_jtag_1_dis</name>
+          <description>JTAG 1 disable read from eFuse</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_dbg_jtag_0_dis</name>
+          <description>JTAG 0 disable read from eFuse</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_dbg_mode</name>
+          <description>Debug mode read from eFuse</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_SW_CFG_0</name>
+      <description>eFuse Software Override Configuration</description>
+      <addressOffset>0x818</addressOffset>
+      <fields>
+        <field>
+          <name>ef_sw_sf_aes_mode</name>
+          <description>Flash AES mode software override</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_ai_dis</name>
+          <description>Analog/audio interface disable software override</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_cpu0_dis</name>
+          <description>CPU0 disable software override</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_sboot_en</name>
+          <description>Secure boot enable software override</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_uart_dis</name>
+          <description>UART disable software override</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_ble2_dis</name>
+          <description>BLE2 disable software override</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_m1542_dis</name>
+          <description>M154_2 disable software override</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_sf_key_re_sel</name>
+          <description>SF key reuse selection software override</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_sdu_dis</name>
+          <description>SDU disable software override</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_btdm_dis</name>
+          <description>BTDM disable software override</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_wifi_dis</name>
+          <description>WiFi disable software override</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_0_key_enc_en</name>
+          <description>Key encryption enable software override</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_cam_dis</name>
+          <description>CAM disable software override</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_m154_dis</name>
+          <description>M154 disable software override</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_cpu1_dis</name>
+          <description>CPU1 disable software override</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_cpu_rst_dbg_dis</name>
+          <description>CPU reset debug disable software override</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_se_dbg_dis</name>
+          <description>Security engine debug disable software override</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_efuse_dbg_dis</name>
+          <description>eFuse debug disable software override</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_dbg_jtag_1_dis</name>
+          <description>JTAG 1 disable software override</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_dbg_jtag_0_dis</name>
+          <description>JTAG 0 disable software override</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>ef_sw_dbg_mode</name>
+          <description>Debug mode software override</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_EF_RESERVED</name>
+      <description>eFuse Reserved Register (Read-Write)</description>
+      <addressOffset>0x81C</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>ef_reserved</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_SW_USAGE_0</name>
+      <description>eFuse Software Usage Register 0 (Read from array)</description>
+      <addressOffset>0x820</addressOffset>
+      <fields>
+        <field>
+          <name>ef_if_sw_usage_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_SW_USAGE_1</name>
+      <description>eFuse Software Usage Register 1 (Read from array)</description>
+      <addressOffset>0x824</addressOffset>
+      <fields>
+        <field>
+          <name>ef_if_sw_usage_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <!-- EFUSE Interface 1 Control (Offset 0x900) -->
+    <register>
+      <name>EF_CTRL_IF_CTRL_1</name>
+      <description>eFuse Interface 1 Control Register</description>
+      <addressOffset>0x900</addressOffset>
+      <resetValue>0x00200000</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_1_busy</name>
+          <description>eFuse interface 1 busy status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_1_rw</name>
+          <description>0: Read operation, 1: Write/Program operation</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_1_trig</name>
+          <description>Trigger read/write operation (active high)</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_1_manual_en</name>
+          <description>Manual mode enable</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_1_cyc_modify</name>
+          <description>eFuse cycle timing modification enable</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_if_1_int</name>
+          <description>eFuse interface 1 interrupt status</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_if_1_int_clr</name>
+          <description>Clear eFuse interface 1 interrupt</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>ef_if_1_int_set</name>
+          <description>Set eFuse interface 1 interrupt</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_1_MANUAL</name>
+      <description>eFuse Interface 1 Manual Operation Register</description>
+      <addressOffset>0x904</addressOffset>
+      <fields>
+        <field>
+          <name>ef_if_1_q</name>
+          <description>Manual read data output</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_1_STATUS</name>
+      <description>eFuse Interface 1 Status Register</description>
+      <addressOffset>0x908</addressOffset>
+      <resetValue>0x0000E400</resetValue>
+      <fields>
+        <field>
+          <name>ef_if_1_status</name>
+          <description>Overall IF1 status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <!-- EFUSE Interface 2 Control (Offset 0x910) -->
+    <register>
+      <name>EF_CTRL_IF_CTRL_2</name>
+      <description>eFuse Interface 2 Control Register</description>
+      <addressOffset>0x910</addressOffset>
+      <fields>
+        <field>
+          <name>RESERVED</name>
+          <description>No public fields defined for Interface 2 Control</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_2_MANUAL</name>
+      <description>eFuse Interface 2 Manual Operation Register</description>
+      <addressOffset>0x914</addressOffset>
+      <fields>
+        <field>
+          <name>RESERVED</name>
+          <description>No public fields defined for Interface 2 Manual</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CTRL_IF_2_STATUS</name>
+      <description>eFuse Interface 2 Status Register</description>
+      <addressOffset>0x918</addressOffset>
+      <fields>
+        <field>
+          <name>RESERVED</name>
+          <description>No public fields defined for Interface 2 Status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <!-- EFUSE CRC Check Engine (Offset 0xA00 - 0xA14) -->
+    <register>
+      <name>EF_CRC_CTRL_0</name>
+      <description>eFuse CRC Control Register 0</description>
+      <addressOffset>0xA00</addressOffset>
+      <resetValue>0x00FF0224</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_busy</name>
+          <description>CRC calculation busy status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_crc_trig</name>
+          <description>Trigger CRC calculation</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_en</name>
+          <description>Enable CRC calculation</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_mode</name>
+          <description>CRC mode selection (0: standard CRC32, 1: custom poly)</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_error</name>
+          <description>CRC verification error status</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_crc_dout_inv_en</name>
+          <description>CRC output data inversion enable</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_dout_endian</name>
+          <description>CRC output endianness (0: Little, 1: Big)</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_din_endian</name>
+          <description>CRC input endianness (0: Little, 1: Big)</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_int</name>
+          <description>CRC calculation finished interrupt status</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>ef_crc_int_clr</name>
+          <description>Clear CRC interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>ef_crc_int_set</name>
+          <description>Set CRC interrupt (for debug)</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_lock</name>
+          <description>Lock CRC configuration registers</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ef_crc_slp_n</name>
+          <description>Sleep cycle count</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CRC_CTRL_1</name>
+      <description>eFuse CRC Data Enable Mask 0 (Bits 31:0)</description>
+      <addressOffset>0xA04</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_data_0_en</name>
+          <description>Enable data bits 31:0 for CRC check</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CRC_CTRL_2</name>
+      <description>eFuse CRC Data Enable Mask 1 (Bits 63:32)</description>
+      <addressOffset>0xA08</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_data_1_en</name>
+          <description>Enable data bits 63:32 for CRC check</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CRC_CTRL_3</name>
+      <description>eFuse CRC Initial Value (IV)</description>
+      <addressOffset>0xA0C</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_iv</name>
+          <description>CRC initial value</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CRC_CTRL_4</name>
+      <description>eFuse CRC Golden/Expected Value</description>
+      <addressOffset>0xA10</addressOffset>
+      <resetValue>0xC2A8FA9D</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_golden</name>
+          <description>Expected CRC value for verification</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>EF_CRC_CTRL_5</name>
+      <description>eFuse CRC Output Data</description>
+      <addressOffset>0xA14</addressOffset>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>ef_crc_dout</name>
+          <description>Calculated CRC result</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

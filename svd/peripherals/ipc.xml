@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<peripheral>
+  <name>IPC</name>
+  <description>Inter-Processor Communication Controller</description>
+  <groupName>IPC</groupName>
+  <baseAddress>0x2000A800</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x40</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>IPC_M0</name>
+    <description>Inter-Processor Communication M0</description>
+    <value>19</value>
+  </interrupt>
+  <interrupt>
+    <name>IPC_RSVD</name>
+    <description>Inter-Processor Communication Reserved</description>
+    <value>50</value>
+  </interrupt>
+  <interrupt>
+    <name>IPC_LP</name>
+    <description>Inter-Processor Communication LP</description>
+    <value>51</value>
+  </interrupt>
+
+  <registers>
+    <!-- ================================================================================== -->
+    <!-- CPU1 Register Set (Offsets 0x00 - 0x1C)                                            -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>CPU1_IPC_ISWR</name>
+      <description>CPU1 Interrupt Set Write Register</description>
+      <addressOffset>0x00</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_ISWR</name>
+          <description>Write 1 to set interrupt for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_IRSRR</name>
+      <description>CPU1 Interrupt Raw Status Register</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_IRSRR</name>
+          <description>Raw interrupt status for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_ICR</name>
+      <description>CPU1 Interrupt Clear Register</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_ICR</name>
+          <description>Write 1 to clear interrupt for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_IUSR</name>
+      <description>CPU1 Interrupt Unmask Set Register</description>
+      <addressOffset>0x0C</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_IUSR</name>
+          <description>Interrupt unmask set for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_IUCR</name>
+      <description>CPU1 Interrupt Unmask Clear Register</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_IUCR</name>
+          <description>Write 1 to clear unmask for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_ILSLR</name>
+      <description>CPU1 Interrupt Line Sel Low Register</description>
+      <addressOffset>0x14</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_ILSLR</name>
+          <description>Interrupt line selection low</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_ILSHR</name>
+      <description>CPU1 Interrupt Line Sel High Register</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_ILSHR</name>
+          <description>Interrupt line selection high</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU1_IPC_ISR</name>
+      <description>CPU1 Interrupt Status Register</description>
+      <addressOffset>0x1C</addressOffset>
+      <fields>
+        <field>
+          <name>CPU1_IPC_ISR</name>
+          <description>Interrupt status for CPU1</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ================================================================================== -->
+    <!-- CPU0 Register Set (Offsets 0x20 - 0x3C)                                            -->
+    <!-- ================================================================================== -->
+    <register>
+      <name>CPU0_IPC_ISWR</name>
+      <description>CPU0 Interrupt Set Write Register</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_ISWR</name>
+          <description>Write 1 to set interrupt for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_IRSRR</name>
+      <description>CPU0 Interrupt Raw Status Register</description>
+      <addressOffset>0x24</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_IRSRR</name>
+          <description>Raw interrupt status for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_ICR</name>
+      <description>CPU0 Interrupt Clear Register</description>
+      <addressOffset>0x28</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_ICR</name>
+          <description>Write 1 to clear interrupt for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_IUSR</name>
+      <description>CPU0 Interrupt Unmask Set Register</description>
+      <addressOffset>0x2C</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_IUSR</name>
+          <description>Interrupt unmask set for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_IUCR</name>
+      <description>CPU0 Interrupt Unmask Clear Register</description>
+      <addressOffset>0x30</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_IUCR</name>
+          <description>Write 1 to clear unmask for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_ILSLR</name>
+      <description>CPU0 Interrupt Line Sel Low Register</description>
+      <addressOffset>0x34</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_ILSLR</name>
+          <description>Interrupt line selection low</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_ILSHR</name>
+      <description>CPU0 Interrupt Line Sel High Register</description>
+      <addressOffset>0x38</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_ILSHR</name>
+          <description>Interrupt line selection high</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-write</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CPU0_IPC_ISR</name>
+      <description>CPU0 Interrupt Status Register</description>
+      <addressOffset>0x3C</addressOffset>
+      <fields>
+        <field>
+          <name>CPU0_IPC_ISR</name>
+          <description>Interrupt status for CPU0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

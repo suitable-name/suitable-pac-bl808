@@ -1,0 +1,234 @@
+<peripheral>
+    <name>GPIO</name>
+    <description>GPIO Configuration and Control (Physically part of GLB)</description>
+    <groupName>GLB</groupName>
+    <baseAddress>0x20000000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x1000</size>
+        <usage>registers</usage>
+    </addressBlock>
+    <registers>
+        <!-- Per-Pin Configuration Array (pins 0-51) -->
+        <!-- Each register contains all configuration AND I/O for one pin. -->
+        <!-- Offsets: pin N -> 0x8C4 + N*4 (CFG0=0x8C4 ... CFG51=0x990) -->
+        <cluster>
+            <name>PIN_CFG</name>
+            <description>Configuration and I/O for each GPIO pin</description>
+            <addressOffset>0x8C4</addressOffset>
+            <dim>52</dim>
+            <dimIncrement>0x4</dimIncrement>
+            <register>
+                <name>GPIO_CFG%s</name>
+                <addressOffset>0x00</addressOffset>
+                <fields>
+                    <field>
+                        <name>ie</name>
+                        <description>Input Enable</description>
+                        <bitOffset>0</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>smt</name>
+                        <description>Schmitt Trigger Enable</description>
+                        <bitOffset>1</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>drv</name>
+                        <description>Drive Strength (0-3)</description>
+                        <bitOffset>2</bitOffset>
+                        <bitWidth>2</bitWidth>
+                    </field>
+                    <field>
+                        <name>pu</name>
+                        <description>Pull-Up Enable</description>
+                        <bitOffset>4</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>pd</name>
+                        <description>Pull-Down Enable</description>
+                        <bitOffset>5</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>oe</name>
+                        <description>Output Enable</description>
+                        <bitOffset>6</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>func_sel</name>
+                        <description>Pin Function Selection</description>
+                        <bitOffset>8</bitOffset>
+                        <bitWidth>5</bitWidth>
+                        <enumeratedValues>
+                            <enumeratedValue>
+                                <name>SDH</name>
+                                <value>0</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>SPI0</name>
+                                <value>1</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>FLASH</name>
+                                <value>2</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>I2S</name>
+                                <value>3</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>PDM</name>
+                                <value>4</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>I2C0</name>
+                                <value>5</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>I2C1</name>
+                                <value>6</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>UART</name>
+                                <value>7</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>EMAC</name>
+                                <value>8</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>CAM</name>
+                                <value>9</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>ANALOG</name>
+                                <value>10</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>GPIO</name>
+                                <value>11</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>PWM0</name>
+                                <value>16</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>PWM1</name>
+                                <value>17</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>SPI1</name>
+                                <value>18</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>I2C2</name>
+                                <value>19</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>I2C3</name>
+                                <value>20</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>MM_UART</name>
+                                <value>21</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>DBI_B</name>
+                                <value>22</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>DBI_C</name>
+                                <value>23</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>DPI</name>
+                                <value>24</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>JTAG_LP</name>
+                                <value>25</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>JTAG_M0</name>
+                                <value>26</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>JTAG_D0</name>
+                                <value>27</value>
+                            </enumeratedValue>
+                            <enumeratedValue>
+                                <name>CLOCK_OUT</name>
+                                <value>31</value>
+                            </enumeratedValue>
+                        </enumeratedValues>
+                    </field>
+                    <field>
+                        <name>int_mode_set</name>
+                        <description>Interrupt Mode: 0: Neg pulse, 1: Pos pulse, 2: Neg level, 3: Pos level, 4: Sync falling, 5: Sync rising, 6: Sync low, 7: Sync high, 8: Async falling, 9: Async rising, 10: Async low, 11: Async high</description>
+                        <bitOffset>16</bitOffset>
+                        <bitWidth>4</bitWidth>
+                    </field>
+                    <field>
+                        <name>int_clr</name>
+                        <description>GPIO Interrupt Clear (Write 1 to clear)</description>
+                        <bitOffset>20</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>write-only</access>
+                        <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                    </field>
+                    <field>
+                        <name>int_stat</name>
+                        <description>GPIO Interrupt Status (Read only)</description>
+                        <bitOffset>21</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>read-only</access>
+                    </field>
+                    <field>
+                        <name>int_mask</name>
+                        <description>GPIO Interrupt Mask (1: Masked)</description>
+                        <bitOffset>22</bitOffset>
+                        <bitWidth>1</bitWidth>
+                    </field>
+                    <field>
+                        <name>o</name>
+                        <description>GPIO Output Data</description>
+                        <bitOffset>24</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>read-write</access>
+                    </field>
+                    <field>
+                        <name>set</name>
+                        <description>GPIO Output Atomic Set (write 1 to set output high)</description>
+                        <bitOffset>25</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>write-only</access>
+                    </field>
+                    <field>
+                        <name>clr</name>
+                        <description>GPIO Output Atomic Clear (write 1 to set output low)</description>
+                        <bitOffset>26</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>write-only</access>
+                    </field>
+                    <field>
+                        <name>i</name>
+                        <description>GPIO Input Data (read only)</description>
+                        <bitOffset>28</bitOffset>
+                        <bitWidth>1</bitWidth>
+                        <access>read-only</access>
+                    </field>
+                    <field>
+                        <name>mode</name>
+                        <description>Output mode: 0: reg_out, 1: set/clr, 2: dma_out, 3: dma_set/clr</description>
+                        <bitOffset>30</bitOffset>
+                        <bitWidth>2</bitWidth>
+                    </field>
+                </fields>
+            </register>
+        </cluster>
+    </registers>
+</peripheral>

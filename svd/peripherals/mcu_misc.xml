@@ -1,0 +1,306 @@
+<!-- | Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Peripheral Type**    | **System**| Controls bus QoS, clock/reset, and provides status/debug logs primarily for the M0 core's access to the AHB fabric, and status/control over the secondary E907 core ("MCU1").                                                                                                           |
+| **Bus Control**        | **FULL**  | Includes configuration for infrastructure timeout, arbitration mode, and Quality of Service (QoS) requests for the M0 core.                                                                                                                                                             |
+| **E907 (MCU1) Control**| **FULL**  | Registers starting from 0x100 control DFS (Dynamic Frequency Scaling) requests, software reset (`srst`), and capture vital debug information (MCAUSE, MSTATUS, PC, SP) for the E907 core.                                                                                             |
+| **RTC**                | **FULL**  | Contains the dedicated E907 RTC configuration (divider, reset, enable).                                                                                                                                                                                                                 |
+| **Base Address**       | Explicit | 0x20009000 (MCU_MISC_BASE in `bl808.h`). This space is shared with L1C_BASE, suggesting the L1 Cache controller registers might follow the MCU_MISC block if they exist.                                                                                                                 |
+-->
+<peripheral>
+    <name>MCU_MISC</name>
+    <description>MCU Miscellaneous Control, Bus QoS, and E907 (MCU1) Core Management</description>
+    <groupName>MCU_MISC</groupName>
+    <baseAddress>0x20009000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x300</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>MCU_BUS_CFG0</name>
+            <description>MCU Bus Configuration 0 (Timeout)</description>
+            <addressOffset>0x00</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mcu_infra_timeout_en</name>
+                    <description>MCU infrastructure timeout enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu_infra_timeout_clr</name>
+                    <description>Clear MCU infrastructure timeout status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mcu_infra_timeout</name>
+                    <description>MCU infrastructure timeout status</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU_BUS_CFG1</name>
+            <description>MCU Bus Configuration 1 (QoS and Arbitration)</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mcu1_hqos</name>
+                    <description>MCU1 (E907) QoS enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu1_awqos</name>
+                    <description>MCU1 (E907) write QoS priority</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu1_arqos</name>
+                    <description>MCU1 (E907) read QoS priority</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu_x2hs_sp_bypass</name>
+                    <description>X2HS single port bypass</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x_wthre_mcu2ext</name>
+                    <description>Write threshold limit for MCU to External Bus</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu_infra_arb_mode</name>
+                    <description>MCU infrastructure arbitration mode</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU_E907_RTC</name>
+            <description>E907 (MCU1) Real-Time Clock Configuration</description>
+            <addressOffset>0x14</addressOffset>
+            <resetValue>0x8000000A</resetValue>
+            <fields>
+                <field>
+                    <name>reg_mcu_rtc_div</name>
+                    <description>E907 RTC clock divider (10 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu_rtc_rst</name>
+                    <description>E907 RTC software reset</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mcu_rtc_en</name>
+                    <description>E907 RTC clock enable</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU_CFG1</name>
+            <description>MCU Core Configuration 1 (E907 Reset/DFS)</description>
+            <addressOffset>0x100</addressOffset>
+            <resetValue>0x00000030</resetValue>
+            <fields>
+                <field>
+                    <name>reg_mcu1_dfs_req</name>
+                    <description>E907 DFS (Dynamic Frequency Scaling) request</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mcu1_dfs_ack</name>
+                    <description>E907 DFS acknowledge status</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_mcu1_srst_en</name>
+                    <description>E907 software reset enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mcu1_lpmd_b</name>
+                    <description>E907 low power mode status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>MCU1_WFI_FORCE</name>
+                    <description>Force E907 into WFI (Wait For Interrupt)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>mcu1_ndm_rstn_en</name>
+                    <description>E907 non-debug mode reset enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>mcu1_hart_rstn_en</name>
+                    <description>E907 HART reset enable</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU1_LOG1</name>
+            <description>E907 Debug Log 1 (MCAUSE)</description>
+            <addressOffset>0x110</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mcu1_mcause</name>
+                    <description>Machine Cause Register value on exception</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU1_LOG2</name>
+            <description>E907 Debug Log 2 (MINTSTATUS)</description>
+            <addressOffset>0x114</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mcu1_mintstatus</name>
+                    <description>Machine Interrupt Status Register value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU1_LOG3</name>
+            <description>E907 Debug Log 3 (MSTATUS)</description>
+            <addressOffset>0x118</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mcu1_mstatus</name>
+                    <description>Machine Status Register value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU1_LOG4</name>
+            <description>E907 Debug Log 4 (Stack Pointer / Program Counter)</description>
+            <addressOffset>0x11C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mcu1_sp</name>
+                    <description>Stack Pointer value (L bit)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mcu1_pc</name>
+                    <description>Program Counter value (31:1)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>31</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MCU1_LOG5</name>
+            <description>E907 Debug Log 5 (Lockup/Halted Status)</description>
+            <addressOffset>0x120</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mcu1_lockup</name>
+                    <description>E907 CPU lockup status</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mcu1_halted</name>
+                    <description>E907 CPU halted status</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>mcu1_ndm_rstn_req</name>
+                    <description>E907 Non-Debug Mode reset request status</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>mcu1_hart_rstn_req</name>
+                    <description>E907 HART reset request status</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IROM1_MISR_DATAOUT_0</name>
+            <description>IROM1 MISR Data Output 0 (Test/Debug)</description>
+            <addressOffset>0x208</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>irom1_misr_dataout_0</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IROM1_MISR_DATAOUT_1</name>
+            <description>IROM1 MISR Data Output 1 (Test/Debug)</description>
+            <addressOffset>0x20C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>irom1_misr_dataout_1</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

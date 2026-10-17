@@ -1,0 +1,430 @@
+<peripheral>
+  <name>DMA0</name>
+  <description>Direct Memory Access Controller 0</description>
+  <groupName>DMA</groupName>
+  <baseAddress>0x2000C000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  
+  
+  
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <registers>
+    <register>
+      <name>IntStatus</name>
+      <description>Status of the DMA interrupts after masking</description>
+      <addressOffset>0x00</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>IntStatus</name>
+          <description>Interrupt status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IntTCStatus</name>
+      <description>Interrupt terminal count request status</description>
+      <addressOffset>0x04</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>IntTCStatus</name>
+          <description>Terminal count interrupt status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IntTCClear</name>
+      <description>Terminal count request clear</description>
+      <addressOffset>0x08</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>IntTCClear</name>
+          <description>Clear terminal count interrupt for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IntErrorStatus</name>
+      <description>Interrupt error status</description>
+      <addressOffset>0x0C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>IntErrorStatus</name>
+          <description>Error interrupt status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IntErrClr</name>
+      <description>Interrupt error clear</description>
+      <addressOffset>0x10</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>IntErrClr</name>
+          <description>Clear error interrupt for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RawIntTCStatus</name>
+      <description>Status of the terminal count interrupt prior to masking</description>
+      <addressOffset>0x14</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>RawIntTCStatus</name>
+          <description>Raw terminal count interrupt status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>RawIntErrorStatus</name>
+      <description>Status of the error interrupt prior to masking</description>
+      <addressOffset>0x18</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>RawIntErrorStatus</name>
+          <description>Raw error interrupt status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>EnbldChns</name>
+      <description>Channel enable status</description>
+      <addressOffset>0x1C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>EnabledChannels</name>
+          <description>Enable status for channels 0-7</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SoftBReq</name>
+      <description>Software Burst Request</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>SoftBReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SoftSReq</name>
+      <description>Software Single Request</description>
+      <addressOffset>0x24</addressOffset>
+      <fields>
+        <field>
+          <name>SoftSReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SoftLBReq</name>
+      <description>Software Last Burst Request</description>
+      <addressOffset>0x28</addressOffset>
+      <fields>
+        <field>
+          <name>SoftLBReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SoftLSReq</name>
+      <description>Software Last Single Request</description>
+      <addressOffset>0x2C</addressOffset>
+      <fields>
+        <field>
+          <name>SoftLSReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>Top_Config</name>
+      <description>DMA Top Configuration Register</description>
+      <addressOffset>0x30</addressOffset>
+      <fields>
+        <field>
+          <name>E</name>
+          <description>DMA Controller Enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>M</name>
+          <description>AHB Master endianness: 0=Little, 1=Big</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>Sync</name>
+      <description>DMA Synchronization Register</description>
+      <addressOffset>0x34</addressOffset>
+      <fields>
+        <field>
+          <name>DMA_Sync</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <cluster>
+      <name>CH%s</name>
+      <description>DMA Channel Registers</description>
+      <addressOffset>0x100</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>0x100</dimIncrement>
+      <register>
+        <name>SrcAddr</name>
+        <description>DMA source address</description>
+        <addressOffset>0x00</addressOffset>
+        <fields>
+          <field>
+            <name>SrcAddr</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>DstAddr</name>
+        <description>DMA destination address</description>
+        <addressOffset>0x04</addressOffset>
+        <fields>
+          <field>
+            <name>DstAddr</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>LLI</name>
+        <description>Next linked list item address</description>
+        <addressOffset>0x08</addressOffset>
+        <fields>
+          <field>
+            <name>LLI</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>Control</name>
+        <description>Channel Control Register</description>
+        <addressOffset>0x0C</addressOffset>
+        <resetValue>0x0C489000</resetValue>
+        <fields>
+          <field>
+            <name>TransferSize</name>
+            <description>Total number of transfers</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>12</bitWidth>
+          </field>
+          <field>
+            <name>SBSize</name>
+            <description>Source burst size</description>
+            <bitOffset>12</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>DST_MIN_MODE</name>
+            <bitOffset>14</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>DBSize</name>
+            <description>Destination burst size</description>
+            <bitOffset>15</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>DST_ADD_MODE</name>
+            <bitOffset>17</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>SWidth</name>
+            <description>Source transfer width</description>
+            <bitOffset>18</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>DWidth</name>
+            <description>Destination transfer width</description>
+            <bitOffset>21</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>FIX_CNT</name>
+            <bitOffset>23</bitOffset>
+            <bitWidth>3</bitWidth>
+          </field>
+          <field>
+            <name>SI</name>
+            <description>Source increment</description>
+            <bitOffset>26</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>DI</name>
+            <description>Destination increment</description>
+            <bitOffset>27</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>Prot</name>
+            <description>Protection control</description>
+            <bitOffset>28</bitOffset>
+            <bitWidth>3</bitWidth>
+          </field>
+          <field>
+            <name>I</name>
+            <description>Terminal count interrupt enable</description>
+            <bitOffset>31</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>Config</name>
+        <description>Channel Configuration Register</description>
+        <addressOffset>0x10</addressOffset>
+        <fields>
+          <field>
+            <name>E</name>
+            <description>Channel enable</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>SrcPeripheral</name>
+            <bitOffset>1</bitOffset>
+            <bitWidth>5</bitWidth>
+          </field>
+          <field>
+            <name>DstPeripheral</name>
+            <bitOffset>6</bitOffset>
+            <bitWidth>5</bitWidth>
+          </field>
+          <field>
+            <name>FlowCntrl</name>
+            <description>0:M2M, 1:M2P, 2:P2M, 3:P2P</description>
+            <bitOffset>11</bitOffset>
+            <bitWidth>3</bitWidth>
+          </field>
+          <field>
+            <name>IE</name>
+            <description>Interrupt error mask</description>
+            <bitOffset>14</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>ITC</name>
+            <description>Terminal count interrupt mask</description>
+            <bitOffset>15</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>L</name>
+            <description>Lock</description>
+            <bitOffset>16</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>A</name>
+            <description>Active status</description>
+            <bitOffset>17</bitOffset>
+            <bitWidth>1</bitWidth>
+            <access>read-only</access>
+          </field>
+          <field>
+            <name>H</name>
+            <description>Halt</description>
+            <bitOffset>18</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>LLICounter</name>
+            <bitOffset>20</bitOffset>
+            <bitWidth>10</bitWidth>
+            <access>read-only</access>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>RSVD</name>
+        <description>Channel Reserved Register</description>
+        <addressOffset>0x1C</addressOffset>
+        <fields>
+          <field>
+            <name>DstRemnSgle</name>
+            <bitOffset>3</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>SrcRemnSgle</name>
+            <bitOffset>4</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+        </fields>
+      </register>
+    </cluster>
+  </registers>
+</peripheral>

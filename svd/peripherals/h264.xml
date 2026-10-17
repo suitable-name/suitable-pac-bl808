@@ -1,0 +1,1195 @@
+<peripheral>
+  <name>H264</name>
+  <description>H.264 Video Encoder (VENC) — VIDEO_BASE 0x30022000</description>
+  <groupName>H264</groupName>
+  <baseAddress>0x30022000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES                                                                   -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <!-- D0-CPU interrupt numbers (IRQ_NUM_BASE = 16) -->
+  <interrupt>
+    <name>H264_BS</name>
+    <description>H264 main-stream bitstream interrupt (H264_BS_IRQn = IRQ_NUM_BASE+17)</description>
+    <value>33</value>
+  </interrupt>
+  <interrupt>
+    <name>H264_FRAME</name>
+    <description>H264 main-stream frame-done interrupt (H264_FRAME_IRQn = IRQ_NUM_BASE+18)</description>
+    <value>34</value>
+  </interrupt>
+  <interrupt>
+    <name>H264_SEQ_DONE</name>
+    <description>H264 main-stream sequence-done interrupt (H264_SEQ_DONE_IRQn = IRQ_NUM_BASE+19)</description>
+    <value>35</value>
+  </interrupt>
+  <interrupt>
+    <name>H264_S_BS</name>
+    <description>H264 secondary-stream bitstream interrupt (H264_S_BS_IRQn = IRQ_NUM_BASE+21)</description>
+    <value>37</value>
+  </interrupt>
+  <interrupt>
+    <name>H264_S_FRAME</name>
+    <description>H264 secondary-stream frame-done interrupt (H264_S_FRAME_IRQn = IRQ_NUM_BASE+22)</description>
+    <value>38</value>
+  </interrupt>
+  <interrupt>
+    <name>H264_S_SEQ_DONE</name>
+    <description>H264 secondary-stream sequence-done interrupt (H264_S_SEQ_DONE_IRQn = IRQ_NUM_BASE+23)</description>
+    <value>39</value>
+  </interrupt>
+
+  <registers>
+    <!-- ============================================================ -->
+    <!-- 0x000 : vdo_h264_encoder_ctrl                                -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_ENCODER_CTRL</name>
+      <description>H264 encoder control register</description>
+      <addressOffset>0x000</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_enc_ctrl_mby_idx</name>
+          <description>Current MB row index (debug)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>7</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cfg_core_clk_en</name>
+          <description>Core clock enable</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_zstuf_dis</name>
+          <description>Disable zero-stuffing</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_qr_upd</name>
+          <description>Main-stream QP update trigger</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_qr_upd</name>
+          <description>Secondary-stream QP update trigger</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_mem_clk_en</name>
+          <description>Memory clock enable</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_rc_gop_upd</name>
+          <description>Main-stream rate-control GOP update trigger</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_rc_gop_upd</name>
+          <description>Secondary-stream rate-control GOP update trigger</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_duo_bs_en</name>
+          <description>Dual bitstream (main+secondary) enable</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_buf_clr</name>
+          <description>Main-stream buffer clear</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_buf_clr</name>
+          <description>Secondary-stream buffer clear</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_vdonr_en</name>
+          <description>Main-stream 3D-NR enable</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_vdonr_en</name>
+          <description>Secondary-stream 3D-NR enable</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_bs_status_init</name>
+          <description>Main-stream bitstream status init</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_bs_status_init</name>
+          <description>Secondary-stream bitstream status init</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_src_line_clr</name>
+          <description>Main-stream source line clear</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_src_line_clr</name>
+          <description>Secondary-stream source line clear</description>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_ctrl_mode</name>
+          <description>Controller mode (0=DVP, 1=SW, 2=auto)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cfg_cref_en</name>
+          <description>Main-stream cross-reference enable</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_cref_en</name>
+          <description>Secondary-stream cross-reference enable</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_frame_start</name>
+          <description>Main-stream frame start trigger (SW mode)</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_enc_seq_en</name>
+          <description>Main-stream encoder sequence enable</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_frame_start</name>
+          <description>Secondary-stream frame start trigger (SW mode)</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_enc_seq_en</name>
+          <description>Secondary-stream encoder sequence enable</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x004 : vdo_h264_frame_size  (main stream)                   -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_FRAME_SIZE</name>
+      <description>Main-stream frame resolution (in pixels)</description>
+      <addressOffset>0x004</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_frame_width</name>
+          <description>Frame width in pixels</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>11</bitWidth>
+        </field>
+        <field>
+          <name>cfg_frame_height</name>
+          <description>Frame height in pixels</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>11</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x008 : vdo_h264_frame_base_addr_y                           -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_FRAME_BASE_ADDR_Y</name>
+      <description>Main-stream source Y frame buffer base address</description>
+      <addressOffset>0x008</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_frame_base_addr_y</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x00C : vdo_h264_frame_base_addr_uv                          -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_FRAME_BASE_ADDR_UV</name>
+      <description>Main-stream source UV frame buffer base address</description>
+      <addressOffset>0x00C</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_frame_base_addr_uv</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x010 : vdo_h264_bs_base_addr                                -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_BS_BASE_ADDR</name>
+      <description>Main-stream bitstream output buffer base address</description>
+      <addressOffset>0x010</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_bs_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x014 : vdo_h264_lb_base_addr                                -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_LB_BASE_ADDR</name>
+      <description>Main-stream line-buffer base address</description>
+      <addressOffset>0x014</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_lb_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x018 : vdo_h264_bs_size                                     -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_BS_SIZE</name>
+      <description>Main-stream bitstream output buffer size (bytes)</description>
+      <addressOffset>0x018</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_bs_size</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x01C : vdo_h264_bs_full_thr                                 -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_BS_FULL_THR</name>
+      <description>Main-stream bitstream buffer full threshold</description>
+      <addressOffset>0x01C</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_bs_full_thr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x024 : vdo_core_reg0                                        -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_CORE_REG0</name>
+      <description>Core control: encoder enable, VUI settings, IDR</description>
+      <addressOffset>0x024</addressOffset>
+      <fields>
+        <field>
+          <name>enc_en</name>
+          <description>Main-stream encoder enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>vui_aspect_info</name>
+          <description>Main VUI aspect ratio info present</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>vui_fixed_f_rate</name>
+          <description>Main VUI fixed frame-rate flag</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>vui_timing_info</name>
+          <description>Main VUI timing info present</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>idr_enable</name>
+          <description>Main-stream IDR enable</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_enc_en</name>
+          <description>Secondary-stream encoder enable</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_vui_aspect_info</name>
+          <description>Secondary VUI aspect ratio info present</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_vui_fixed_f_rate</name>
+          <description>Secondary VUI fixed frame-rate flag</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_vui_timing_info</name>
+          <description>Secondary VUI timing info present</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_idr_enable</name>
+          <description>Secondary-stream IDR enable</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x030 : vdo_core_reg3  — target I-QP                         -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_CORE_REG3</name>
+      <description>Target I-frame QP for both streams</description>
+      <addressOffset>0x030</addressOffset>
+      <fields>
+        <field>
+          <name>target_i_qp</name>
+          <description>Main-stream target I-frame QP (0-51)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>s_target_i_qp</name>
+          <description>Secondary-stream target I-frame QP (0-51)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x038 : vdo_core_reg5  — target P-QP                         -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_CORE_REG5</name>
+      <description>Target P-frame QP for both streams</description>
+      <addressOffset>0x038</addressOffset>
+      <fields>
+        <field>
+          <name>target_p_qp</name>
+          <description>Main-stream target P-frame QP (0-51)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>s_target_p_qp</name>
+          <description>Secondary-stream target P-frame QP (0-51)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x054 : vdo_core_reg12  — profile IDC                        -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_CORE_REG12</name>
+      <description>H.264 profile IDC for both streams (0=Baseline, 1=Main)</description>
+      <addressOffset>0x054</addressOffset>
+      <fields>
+        <field>
+          <name>profile_idc</name>
+          <description>Main-stream profile IDC</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_profile_idc</name>
+          <description>Secondary-stream profile IDC</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x080 : vdo_core_reg23  — num_imb_bits / I-frame bit target  -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_CORE_REG23</name>
+      <description>I-frame macroblock bit count and NAL/prediction options</description>
+      <addressOffset>0x080</addressOffset>
+      <fields>
+        <field>
+          <name>num_imb_bits</name>
+          <description>Main-stream target I-MB bit count (CBR)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>nal_align</name>
+          <description>Main-stream NAL alignment enable</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cons_ipred</name>
+          <description>Main-stream constrained intra prediction</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_num_imb_bits</name>
+          <description>Secondary-stream target I-MB bit count (CBR)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>s_nal_align</name>
+          <description>Secondary-stream NAL alignment enable</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_cons_ipred</name>
+          <description>Secondary-stream constrained intra prediction</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x100 : vdo_int — interrupt status                            -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_INT</name>
+      <description>Video encoder interrupt status register</description>
+      <addressOffset>0x100</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frm_done_int</name>
+          <description>Main-stream frame done interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_frm_done_int</name>
+          <description>Secondary-stream frame done interrupt</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>seq_done_int</name>
+          <description>Main-stream sequence done interrupt</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_seq_done_int</name>
+          <description>Secondary-stream sequence done interrupt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>bs_full_int</name>
+          <description>Main-stream bitstream buffer full interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_bs_full_int</name>
+          <description>Secondary-stream bitstream buffer full interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x104 : vdo_int_clr — interrupt clear                         -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_INT_CLR</name>
+      <description>Video encoder interrupt clear register (write 1 to clear)</description>
+      <addressOffset>0x104</addressOffset>
+      <access>write-only</access>
+      <modifiedWriteValues>oneToClear</modifiedWriteValues>
+      <fields>
+        <field>
+          <name>frm_done_int_clr</name>
+          <description>Clear main-stream frame done interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_frm_done_int_clr</name>
+          <description>Clear secondary-stream frame done interrupt</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>seq_done_int_clr</name>
+          <description>Clear main-stream sequence done interrupt</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_seq_done_int_clr</name>
+          <description>Clear secondary-stream sequence done interrupt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>bs_full_int_clr</name>
+          <description>Clear main-stream bitstream full interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_bs_full_int_clr</name>
+          <description>Clear secondary-stream bitstream full interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x108 : vdo_int_mask — interrupt mask                         -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_INT_MASK</name>
+      <description>Video encoder interrupt mask register (1=masked)</description>
+      <addressOffset>0x108</addressOffset>
+      <fields>
+        <field>
+          <name>frm_done_int_mask</name>
+          <description>Mask main-stream frame done interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_frm_done_int_mask</name>
+          <description>Mask secondary-stream frame done interrupt</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>seq_done_int_mask</name>
+          <description>Mask main-stream sequence done interrupt</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_seq_done_int_mask</name>
+          <description>Mask secondary-stream sequence done interrupt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>bs_full_int_mask</name>
+          <description>Mask main-stream bitstream full interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_bs_full_int_mask</name>
+          <description>Mask secondary-stream bitstream full interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x10C : vdo_total_bytecount                                   -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_TOTAL_BYTECOUNT</name>
+      <description>Main-stream total bitstream byte count</description>
+      <addressOffset>0x10C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>bs_tot_bycnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x110 : vdo_frame_bytecount                                   -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_FRAME_BYTECOUNT</name>
+      <description>Main-stream per-frame bitstream byte count</description>
+      <addressOffset>0x110</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>bs_frm_bycnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x14C : vdo_h264_s_frame_size  (secondary stream)            -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_FRAME_SIZE</name>
+      <description>Secondary-stream frame resolution (in pixels)</description>
+      <addressOffset>0x14C</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_frame_width</name>
+          <description>Secondary frame width in pixels</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>11</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_frame_height</name>
+          <description>Secondary frame height in pixels</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>11</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x150 : vdo_h264_s_frame_base_addr_y                         -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_FRAME_BASE_ADDR_Y</name>
+      <description>Secondary-stream source Y frame buffer base address</description>
+      <addressOffset>0x150</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_frame_base_addr_y</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x154 : vdo_h264_s_frame_base_addr_uv                        -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_FRAME_BASE_ADDR_UV</name>
+      <description>Secondary-stream source UV frame buffer base address</description>
+      <addressOffset>0x154</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_frame_base_addr_uv</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x160 : vdo_h264_s_bs_base_addr                              -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_BS_BASE_ADDR</name>
+      <description>Secondary-stream bitstream output buffer base address</description>
+      <addressOffset>0x160</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_bs_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x168 : vdo_h264_s_bs_size                                   -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_BS_SIZE</name>
+      <description>Secondary-stream bitstream output buffer size (bytes)</description>
+      <addressOffset>0x168</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_bs_size</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x178 : vdo_s_total_bytecount                                 -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_S_TOTAL_BYTECOUNT</name>
+      <description>Secondary-stream total bitstream byte count</description>
+      <addressOffset>0x178</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>s_bs_tot_bycnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x17C : vdo_s_frame_bytecount                                 -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_S_FRAME_BYTECOUNT</name>
+      <description>Secondary-stream per-frame bitstream byte count</description>
+      <addressOffset>0x17C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>s_bs_frm_bycnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x184 : vdo_src_sta_clr                                       -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_SRC_STA_CLR</name>
+      <description>Source buffer overflow status clear register</description>
+      <addressOffset>0x184</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>src_uv_wovr_clr</name>
+          <description>Clear source UV write overflow flag</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>src_y_wovr_clr</name>
+          <description>Clear source Y write overflow flag</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_src_uv_wovr_clr</name>
+          <description>Clear secondary source UV write overflow flag</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_src_y_wovr_clr</name>
+          <description>Clear secondary source Y write overflow flag</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x188 : vdo_src_ctrl                                          -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_SRC_CTRL</name>
+      <description>Video source buffer and timing control</description>
+      <addressOffset>0x188</addressOffset>
+      <fields>
+        <field>
+          <name>frm_buf_num</name>
+          <description>Number of source frame buffers</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>mfrm_buf_en</name>
+          <description>Multiple frame buffer mode enable</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>req_period</name>
+          <description>Source request period</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>no_wait_1st_vsync</name>
+          <description>Do not wait for first VSYNC before starting</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_frm_buf_num</name>
+          <description>Secondary stream number of source frame buffers</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>s_mfrm_buf_en</name>
+          <description>Secondary stream multiple frame buffer mode enable</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>s_req_period</name>
+          <description>Secondary stream source request period</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>s_no_wait_1st_vsync</name>
+          <description>Secondary stream do not wait for first VSYNC</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x18C–0x1A4 : main-stream reference frame addresses           -->
+    <!-- ref0: Y=0x18C, U=0x190, V=0x194                              -->
+    <!-- ref1: Y=0x198, U=0x19C, V=0x1A0                              -->
+    <!-- ext:      0x1A4                                               -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_REFY0_BASE_ADDR</name>
+      <description>Main-stream reference frame 0 Y base address</description>
+      <addressOffset>0x18C</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refy0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_REFU0_BASE_ADDR</name>
+      <description>Main-stream reference frame 0 U base address</description>
+      <addressOffset>0x190</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refu0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_REFV0_BASE_ADDR</name>
+      <description>Main-stream reference frame 0 V base address</description>
+      <addressOffset>0x194</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refv0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_REFY1_BASE_ADDR</name>
+      <description>Main-stream reference frame 1 Y base address</description>
+      <addressOffset>0x198</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refy1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_REFU1_BASE_ADDR</name>
+      <description>Main-stream reference frame 1 U base address</description>
+      <addressOffset>0x19C</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refu1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_REFV1_BASE_ADDR</name>
+      <description>Main-stream reference frame 1 V base address</description>
+      <addressOffset>0x1A0</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_refv1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_EXT_BASE_ADDR</name>
+      <description>Main-stream external data base address</description>
+      <addressOffset>0x1A4</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_ext_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x1A8–0x1C0 : secondary-stream reference frame addresses      -->
+    <!-- s_ref0: Y=0x1A8, U=0x1AC, V=0x1B0                           -->
+    <!-- s_ref1: Y=0x1B4, U=0x1B8, V=0x1BC                           -->
+    <!-- s_ext:      0x1C0                                             -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_S_REFY0_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 0 Y base address</description>
+      <addressOffset>0x1A8</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refy0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_REFU0_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 0 U base address</description>
+      <addressOffset>0x1AC</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refu0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_REFV0_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 0 V base address</description>
+      <addressOffset>0x1B0</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refv0_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_REFY1_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 1 Y base address</description>
+      <addressOffset>0x1B4</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refy1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_REFU1_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 1 U base address</description>
+      <addressOffset>0x1B8</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refu1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_REFV1_BASE_ADDR</name>
+      <description>Secondary-stream reference frame 1 V base address</description>
+      <addressOffset>0x1BC</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_refv1_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>VDO_H264_S_EXT_BASE_ADDR</name>
+      <description>Secondary-stream external data base address</description>
+      <addressOffset>0x1C0</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_s_ext_base_addr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x240 : vdo_h264_hwback_mode                                  -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_HWBACK_MODE</name>
+      <description>H264 hardware back-write mode control</description>
+      <addressOffset>0x240</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_sramck_mode</name>
+          <description>SRAM clock mode (0=new, 1=old)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_nal_mp_mode</name>
+          <description>Main-stream NAL multiple-partition mode</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cfg_s_nal_mp_mode</name>
+          <description>Secondary-stream NAL multiple-partition mode</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x244 : vdo_h264_roi_mode                                     -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_ROI_MODE</name>
+      <description>ROI mode control: enable bits and update trigger</description>
+      <addressOffset>0x244</addressOffset>
+      <fields>
+        <field>
+          <name>cfg_roi_en</name>
+          <description>ROI enable bits (one bit per ROI region, 8 regions)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cfg_roi_upd</name>
+          <description>ROI configuration update trigger</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- ============================================================ -->
+    <!-- 0x254–0x270 : vdo_h264_roi0–roi7                             -->
+    <!-- Each ROI: MBX_S[6:0] MBX_E[14:8] MBY_S[22:16] MBY_E[30:24] -->
+    <!-- dimIncrement = 0x4 (ROIs are contiguous 4-byte registers)    -->
+    <!-- ============================================================ -->
+    <register>
+      <name>VDO_H264_ROI%s</name>
+      <description>ROI %s macroblock coordinate bounds (MBX_S/E, MBY_S/E)</description>
+      <addressOffset>0x254</addressOffset>
+      <dim>8</dim>
+      <dimIncrement>0x4</dimIncrement>
+      <dimIndex>0-7</dimIndex>
+      <fields>
+        <field>
+          <name>mbx_s</name>
+          <description>Start macroblock column (X)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>7</bitWidth>
+        </field>
+        <field>
+          <name>mbx_e</name>
+          <description>End macroblock column (X)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>7</bitWidth>
+        </field>
+        <field>
+          <name>mby_s</name>
+          <description>Start macroblock row (Y)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>7</bitWidth>
+        </field>
+        <field>
+          <name>mby_e</name>
+          <description>End macroblock row (Y)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>7</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

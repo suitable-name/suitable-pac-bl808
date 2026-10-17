@@ -1,0 +1,412 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `i2s_reg.h`. Covers the functional configuration, interrupt management, clocking, and FIFO banks.                                                                                                                                                                 |
+| **TDM/PCM Support**    | **FULL**  | Integrated `cr_fs_ch_cnt` (0x0) for up to 6-channel support and `cr_ofs_cnt` (0x0) for TDM slot offsetting.                                                                                                                                                                           |
+| **Interrupts**         | **FULL**  | Detailed bitfield mapping for Status, Mask, and Enable for TX FIFO, RX FIFO, and FIFO Error (FER).                                                                                                                                                                                     |
+| **FIFO Advanced**      | **FULL**  | Integrated `cr_fifo_lr_merge`, `cr_fifo_lr_exchg`, and `cr_fifo_24b_lj` at 0x80. These handle modern audio packing and swap requirements.                                                                                                                                                |
+| **Signal Polarity**    | **FULL**  | Added `I2S_IO_CONFIG` (0xFC) which provides inversion control for all four I2S signals and hardware deglitch logic.                                                                                                                                                                   |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct i2s_reg` bitfield annotations.                                                                                                                                                                                               |
+| **Base Address**       | Explicit | 0x2000AB00.                                                                                                                                                                                                                                                                           |
+-->
+<peripheral>
+  <name>I2S</name>
+  <description>Inter-IC Sound / PCM Controller</description>
+  <groupName>I2S</groupName>
+  <baseAddress>0x2000AB00</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x100</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>I2S</name>
+    <description>I2S Interrupt</description>
+    <value>56</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>I2S_CONFIG</name>
+      <description>I2S Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x00005000</resetValue>
+      <fields>
+        <field>
+          <name>cr_i2s_m_en</name>
+          <description>I2S Master mode enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_s_en</name>
+          <description>I2S Slave mode enable</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_txd_en</name>
+          <description>I2S TX enable</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_rxd_en</name>
+          <description>I2S RX enable</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_mono_mode</name>
+          <description>Mono mode enable: 0:Stereo, 1:Mono</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_mute_mode</name>
+          <description>Mute mode enable</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_fs_1t_mode</name>
+          <description>FS pulse width mode: 0:Slot, 1:1 BCLK</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_fs_ch_cnt</name>
+          <description>FS channel count: 0:2ch, 1:3ch, 2:4ch, 3:6ch</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_frame_size</name>
+          <description>Frame size (cycles per channel): 0:8, 1:16, 2:24, 3:32</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_data_size</name>
+          <description>Data size: 0:8, 1:16, 2:24, 3:32</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_mode</name>
+          <description>I2S mode: 0:Left-Justified, 1:Right-Justified, 2:DSP</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_endian</name>
+          <description>Endianness: 0:MSB first, 1:LSB first</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_mono_rx_ch</name>
+          <description>Mono RX channel selection: 0:Left, 1:Right</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_ofs_cnt</name>
+          <description>Data offset cycle count</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>cr_ofs_en</name>
+          <description>Data offset enable</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_INT_STS</name>
+      <description>I2S Interrupt Status Register</description>
+      <addressOffset>0x04</addressOffset>
+      <resetValue>0x07000701</resetValue>
+      <fields>
+        <field>
+          <name>i2s_txf_int</name>
+          <description>TX FIFO request interrupt status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2s_rxf_int</name>
+          <description>RX FIFO request interrupt status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2s_fer_int</name>
+          <description>FIFO error interrupt status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_i2s_txf_mask</name>
+          <description>TX FIFO interrupt mask</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_rxf_mask</name>
+          <description>RX FIFO interrupt mask</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_fer_mask</name>
+          <description>FIFO error interrupt mask</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_txf_en</name>
+          <description>TX FIFO interrupt enable</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_rxf_en</name>
+          <description>RX FIFO interrupt enable</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_fer_en</name>
+          <description>FIFO error interrupt enable</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_BCLK_CONFIG</name>
+      <description>BCLK Divider Configuration</description>
+      <addressOffset>0x10</addressOffset>
+      <resetValue>0x00010001</resetValue>
+      <fields>
+        <field>
+          <name>cr_bclk_div_l</name>
+          <description>BCLK low period cycles</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>cr_bclk_div_h</name>
+          <description>BCLK high period cycles</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_FIFO_CONFIG_0</name>
+      <description>I2S FIFO Configuration Register 0</description>
+      <addressOffset>0x80</addressOffset>
+      <fields>
+        <field>
+          <name>i2s_dma_tx_en</name>
+          <description>TX DMA enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>i2s_dma_rx_en</name>
+          <description>RX DMA enable</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_fifo_clr</name>
+          <description>Clear TX FIFO</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>rx_fifo_clr</name>
+          <description>Clear RX FIFO</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>tx_fifo_overflow</name>
+          <description>TX FIFO overflow status</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_underflow</name>
+          <description>TX FIFO underflow status</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_overflow</name>
+          <description>RX FIFO overflow status</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_underflow</name>
+          <description>RX FIFO underflow status</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_fifo_lr_merge</name>
+          <description>FIFO L/R data merge enable</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_fifo_lr_exchg</name>
+          <description>FIFO L/R data exchange enable</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_fifo_24b_lj</name>
+          <description>FIFO 24-bit Left-Justified mode</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_FIFO_CONFIG_1</name>
+      <description>I2S FIFO Status and Threshold Register</description>
+      <addressOffset>0x84</addressOffset>
+      <resetValue>0x00000010</resetValue>
+      <fields>
+        <field>
+          <name>tx_fifo_cnt</name>
+          <description>TX FIFO data count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_cnt</name>
+          <description>RX FIFO data count</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>5</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_th</name>
+          <description>TX FIFO threshold</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>rx_fifo_th</name>
+          <description>RX FIFO threshold</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_FIFO_WDATA</name>
+      <description>I2S FIFO Write Data</description>
+      <addressOffset>0x88</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>i2s_fifo_wdata</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_FIFO_RDATA</name>
+      <description>I2S FIFO Read Data</description>
+      <addressOffset>0x8C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>i2s_fifo_rdata</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2S_IO_CONFIG</name>
+      <description>I2S Pin Configuration Register</description>
+      <addressOffset>0xFC</addressOffset>
+      <fields>
+        <field>
+          <name>cr_i2s_txd_inv</name>
+          <description>TXD signal inversion</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_rxd_inv</name>
+          <description>RXD signal inversion</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_fs_inv</name>
+          <description>FS signal inversion</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2s_bclk_inv</name>
+          <description>BCLK signal inversion</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_deg_cnt</name>
+          <description>Deglitch cycle count</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>cr_deg_en</name>
+          <description>Deglitch enable</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

@@ -1,0 +1,594 @@
+<peripheral>
+  <name>MM_GLB</name>
+  <description>Multimedia Global Configuration (D0 Core Domain)</description>
+  <groupName>MM_GLB</groupName>
+  <baseAddress>0x30007000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <interrupt>
+    <name>BMX_DSP_BUS_ERR</name>
+    <value>16</value>
+  </interrupt>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <registers>
+    <register>
+      <name>MM_CLK_CTRL_CPU</name>
+      <description>Multimedia CPU Clock Control</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x0510000F</resetValue>
+      <fields>
+        <field>
+          <name>reg_pll_en</name>
+          <description>Enable Multimedia PLL</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_cpu_clk_en</name>
+          <description>Enable D0 CPU clock</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_bclk_en</name>
+          <description>Enable MM bus clock</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mm_cpu_clk_en</name>
+          <description>Enable MM Subsystem CPU clock</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_uart_clk_sel</name>
+          <description>MM UART clock source selection</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_i2c_clk_sel</name>
+          <description>MM I2C clock source selection</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_spi_clk_sel</name>
+          <description>MM SPI clock source selection</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_cpu_clk_sel</name>
+          <description>D0 CPU clock source selection</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_xclk_clk_sel</name>
+          <description>XCLK selection</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_cpu_root_clk_sel</name>
+          <description>CPU root clock selection</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mmcpu0_clk_en</name>
+          <description>Enable MM CPU0 clock</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_bclk1x_sel</name>
+          <description>BCLK 1X selection</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_bclk2x_div_act_pulse</name>
+          <description>Write 1 to trigger BCLK2X divider update</description>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>reg_bclk2x_div_bypass</name>
+          <description>Bypass BCLK2X divider</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_bclk2x_prot_done</name>
+          <description>BCLK2X protection done status</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>reg_bclk2x_sw_done_cnt</name>
+          <description>Software done count for BCLK2X</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>cpu_clk_sw_state</name>
+          <description>CPU clock switch FSM state</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>3</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MM_CLK_CPU</name>
+      <description>Multimedia CPU and CNN Clock Dividers</description>
+      <addressOffset>0x04</addressOffset>
+      <resetValue>0x00000100</resetValue>
+      <fields>
+        <field>
+          <name>reg_cpu_clk_div</name>
+          <description>CPU clock divider factor</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_cnn_clk_div_en</name>
+          <description>Enable CNN clock divider</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_cnn_clk_sel</name>
+          <description>CNN clock selection</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_cnn_clk_div</name>
+          <description>CNN clock divider factor</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_bclk2x_div</name>
+          <description>BCLK 2X divider factor</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_bclk1x_div</name>
+          <description>BCLK 1X divider factor</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DP_CLK</name>
+      <description>Display and Pixel Clock Configuration</description>
+      <addressOffset>0x08</addressOffset>
+      <resetValue>0x00010000</resetValue>
+      <fields>
+        <field>
+          <name>reg_dp_clk_div_en</name>
+          <description>Display Port clock divider enable</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dp_clk_sel</name>
+          <description>Display Port clock selection</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_dp_clk_div</name>
+          <description>Display Port clock divider factor</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_CLK</name>
+      <description>Codec/H264 Clock Configuration</description>
+      <addressOffset>0x0C</addressOffset>
+      <resetValue>0x00000100</resetValue>
+      <fields>
+        <field>
+          <name>reg_h264_clk_div_en</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_h264_clk_sel</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_h264_clk_div</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MM_CLK_CTRL_PERI</name>
+      <description>MM Peripheral Clock Control 0</description>
+      <addressOffset>0x10</addressOffset>
+      <resetValue>0x00810300</resetValue>
+      <fields>
+        <field>
+          <name>reg_i2c0_clk_div</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_i2c0_clk_div_en</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_i2c0_clk_en</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_uart0_clk_div_en</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_uart0_clk_div</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_spi_clk_div_en</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_spi_clk_div</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MM_CLK_CTRL_PERI3</name>
+      <description>MM Peripheral Clock Control 1</description>
+      <addressOffset>0x18</addressOffset>
+      <resetValue>0x00010300</resetValue>
+      <fields>
+        <field>
+          <name>reg_i2c1_clk_div</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_i2c1_clk_div_en</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_i2c1_clk_en</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_uart1_clk_div_en</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_uart1_clk_div</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MM_SW_SYS_RESET</name>
+      <description>Multimedia System Reset Control</description>
+      <addressOffset>0x40</addressOffset>
+      <resetValue>0x00000100</resetValue>
+      <fields>
+        <field>
+          <name>reg_ctrl_sys_reset</name>
+          <description>Multimedia system software reset</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_ctrl_pwron_rst</name>
+          <description>Multimedia power-on reset</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_ctrl_mmcpu0_reset</name>
+          <description>Multimedia CPU0 software reset</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SW_RESET_MM_PERI</name>
+      <description>MM Peripheral Software Reset</description>
+      <addressOffset>0x44</addressOffset>
+      <fields>
+        <field>
+          <name>swrst_mm_misc</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dma</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_uart0</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_i2c0</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_i2c1</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_ipc</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dma2d</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_spi</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_timer</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_i2s0</name>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_i2s1</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_pdm0</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_pdm1</name>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_uart1</name>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_puhs</name>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SW_RESET_SUB</name>
+      <description>MM Subsystem Software Reset</description>
+      <addressOffset>0x48</addressOffset>
+      <fields>
+        <field>
+          <name>swrst_misc</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_main</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_tsrc</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dp_tsrc</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_nr3d_ctrl</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busA</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busB</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busC</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busD</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_mipi</name>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_reg</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busE</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busF</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busG</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_dvp2busH</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SW_RESET_CODEC_SUB</name>
+      <description>Codec Subsystem Software Reset</description>
+      <addressOffset>0x4C</addressOffset>
+      <fields>
+        <field>
+          <name>swrst_codec_misc</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_mjpeg</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_h264</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_mjpeg_dec</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_cnn</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>swrst_vram</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IMAGE_SENSOR_CTRL</name>
+      <description>Image Sensor Reset Control</description>
+      <addressOffset>0x50</addressOffset>
+      <resetValue>0x00000001</resetValue>
+      <fields>
+        <field>
+          <name>rg_is_rst_n</name>
+          <description>Image sensor hardware reset (Active Low)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TZ_MM_CLKRST</name>
+      <description>TrustZone MM Clock/Reset Lock Status</description>
+      <addressOffset>0x60</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tzc_mm_swrst_lock</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tzc_mm_sys_reset_lock</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tzc_mm_pwron_rst_lock</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tzc_mm_cpu0_reset_lock</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tzc_mm_clk_lock</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

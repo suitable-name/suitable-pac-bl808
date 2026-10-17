@@ -1,0 +1,857 @@
+<peripheral>
+    <name>MM_MISC</name>
+    <description>Multimedia Miscellaneous Controller (D0 Core Configuration, BERR, SRAM/VRAM Control)</description>
+    <groupName>MM_MISC</groupName>
+    <baseAddress>0x30000000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x200</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+
+    <registers>
+        <register>
+            <name>CPU0_BOOT</name>
+            <description>D0 Core (C906) Boot Vector Address</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x3EFF0000</resetValue>
+            <fields>
+                <field>
+                    <name>reg_cpu0_rvba</name>
+                    <description>RISC-V Reset Vector Base Address for D0 core. Determines where the C906 starts execution after reset.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_CFG</name>
+            <description>D0 Core Configuration and Reset Control</description>
+            <addressOffset>0x08</addressOffset>
+            <resetValue>0x0000001C</resetValue>
+            <fields>
+                <field>
+                    <name>reg_cpu0_apb_base</name>
+                    <description>D0 APB base address pointer for core-local peripherals.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>13</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_ndm_rstn_en</name>
+                    <description>D0 Non-Debug Mode Reset Enable.</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_hart_rstn_en</name>
+                    <description>D0 Core HART Reset Enable.</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_STS1</name>
+            <description>D0 Core Status Register 1 (Halt and LPMD)</description>
+            <addressOffset>0x0C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>cpu0_lpmd_b</name>
+                    <description>D0 Low Power Mode Status bits from C906 core.</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_retire_pc_39_32</name>
+                    <description>Upper bits [39:32] of the Program Counter at the last retire or exception point.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_retire</name>
+                    <description>D0 Core instruction retire status.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_pad_halted</name>
+                    <description>D0 Core debug halted status.</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_ndm_rstn_req</name>
+                    <description>Non-Debug Mode reset request status.</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cpu0_hart_rstn_req</name>
+                    <description>HART reset request status.</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_STS2</name>
+            <description>D0 Core Status Register 2 (Program Counter Low Word)</description>
+            <addressOffset>0x10</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>cpu0_retire_pc_31_0</name>
+                    <description>Lower bits [31:0] of the Program Counter at the last retire or exception point.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CPU_RTC</name>
+            <description>D0 Core (C906) RTC Clock Configuration</description>
+            <addressOffset>0x18</addressOffset>
+            <fields>
+                <field>
+                    <name>c906_rtc_div</name>
+                    <description>C906 Real-Time Clock divider factor.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>c906_rtc_rst</name>
+                    <description>C906 RTC software reset.</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>c906_rtc_en</name>
+                    <description>C906 RTC clock enable.</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MMSYS_MISC</name>
+            <description>Multimedia TrustZone and SRAM Protection Status</description>
+            <addressOffset>0x1C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>tzc_mm_cpu0_lock</name>
+                    <description>TrustZone lock status for the D0 core domain.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_sram_lock</name>
+                    <description>TrustZone lock status for the Multimedia SRAM regions.</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PERI_APB_CTRL</name>
+            <description>Multimedia Peripheral APB and Bus Error Control</description>
+            <addressOffset>0x20</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mminfra_berr_int_en</name>
+                    <description>Enable interrupt for Multimedia Infrastructure Bus Errors.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_berr_int_en</name>
+                    <description>Enable general Bus Error interrupt.</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_codec_berr_int_en</name>
+                    <description>Enable CODEC subsystem Bus Error interrupt.</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mmcpu_berr_int_en</name>
+                    <description>Enable MM CPU Bus Error interrupt.</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mm_x2hs_sp_bypass</name>
+                    <description>Bypass MM AXI to AHB single port bridge.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>rg_pclk_force_on</name>
+                    <description>Force Peripheral PCLK active (16-bit mask for various blocks).</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INFRA_QOS_CTRL</name>
+            <description>Multimedia Infrastructure Quality-of-Service (QoS) Control</description>
+            <addressOffset>0x2C</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mmcpu0_awqos</name>
+                    <description>D0 core AXI write transaction QoS priority.</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mmcpu0_arqos</name>
+                    <description>D0 core AXI read transaction QoS priority.</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_h_wthre_mm2conn</name>
+                    <description>MM to Connectivity bus write threshold configuration.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_h_wthre_conn2mm</name>
+                    <description>Connectivity to MM bus write threshold configuration.</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x_wthre_mmhw2pA</name>
+                    <description>MM hardware to P-AXI write threshold.</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x_wthre_mmhw2ext</name>
+                    <description>MM hardware to External bus write threshold.</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x_wthre_pUHS</name>
+                    <description>Peripheral UHS bus write threshold.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DMA_CLK_CTRL</name>
+            <description>Multimedia DMA Clock Gating Control</description>
+            <addressOffset>0x40</addressOffset>
+            <resetValue>0x000000FF</resetValue>
+            <fields>
+                <field>
+                    <name>dma_clk_en</name>
+                    <description>Enable clocks for DMA channels 0-7.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>VRAM_CTRL</name>
+            <description>VRAM and Multimedia SRAM Partition Control</description>
+            <addressOffset>0x50</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_sysram_set</name>
+                    <description>Trigger system RAM partition updates.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>reg_h2pf_sram_rel</name>
+                    <description>Release H2PF SRAM partitions.</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_vram_sram_rel</name>
+                    <description>Release VRAM SRAM partition.</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sub_sram_rel</name>
+                    <description>Release Subsystem SRAM partition.</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_blai_sram_rel</name>
+                    <description>Release BLAI (NPU) SRAM partition.</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_h2pf_sram_sel</name>
+                    <description>Current H2PF SRAM partition selection status.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_vram_sram_sel</name>
+                    <description>Current VRAM SRAM partition selection status.</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_sub_sram_sel</name>
+                    <description>Current Subsystem SRAM partition selection status.</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_blai_sram_sel</name>
+                    <description>Current BLAI (NPU) SRAM partition selection status.</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>SRAM_PARM</name>
+            <description>SRAM Power and DVS (Dynamic Voltage Scaling) Parameters</description>
+            <addressOffset>0x60</addressOffset>
+            <resetValue>0x0C0C0C0C</resetValue>
+            <fields>
+                <field>
+                    <name>reg_sram_cpu_ram_dvs</name>
+                    <description>CPU RAM DVS target.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_cpu_ram_dvse</name>
+                    <description>CPU RAM DVS enable.</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_cpu_ram_nap</name>
+                    <description>CPU RAM Nap mode enable.</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_l2ram_dvs</name>
+                    <description>L2 RAM DVS target.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_l2ram_dvse</name>
+                    <description>L2 RAM DVS enable.</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_l2ram_nap</name>
+                    <description>L2 RAM Nap mode enable.</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_cdc_ram_dvs</name>
+                    <description>Codec RAM DVS target.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_cdc_ram_dvse</name>
+                    <description>Codec RAM DVS enable.</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_cdc_ram_nap</name>
+                    <description>Codec RAM Nap mode enable.</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_sub_ram_dvs</name>
+                    <description>Subsystem RAM DVS target.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_sub_ram_dvse</name>
+                    <description>Subsystem RAM DVS enable.</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_sram_sub_ram_nap</name>
+                    <description>Subsystem RAM Nap mode enable.</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_STA0</name>
+            <description>Multimedia Interrupt Status Register 0</description>
+            <addressOffset>0xA0</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>mm_int_sta0</name>
+                    <description>Active status of MM interrupts 0-31 before masking.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_MASK0</name>
+            <description>Multimedia Interrupt Mask Register 0</description>
+            <addressOffset>0xA4</addressOffset>
+            <fields>
+                <field>
+                    <name>mm_int_mask0</name>
+                    <description>Interrupt mask for MM sources 0-31. 0: Masked, 1: Enabled.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_CLR_0</name>
+            <description>Multimedia Interrupt Clear Register 0</description>
+            <addressOffset>0xA8</addressOffset>
+            <access>write-only</access>
+            <modifiedWriteValues>oneToClear</modifiedWriteValues>
+            <fields>
+                <field>
+                    <name>mm_int_clr0</name>
+                    <description>Write 1 to clear corresponding MM interrupt bits 0-31.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_STA1</name>
+            <description>Multimedia Interrupt Status Register 1</description>
+            <addressOffset>0xAC</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>mm_int_sta1</name>
+                    <description>Active status of MM interrupts 32-63 before masking.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_MASK1</name>
+            <description>Multimedia Interrupt Mask Register 1</description>
+            <addressOffset>0xB0</addressOffset>
+            <fields>
+                <field>
+                    <name>mm_int_mask1</name>
+                    <description>Interrupt mask for MM sources 32-63. 0: Masked, 1: Enabled.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_INT_CLR_1</name>
+            <description>Multimedia Interrupt Clear Register 1</description>
+            <addressOffset>0xB4</addressOffset>
+            <access>write-only</access>
+            <modifiedWriteValues>oneToClear</modifiedWriteValues>
+            <fields>
+                <field>
+                    <name>mm_int_clr1</name>
+                    <description>Write 1 to clear corresponding MM interrupt bits 32-63.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MMSYS_DEBUG_SEL</name>
+            <description>Multimedia System Debug Bus Select</description>
+            <addressOffset>0xF0</addressOffset>
+            <fields>
+                <field>
+                    <name>mmsys_debug_sel</name>
+                    <description>Select which debug signal group to route to the MM system debug bus.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MMSYS_MISC_DUMMY</name>
+            <description>Multimedia System Miscellaneous IO and Debug Dummy Control</description>
+            <addressOffset>0xFC</addressOffset>
+            <resetValue>0x0FFF0000</resetValue>
+            <fields>
+                <field>
+                    <name>PIR_ctrl_o</name>
+                    <description>Passive Infra-Red (PIR) sensor control output signal.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>Light_sensor_ctrl_o</name>
+                    <description>Ambient light sensor control output signal.</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>IR_cut_ctrl_o</name>
+                    <description>Infrared (IR) Cut filter mechanical control signal.</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dvp_sensor_pwdn</name>
+                    <description>DVP Image Sensor Power-Down control output.</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dummy_reg</name>
+                    <description>General purpose dummy bits for software/hardware handshaking.</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>28</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DDR_DEBUG</name>
+            <description>DDR Calibration Status</description>
+            <addressOffset>0x100</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>ddr_calib_done</name>
+                    <description>DDR PHY calibration complete status.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG0</name>
+            <description>Multimedia Bus Error Enable Register</description>
+            <addressOffset>0x140</addressOffset>
+            <resetValue>0x1F010707</resetValue>
+            <fields>
+                <field>
+                    <name>reg_berr_en</name>
+                    <description>Enable main bus error monitoring.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>reg_codec_berr_en</name>
+                    <description>Enable CODEC bus error monitoring.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mmcpu_berr_en</name>
+                    <description>Enable MM CPU bus error monitoring.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mminfra_berr_en</name>
+                    <description>Enable MM infrastructure bus error monitoring.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG1</name>
+            <description>Multimedia Bus Error Clear, Last-Error Select, and Status Register</description>
+            <addressOffset>0x144</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_berr_clr</name>
+                    <description>Clear main bus error state.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_codec_berr_clr</name>
+                    <description>Clear CODEC bus error state.</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mmcpu_berr_clr</name>
+                    <description>Clear MM CPU bus error state.</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mminfra_berr_clr</name>
+                    <description>Clear MM infrastructure bus error state.</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_berr_last</name>
+                    <description>Select last-error capture for main bus error.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_codec_berr_last</name>
+                    <description>Select last-error capture for CODEC bus error.</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mmcpu_berr_last</name>
+                    <description>Select last-error capture for MM CPU bus error.</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mminfra_berr_last</name>
+                    <description>Select last-error capture for MM infrastructure bus error.</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_berr</name>
+                    <description>Status of main bus error.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_codec_berr</name>
+                    <description>Status of CODEC bus error.</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_mmcpu_berr</name>
+                    <description>Status of MM CPU bus error.</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_mminfra_berr</name>
+                    <description>Status of MM infrastructure bus error.</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_berr_write</name>
+                    <description>Write direction status of main bus error transaction.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_codec_berr_write</name>
+                    <description>Write direction status of CODEC bus error transaction.</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_mmcpu_berr_write</name>
+                    <description>Write direction status of MM CPU bus error transaction.</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_mminfra_berr_write</name>
+                    <description>Write direction status of MM infrastructure bus error transaction.</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG2</name>
+            <description>Multimedia Bus Error Source and ID Register (Main and CODEC)</description>
+            <addressOffset>0x148</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_berr_src</name>
+                    <description>Source ID of the master that caused the main bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>sts_berr_id</name>
+                    <description>Transaction ID of the main bus error.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>sts_codec_berr_src</name>
+                    <description>Source ID of the master that caused the CODEC bus error.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>sts_codec_berr_id</name>
+                    <description>Transaction ID of the CODEC bus error.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG3</name>
+            <description>Multimedia Bus Error Source and ID Register (MM CPU and MM Infra)</description>
+            <addressOffset>0x14C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mmcpu_berr_src</name>
+                    <description>Source ID of the master that caused the MM CPU bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mmcpu_berr_id</name>
+                    <description>Transaction ID of the MM CPU bus error.</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mminfra_berr_src</name>
+                    <description>Source ID of the master that caused the MM infrastructure bus error.</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+                <field>
+                    <name>sts_mminfra_berr_id</name>
+                    <description>Transaction ID of the MM infrastructure bus error.</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG4</name>
+            <description>Multimedia Main Bus Error Address Capture</description>
+            <addressOffset>0x150</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_berr_addr</name>
+                    <description>Captured 32-bit address of the transaction that caused the main bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG5</name>
+            <description>Multimedia CODEC Bus Error Address Capture</description>
+            <addressOffset>0x154</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_codec_berr_addr</name>
+                    <description>Captured 32-bit address of the transaction that caused the CODEC bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG6</name>
+            <description>Multimedia MM CPU Bus Error Address Capture</description>
+            <addressOffset>0x158</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mmcpu_berr_addr</name>
+                    <description>Captured 32-bit address of the transaction that caused the MM CPU bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MM_BERR_CFG7</name>
+            <description>Multimedia Infrastructure Bus Error Address Capture</description>
+            <addressOffset>0x15C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_mminfra_berr_addr</name>
+                    <description>Captured 32-bit address of the transaction that caused the infrastructure bus error.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

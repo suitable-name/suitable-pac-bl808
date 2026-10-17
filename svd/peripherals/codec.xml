@@ -1,0 +1,286 @@
+<peripheral>
+  <name>CODEC</name>
+  <description>Codec Miscellaneous Control</description>
+  <groupName>CODEC</groupName>
+  <baseAddress>0x30020000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <registers>
+    <register>
+      <name>CODEC_BUS_CTRL</name>
+      <description>Codec Bus Control Register</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>RG_PCLK_FORCE_ON</name>
+          <description>Force peripheral clock on for codec subsystem components</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_QOS_CTRL</name>
+      <description>Codec Quality of Service Control Register</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>REG_JENC_AWQOS</name>
+          <description>QoS for MJPEG Encoder AXI write</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_JENC_ARQOS</name>
+          <description>QoS for MJPEG Encoder AXI read</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_JDEC_AWQOS</name>
+          <description>QoS for MJPEG Decoder AXI write</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_JDEC_ARQOS</name>
+          <description>QoS for MJPEG Decoder AXI read</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_VDO0_AWQOS</name>
+          <description>QoS for Video/H264 Port 0 AXI write</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_VDO0_ARQOS</name>
+          <description>QoS for Video/H264 Port 0 AXI read</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_VDO1_AWQOS</name>
+          <description>QoS for Video/H264 Port 1 AXI write</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_VDO1_ARQOS</name>
+          <description>QoS for Video/H264 Port 1 AXI read</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_REF_AWQOS</name>
+          <description>QoS for Reference Frame buffer AXI write</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_REF_ARQOS</name>
+          <description>QoS for Reference Frame buffer AXI read</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_CNN_AWQOS</name>
+          <description>QoS for NPU/CNN AXI write</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_CNN_ARQOS</name>
+          <description>QoS for NPU/CNN AXI read</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_BUS_THRE</name>
+      <description>Codec Bus Thresholds</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>REG_X_WTHRE_BLAI2SYSRAM</name>
+          <description>Write threshold for NPU to System RAM</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>REG_X_WTHRE_BLAI2EXT</name>
+          <description>Write threshold for NPU to External Memory</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>REG_X_WTHRE_VDO2PB</name>
+          <description>Write threshold for Video to Port B</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>REG_X_WTHRE_VDO2PA</name>
+          <description>Write threshold for Video to Port A</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>REG_X_WTHRE_VDO2SYSRAM</name>
+          <description>Write threshold for Video to System RAM</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_BUS_DEC_ERR</name>
+      <description>Codec Bus Decode Error Status</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>REG_DEC_ERR_CLR</name>
+          <description>Clear decode error status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>REG_DEC_ERR_LATCH_LAST</name>
+          <description>Latch only the last decode error (write 1 to latch)</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>CODEC_HS_DEC_ERR_LAT</name>
+          <description>Decode error latched status</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>CODEC_HS_DEC_ERR_WRITE</name>
+          <description>Indicates if the error was on a write (1) or read (0) cycle</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>CODEC_HS_DEC_ERR_SRC</name>
+          <description>Source of the decode error</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>CODEC_HS_DEC_ERR_ID</name>
+          <description>ID of the master that caused the decode error</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_BUS_DEC_ERR_ADDR</name>
+      <description>Codec Bus Decode Error Address</description>
+      <addressOffset>0x14</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>CODEC_HS_DEC_ERR_ADDR</name>
+          <description>Address that caused the decode error</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_LMTR_RD</name>
+      <description>NPU (BLAI) Read Command Limiter</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>REG_BLAI_RCMD_CNT</name>
+          <description>Number of read commands allowed per period</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>REG_BLAI_RCMD_MODE</name>
+          <description>Read command limit mode enable</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_LMTR_WR</name>
+      <description>NPU (BLAI) Write Command Limiter</description>
+      <addressOffset>0x24</addressOffset>
+      <fields>
+        <field>
+          <name>REG_BLAI_WCMD_CNT</name>
+          <description>Number of write commands allowed per period</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>REG_BLAI_WCMD_MODE</name>
+          <description>Write command limit mode enable</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>ID_SELECTION</name>
+      <description>ID Selection Register</description>
+      <addressOffset>0x28</addressOffset>
+      <fields>
+        <field>
+          <name>RG_JENC_ID_SEL</name>
+          <description>MJPEG Encoder ID Selection</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>CODEC_MISC_DUMMY</name>
+      <description>Dummy Register</description>
+      <addressOffset>0xFC</addressOffset>
+      <resetValue>0xFFFF0000</resetValue>
+      <fields>
+        <field>
+          <name>DUMMY_REG</name>
+          <description>Dummy data</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

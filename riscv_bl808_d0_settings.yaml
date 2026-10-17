@@ -1,0 +1,4 @@
+# riscv_bl808_d0_settings.yaml
+riscv_config:
+  base_isa: "rv64i"
+  mtvec_align: 64

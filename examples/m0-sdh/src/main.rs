@@ -1,0 +1,20 @@
+#![no_std]
+#![no_main]
+
+use bl808_pac as pac;
+use panic_halt as _;
+use riscv_rt::entry;
+
+#[entry]
+fn main() -> ! {
+    let p = unsafe { pac::m0::Peripherals::steal() };
+    let sdh = &p.sdh;
+
+    // Read SD host control register
+    let ctrl = sdh.sd_host_ctrl().read().bits();
+    core::hint::black_box(ctrl);
+
+    loop {
+        core::hint::black_box(());
+    }
+}

@@ -1,0 +1,11 @@
+<!-- MJENC is the encoder view of the MJPEG peripheral block.
+     The BL808 has a single MJPEG IP block at 0x30021000 that acts as a JPEG encoder.
+     There is no separate MJENC base address or register set; the encoder registers
+     are the MJPEG registers defined in mjpeg_reg.h.
+     This peripheral is a derivedFrom alias pointing at the MJPEG peripheral. -->
+<peripheral derivedFrom="MJPEG">
+    <name>MJENC</name>
+    <description>Motion JPEG Encoder (alias for MJPEG peripheral, encoder function)</description>
+    <groupName>MJPEG</groupName>
+    <baseAddress>0x30021000</baseAddress>
+</peripheral>

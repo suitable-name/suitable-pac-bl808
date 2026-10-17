@@ -1,0 +1,215 @@
+<peripheral>
+    <name>DPI</name>
+    <description>Display Parallel Interface (RGB LCD Controller)</description>
+    <groupName>DPI</groupName>
+    <baseAddress>0x3001C000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for sv2rust generation)                                -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>DISPLAY</name>
+    <description>Display Subsystem Interrupt</description>
+    <value>63</value>
+  </interrupt>
+
+    <registers>
+        <register>
+            <name>DPI_CONFIG</name>
+            <description>DPI Global Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_en</name>
+                    <description>Enable DPI controller</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_h_pol</name>
+                    <description>HSYNC Polarity: 0: Active Low, 1: Active High</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_v_pol</name>
+                    <description>VSYNC Polarity: 0: Active Low, 1: Active High</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_de_pol</name>
+                    <description>Data Enable (DE) Polarity</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pix_clk_inv</name>
+                    <description>Invert Pixel Clock (PCLK)</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_FIFO_CONFIG</name>
+            <description>FIFO and Pixel Format Configuration</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_fifo_th</name>
+                    <description>FIFO Threshold for DMA request generation</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_format</name>
+                    <description>Display Data Format: 0: RGB565, 1: RGB888, 2: RGBA8888, 3: YUV422</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_H_TIMING_0</name>
+            <description>Horizontal Sync and Back Porch Timing</description>
+            <addressOffset>0x10</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_hsw</name>
+                    <description>Horizontal Sync Width (pixels). Range 1-255 PCLK cycles.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_hbp</name>
+                    <description>Horizontal Back Porch (pixels).</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_H_TIMING_1</name>
+            <description>Horizontal Active and Front Porch Timing</description>
+            <addressOffset>0x14</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_hact</name>
+                    <description>Horizontal Active Width (pixels). Range 176-800 pixels.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_hfp</name>
+                    <description>Horizontal Front Porch (pixels).</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_V_TIMING_0</name>
+            <description>Vertical Sync and Back Porch Timing</description>
+            <addressOffset>0x18</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_vsw</name>
+                    <description>Vertical Sync Width (lines). Range 1-255 lines.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_vbp</name>
+                    <description>Vertical Back Porch (lines).</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_V_TIMING_1</name>
+            <description>Vertical Active and Front Porch Timing</description>
+            <addressOffset>0x1C</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_dpi_vact</name>
+                    <description>Vertical Active Height (lines). Range 208-480 lines.</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_vfp</name>
+                    <description>Vertical Front Porch (lines).</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPI_INT_STS</name>
+            <description>DPI Interrupt Status Register</description>
+            <addressOffset>0x20</addressOffset>
+            <fields>
+                <field>
+                    <name>dpi_v_done_int</name>
+                    <description>Vertical Frame Done Interrupt status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>dpi_fifo_err_int</name>
+                    <description>FIFO Overflow/Underflow Interrupt status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_dpi_v_done_mask</name>
+                    <description>Mask for V_DONE interrupt (1=masked)</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_fifo_err_mask</name>
+                    <description>Mask for FIFO_ERR interrupt (1=masked)</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_dpi_v_done_clr</name>
+                    <description>Clear for V_DONE interrupt</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>reg_dpi_fifo_err_clr</name>
+                    <description>Clear for FIFO_ERR interrupt</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

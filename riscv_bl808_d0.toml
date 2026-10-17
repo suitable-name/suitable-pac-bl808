@@ -1,0 +1,3 @@
+# riscv_bl808_d0.toml
+target = "riscv"
+settings_file = "riscv_bl808_d0_settings.yaml"

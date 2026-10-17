@@ -1,0 +1,608 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `ir_reg.h`. Covers both Infrared Transmit (TX) and Receive (RX) logic.                                                                                                                                                                                            |
+| **Protocol Support**   | **FULL**  | Includes configuration for Head, Tail, Logic 0/1, and Frame segments. Supports PWM/Modulation-based IR (e.g., NEC, RC5/6).                                                                                                                                                            |
+| **FIFO Management**    | **FULL**  | Integrated DMA support, overflow/underflow monitoring, and configurable thresholds for both TX/RX streams.                                                                                                                                                                           |
+| **Timing Precision**   | **FULL**  | Captures precise phase widths (`irtx_pulse_width`, `irtx_pw_0`, `irtx_pw_1`) and RX thresholds (`irrx_pw_config`).                                                                                                                                                                  |
+| **Interrupts**         | **FULL**  | Maps End-of-Transfer, FIFO Ready, and FIFO Error interrupts for both TX and RX chains.                                                                                                                                                                                               |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct ir_reg` bitfield annotations in the header.                                                                                                                                                                                   |
+| **Base Address**       | Explicit | 0x2000A600 (based on `bl808.h`).                                                                                                                                                                                                                                                     |
+-->
+<peripheral>
+    <name>IR</name>
+    <description>Infrared Remote Controller</description>
+    <groupName>IR</groupName>
+    <baseAddress>0x2000A600</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <interrupt>
+        <name>IRTX</name>
+        <value>35</value>
+    </interrupt>
+    <interrupt>
+        <name>IRRX</name>
+        <value>36</value>
+    </interrupt>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>IRTX_CONFIG</name>
+            <description>IRTX Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x001F0510</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irtx_en</name>
+                    <description>Enable IRTX module</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_out_inv</name>
+                    <description>Invert IRTX output signal</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_mod_en</name>
+                    <description>Enable modulation for IRTX</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_swm_en</name>
+                    <description>Enable software mode for IRTX</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_data_en</name>
+                    <description>Enable data phase for IRTX</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_logic0_hl_inv</name>
+                    <description>Invert logic 0 high/low phase</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_logic1_hl_inv</name>
+                    <description>Invert logic 1 high/low phase</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_head_en</name>
+                    <description>Enable head phase</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_head_hl_inv</name>
+                    <description>Invert head high/low phase</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_tail_en</name>
+                    <description>Enable tail phase</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_tail_hl_inv</name>
+                    <description>Invert tail high/low phase</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_frm_en</name>
+                    <description>Enable frame mode</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_frm_cont_en</name>
+                    <description>Enable continuous frame mode</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_frm_frame_size</name>
+                    <description>Frame size selection</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_data_num</name>
+                    <description>Number of data bits to transmit</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>7</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_INT_STS</name>
+            <description>IRTX Interrupt Status and Control</description>
+            <addressOffset>0x04</addressOffset>
+            <resetValue>0x07000702</resetValue>
+            <fields>
+                <field>
+                    <name>irtx_end_int</name>
+                    <description>IRTX transfer end interrupt status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>irtx_frdy_int</name>
+                    <description>IRTX FIFO ready interrupt status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>irtx_fer_int</name>
+                    <description>IRTX FIFO error interrupt status</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>cr_irtx_end_mask</name>
+                    <description>Mask IRTX transfer end interrupt</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_frdy_mask</name>
+                    <description>Mask IRTX FIFO ready interrupt</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_fer_mask</name>
+                    <description>Mask IRTX FIFO error interrupt</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_end_clr</name>
+                    <description>Clear IRTX transfer end interrupt</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>cr_irtx_end_en</name>
+                    <description>Enable IRTX transfer end interrupt</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_frdy_en</name>
+                    <description>Enable IRTX FIFO ready interrupt</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_fer_en</name>
+                    <description>Enable IRTX FIFO error interrupt</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_PULSE_WIDTH</name>
+            <description>IRTX Basic Pulse Width and Modulation Configuration</description>
+            <addressOffset>0x10</addressOffset>
+            <resetValue>0x22110464</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irtx_pw_unit</name>
+                    <description>IRTX pulse width unit cycles</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_mod_ph0_w</name>
+                    <description>Modulation phase 0 width</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_mod_ph1_w</name>
+                    <description>Modulation phase 1 width</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_PW_0</name>
+            <description>IRTX Logic 0/1 Pulse Width Configuration</description>
+            <addressOffset>0x14</addressOffset>
+            <resetValue>0x02000000</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irtx_logic0_ph0_w</name>
+                    <description>Logic 0 phase 0 width</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_logic0_ph1_w</name>
+                    <description>Logic 0 phase 1 width</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_logic1_ph0_w</name>
+                    <description>Logic 1 phase 0 width</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_logic1_ph1_w</name>
+                    <description>Logic 1 phase 1 width</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_PW_1</name>
+            <description>IRTX Head/Tail Pulse Width Configuration</description>
+            <addressOffset>0x18</addressOffset>
+            <resetValue>0x0000070F</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irtx_head_ph0_w</name>
+                    <description>Head phase 0 width</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_head_ph1_w</name>
+                    <description>Head phase 1 width</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_tail_ph0_w</name>
+                    <description>Tail phase 0 width</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irtx_tail_ph1_w</name>
+                    <description>Tail phase 1 width</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_CONFIG</name>
+            <description>IRRX Configuration Register</description>
+            <addressOffset>0x40</addressOffset>
+            <resetValue>0x00000002</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irrx_en</name>
+                    <description>Enable IRRX module</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_in_inv</name>
+                    <description>Invert IRRX input signal</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_mode</name>
+                    <description>IRRX receiving mode</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_deg_en</name>
+                    <description>Enable deglitch function for IRRX</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_deg_cnt</name>
+                    <description>Deglitch cycle count</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_INT_STS</name>
+            <description>IRRX Interrupt Status and Control</description>
+            <addressOffset>0x44</addressOffset>
+            <resetValue>0x07000700</resetValue>
+            <fields>
+                <field>
+                    <name>irrx_end_int</name>
+                    <description>IRRX transfer end interrupt status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>irrx_frdy_int</name>
+                    <description>IRRX FIFO ready interrupt status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>irrx_fer_int</name>
+                    <description>IRRX FIFO error interrupt status</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>cr_irrx_end_mask</name>
+                    <description>Mask IRRX transfer end interrupt</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_frdy_mask</name>
+                    <description>Mask IRRX FIFO ready interrupt</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_fer_mask</name>
+                    <description>Mask IRRX FIFO error interrupt</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_end_clr</name>
+                    <description>Clear IRRX transfer end interrupt</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>cr_irrx_end_en</name>
+                    <description>Enable IRRX transfer end interrupt</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_frdy_en</name>
+                    <description>Enable IRRX FIFO ready interrupt</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_fer_en</name>
+                    <description>Enable IRRX FIFO error interrupt</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_PW_CONFIG</name>
+            <description>IRRX Pulse Width Threshold Configuration</description>
+            <addressOffset>0x48</addressOffset>
+            <resetValue>0x23270D47</resetValue>
+            <fields>
+                <field>
+                    <name>cr_irrx_data_th</name>
+                    <description>IRRX data threshold</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>cr_irrx_end_th</name>
+                    <description>IRRX end-of-transfer threshold</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_DATA_COUNT</name>
+            <description>IRRX Received Data Bit Count</description>
+            <addressOffset>0x50</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_irrx_data_cnt</name>
+                    <description>Count of valid data bits received</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>7</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_DATA_WORD0</name>
+            <description>IRRX Received Data Word 0</description>
+            <addressOffset>0x54</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_irrx_data_word0</name>
+                    <description>RX data word 0 bits [31:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRRX_DATA_WORD1</name>
+            <description>IRRX Received Data Word 1</description>
+            <addressOffset>0x58</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_irrx_data_word1</name>
+                    <description>RX data word 1 bits [63:32]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_FIFO_CONFIG_0</name>
+            <description>IRTX FIFO Configuration and Status 0</description>
+            <addressOffset>0x80</addressOffset>
+            <fields>
+                <field>
+                    <name>irtx_dma_en</name>
+                    <description>Enable IRTX DMA request</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tx_fifo_clr</name>
+                    <description>Clear TX FIFO</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>rx_fifo_clr</name>
+                    <description>Clear RX FIFO</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>tx_fifo_overflow</name>
+                    <description>TX FIFO overflow flag</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>tx_fifo_underflow</name>
+                    <description>TX FIFO underflow flag</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rx_fifo_overflow</name>
+                    <description>RX FIFO overflow flag</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rx_fifo_underflow</name>
+                    <description>RX FIFO underflow flag</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IRTX_FIFO_CONFIG_1</name>
+            <description>IRTX FIFO Status and Thresholds 1</description>
+            <addressOffset>0x84</addressOffset>
+            <resetValue>0x00000004</resetValue>
+            <fields>
+                <field>
+                    <name>tx_fifo_cnt</name>
+                    <description>TX FIFO available count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rx_fifo_cnt</name>
+                    <description>RX FIFO available count</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>7</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>tx_fifo_th</name>
+                    <description>TX FIFO threshold</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>rx_fifo_th</name>
+                    <description>RX FIFO threshold</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IR_FIFO_WDATA</name>
+            <description>IR TX FIFO Data Register</description>
+            <addressOffset>0x88</addressOffset>
+            <access>write-only</access>
+            <fields>
+                <field>
+                    <name>tx_fifo_wdata</name>
+                    <description>Push data into TX FIFO</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>IR_FIFO_RDATA</name>
+            <description>IR RX FIFO Data Register</description>
+            <addressOffset>0x8C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>rx_fifo_rdata</name>
+                    <description>Pop data from RX FIFO</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

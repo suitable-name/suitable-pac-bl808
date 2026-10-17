@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<peripheral>
+  <name>SF_CTRL</name>
+  <description>Serial Flash Controller / XIP Accelerator</description>
+  <groupName>SF_CTRL</groupName>
+  <baseAddress>0x2000B000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>SF_CTRL_ID1</name>
+    <description>Serial Flash Control ID1 Interrupt</description>
+    <value>29</value>
+  </interrupt>
+  <interrupt>
+    <name>SF_CTRL_ID0</name>
+    <description>Serial Flash Control ID0 Interrupt</description>
+    <value>30</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>SF_CTRL_0</name>
+      <description>Serial Flash Control Register 0</description>
+      <addressOffset>0x00</addressOffset>
+      <fields>
+        <field>
+          <name>sf_clk_sf_rx_inv_sel</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_clk_out_gate_en</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_clk_out_inv_sel</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_read_dly_n</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_read_dly_en</name>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_int</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sf_if_int_clr</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_int_set</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_32b_adr_en</name>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_dout_endian</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_din_endian</name>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_key_endian</name>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_iv_endian</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_id</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_CTRL_1</name>
+      <description>Serial Flash Control Register 1</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_sr_pat_mask</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_sr_pat</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_sr_int</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sf_if_sr_int_en</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_sr_int_set</name>
+          <bitOffset>18</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_ack_lat</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_ahb2sif_diswrap</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_reg_hold</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_reg_wp</name>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_ahb2sif_stopped</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sf_ahb2sif_stop</name>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_fn_sel</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_en</name>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_ahb2sif_en</name>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_ahb2sram_en</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_SAHB_0</name>
+      <description>System AHB Interface Register 0</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sf_if_0_trig</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_dat_byte</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_dmy_byte</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_adr_byte</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_cmd_byte</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_dat_rw</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_dat_en</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_dmy_en</name>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_adr_en</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_cmd_en</name>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_spi_mode</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_qpi_mode_en</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_SAHB_1</name>
+      <description>System AHB Command Buffer 0</description>
+      <addressOffset>0x0C</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_0_cmd_buf_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_SAHB_2</name>
+      <description>System AHB Command Buffer 1</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_0_cmd_buf_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_0</name>
+      <description>Instruction AHB Control 1</description>
+      <addressOffset>0x14</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_1_dmy_byte</name>
+          <bitOffset>12</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_adr_byte</name>
+          <bitOffset>17</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_cmd_byte</name>
+          <bitOffset>20</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_dat_rw</name>
+          <bitOffset>23</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_dat_en</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_dmy_en</name>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_adr_en</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_cmd_en</name>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_spi_mode</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_1_qpi_mode_en</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_1</name>
+      <description>Instruction AHB Command Buffer 1-0</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_1_cmd_buf_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_2</name>
+      <description>Instruction AHB Command Buffer 1-1</description>
+      <addressOffset>0x1C</addressOffset>
+      <fields>
+        <field>
+          <name>sf_if_1_cmd_buf_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_STATUS_0</name>
+      <description>Interface Status 0</description>
+      <addressOffset>0x20</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sf_if_status_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_STATUS_1</name>
+      <description>Interface Status 1</description>
+      <addressOffset>0x24</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sf_if_status_1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_AES</name>
+      <description>AES Global Control and Status</description>
+      <addressOffset>0x28</addressOffset>
+      <fields>
+        <field>
+          <name>sf_aes_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_mode</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_blk_mode</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_xts_key_opt</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_aes_status</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>27</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_AHB2SIF_STATUS</name>
+      <description>AHB to Serial Interface Status</description>
+      <addressOffset>0x2C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sf_ahb2sif_status</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IO_DLY_0</name>
+      <description>SF IO Delay Configuration 0</description>
+      <addressOffset>0x30</addressOffset>
+      <fields>
+        <field>
+          <name>sf_cs_dly_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_cs2_dly_sel</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_clk_out_dly_sel</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_dqs_oe_dly_sel</name>
+          <bitOffset>26</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_dqs_di_dly_sel</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_dqs_do_dly_sel</name>
+          <bitOffset>30</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IO_DLY_1</name>
+      <description>SF IO 0 Delay Tuning</description>
+      <addressOffset>0x34</addressOffset>
+      <fields>
+        <field>
+          <name>sf_io_0_oe_dly_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_0_di_dly_sel</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_0_do_dly_sel</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IO_DLY_2</name>
+      <description>SF IO 1 Delay Tuning</description>
+      <addressOffset>0x38</addressOffset>
+      <fields>
+        <field>
+          <name>sf_io_1_oe_dly_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_1_di_dly_sel</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_1_do_dly_sel</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IO_DLY_3</name>
+      <description>SF IO 2 Delay Tuning</description>
+      <addressOffset>0x3C</addressOffset>
+      <fields>
+        <field>
+          <name>sf_io_2_oe_dly_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_2_di_dly_sel</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_2_do_dly_sel</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IO_DLY_4</name>
+      <description>SF IO 3 Delay Tuning</description>
+      <addressOffset>0x40</addressOffset>
+      <fields>
+        <field>
+          <name>sf_io_3_oe_dly_sel</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_3_di_dly_sel</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>sf_io_3_do_dly_sel</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_RESERVED</name>
+      <description>SF Reserved Register</description>
+      <addressOffset>0x44</addressOffset>
+      <fields>
+        <field>
+          <name>sf_reserved</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF2_IF_IO_DLY_0</name>
+      <description>SF2 IO Delay Configuration 0</description>
+      <addressOffset>0x48</addressOffset>
+      <fields>
+        <field><name>sf2_cs_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_cs2_dly_sel</name><bitOffset>2</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_clk_out_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_dqs_oe_dly_sel</name><bitOffset>26</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_dqs_di_dly_sel</name><bitOffset>28</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_dqs_do_dly_sel</name><bitOffset>30</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF2_IF_IO_DLY_1</name>
+      <description>SF2 IO 0 Delay Tuning</description>
+      <addressOffset>0x4C</addressOffset>
+      <fields>
+        <field><name>sf2_io_0_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_0_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_0_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF2_IF_IO_DLY_2</name>
+      <description>SF2 IO 1 Delay Tuning</description>
+      <addressOffset>0x50</addressOffset>
+      <fields>
+        <field><name>sf2_io_1_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_1_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_1_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF2_IF_IO_DLY_3</name>
+      <description>SF2 IO 2 Delay Tuning</description>
+      <addressOffset>0x54</addressOffset>
+      <fields>
+        <field><name>sf2_io_2_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_2_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_2_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF2_IF_IO_DLY_4</name>
+      <description>SF2 IO 3 Delay Tuning</description>
+      <addressOffset>0x58</addressOffset>
+      <fields>
+        <field><name>sf2_io_3_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_3_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf2_io_3_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF3_IF_IO_DLY_0</name>
+      <description>SF3 IO Delay Configuration 0</description>
+      <addressOffset>0x5C</addressOffset>
+      <fields>
+        <field><name>sf3_cs_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_cs2_dly_sel</name><bitOffset>2</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_clk_out_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_dqs_oe_dly_sel</name><bitOffset>26</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_dqs_di_dly_sel</name><bitOffset>28</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_dqs_do_dly_sel</name><bitOffset>30</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF3_IF_IO_DLY_1</name>
+      <description>SF3 IO 0 Delay Tuning</description>
+      <addressOffset>0x60</addressOffset>
+      <fields>
+        <field><name>sf3_io_0_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_0_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_0_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF3_IF_IO_DLY_2</name>
+      <description>SF3 IO 1 Delay Tuning</description>
+      <addressOffset>0x64</addressOffset>
+      <fields>
+        <field><name>sf3_io_1_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_1_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_1_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF3_IF_IO_DLY_3</name>
+      <description>SF3 IO 2 Delay Tuning</description>
+      <addressOffset>0x68</addressOffset>
+      <fields>
+        <field><name>sf3_io_2_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_2_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_2_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF3_IF_IO_DLY_4</name>
+      <description>SF3 IO 3 Delay Tuning</description>
+      <addressOffset>0x6C</addressOffset>
+      <fields>
+        <field><name>sf3_io_3_oe_dly_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_3_di_dly_sel</name><bitOffset>8</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf3_io_3_do_dly_sel</name><bitOffset>16</bitOffset><bitWidth>2</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_CTRL_2</name>
+      <description>Serial Flash Control Register 2</description>
+      <addressOffset>0x70</addressOffset>
+      <fields>
+        <field><name>sf_if_pad_sel</name><bitOffset>0</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf_if_pad_sel_lock</name><bitOffset>3</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_dtr_en</name><bitOffset>4</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_dqs_en</name><bitOffset>5</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_trig_wr_prot</name><bitOffset>6</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_id_offset_lock</name><bitOffset>7</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_ahb2sif_remap_lock</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_ahb2sif_remap</name><bitOffset>26</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf_if_bk_swap</name><bitOffset>28</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_bk2_mode</name><bitOffset>29</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_bk2_en</name><bitOffset>30</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_0_bk_sel</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_CTRL_3</name>
+      <description>Serial Flash Control Register 3</description>
+      <addressOffset>0x74</addressOffset>
+      <fields>
+        <field><name>sf_cmds_2_wrap_len</name><bitOffset>0</bitOffset><bitWidth>4</bitWidth></field>
+        <field><name>sf_cmds_2_en</name><bitOffset>4</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_cmds_2_bt_dly</name><bitOffset>5</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_cmds_2_bt_en</name><bitOffset>8</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_cmds_2_wrap_q_ini</name><bitOffset>9</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_cmds_2_wrap_mode</name><bitOffset>10</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf_cmds_2_wrap_q</name><bitOffset>12</bitOffset><bitWidth>1</bitWidth><access>read-only</access></field>
+        <field><name>sf_cmds_1_wrap_len</name><bitOffset>13</bitOffset><bitWidth>4</bitWidth></field>
+        <field><name>sf_cmds_1_en</name><bitOffset>17</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_cmds_1_wrap_mode</name><bitOffset>18</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf_cmds_core_en</name><bitOffset>20</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_1_ack_lat</name><bitOffset>29</bitOffset><bitWidth>3</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_3</name>
+      <description>Instruction AHB Control 2</description>
+      <addressOffset>0x78</addressOffset>
+      <fields>
+        <field><name>sf_if_2_dmy_byte</name><bitOffset>12</bitOffset><bitWidth>5</bitWidth></field>
+        <field><name>sf_if_2_adr_byte</name><bitOffset>17</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_2_cmd_byte</name><bitOffset>20</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_2_dat_rw</name><bitOffset>23</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_2_dat_en</name><bitOffset>24</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_2_dmy_en</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_2_adr_en</name><bitOffset>26</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_2_cmd_en</name><bitOffset>27</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_2_spi_mode</name><bitOffset>28</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_2_qpi_mode_en</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_4</name>
+      <description>Instruction AHB Command Buffer 2-0</description>
+      <addressOffset>0x7C</addressOffset>
+      <fields><field><name>sf_if_2_cmd_buf_0</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_5</name>
+      <description>Instruction AHB Command Buffer 2-1</description>
+      <addressOffset>0x80</addressOffset>
+      <fields><field><name>sf_if_2_cmd_buf_1</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_6</name>
+      <description>Instruction AHB Control 3</description>
+      <addressOffset>0x84</addressOffset>
+      <fields>
+        <field><name>sf_if_3_adr_byte</name><bitOffset>17</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_3_cmd_byte</name><bitOffset>20</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_3_adr_en</name><bitOffset>26</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_3_cmd_en</name><bitOffset>27</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_3_spi_mode</name><bitOffset>28</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_3_qpi_mode_en</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_7</name>
+      <description>Instruction AHB Command Buffer 3-0</description>
+      <addressOffset>0x88</addressOffset>
+      <fields><field><name>sf_if_3_cmd_buf_0</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_8</name>
+      <description>Instruction AHB Command Buffer 3-1</description>
+      <addressOffset>0x8C</addressOffset>
+      <fields><field><name>sf_if_3_cmd_buf_1</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_9</name>
+      <description>Instruction AHB Control 4</description>
+      <addressOffset>0x90</addressOffset>
+      <fields>
+        <field><name>sf_if_4_dmy_byte</name><bitOffset>12</bitOffset><bitWidth>5</bitWidth></field>
+        <field><name>sf_if_4_adr_byte</name><bitOffset>17</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_4_cmd_byte</name><bitOffset>20</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_4_dat_rw</name><bitOffset>23</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_4_dat_en</name><bitOffset>24</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_4_dmy_en</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_4_adr_en</name><bitOffset>26</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_4_cmd_en</name><bitOffset>27</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if_4_spi_mode</name><bitOffset>28</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if_4_qpi_mode_en</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_10</name>
+      <description>Instruction AHB Command Buffer 4-0</description>
+      <addressOffset>0x94</addressOffset>
+      <fields><field><name>sf_if_4_cmd_buf_0</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+    <register>
+      <name>SF_IF_IAHB_11</name>
+      <description>Instruction AHB Command Buffer 4-1</description>
+      <addressOffset>0x98</addressOffset>
+      <fields><field><name>sf_if_4_cmd_buf_1</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+
+    <register>
+      <name>SF_IF_IAHB_12</name>
+      <description>SF2/SF3 Clock and Read Delay Control</description>
+      <addressOffset>0x9C</addressOffset>
+      <fields>
+        <field><name>sf2_clk_sf_rx_inv_sel</name><bitOffset>2</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf2_clk_sf_rx_inv_src</name><bitOffset>3</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf2_clk_out_inv_sel</name><bitOffset>4</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf3_clk_out_inv_sel</name><bitOffset>5</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf2_if_read_dly_n</name><bitOffset>8</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf2_if_read_dly_en</name><bitOffset>11</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf2_if_read_dly_src</name><bitOffset>12</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_ID0_OFFSET</name>
+      <description>Remap Offset for Region 0</description>
+      <addressOffset>0xA0</addressOffset>
+      <fields>
+        <field>
+          <name>sf_id0_offset</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>28</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_ID1_OFFSET</name>
+      <description>Remap Offset for Region 1</description>
+      <addressOffset>0xA4</addressOffset>
+      <fields>
+        <field>
+          <name>sf_id1_offset</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>28</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_BK2_ID0_OFFSET</name>
+      <description>Remap Offset for Bank 2 Region 0</description>
+      <addressOffset>0xA8</addressOffset>
+      <fields><field><name>sf_bk2_id0_offset</name><bitOffset>0</bitOffset><bitWidth>28</bitWidth></field></fields>
+    </register>
+    <register>
+      <name>SF_BK2_ID1_OFFSET</name>
+      <description>Remap Offset for Bank 2 Region 1</description>
+      <addressOffset>0xAC</addressOffset>
+      <fields><field><name>sf_bk2_id1_offset</name><bitOffset>0</bitOffset><bitWidth>28</bitWidth></field></fields>
+    </register>
+
+    <register>
+      <name>SF_DBG</name>
+      <description>Autoload Status and Debug</description>
+      <addressOffset>0xB0</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sf_autoload_st</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>sf_autoload_st_done</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF2_CTRL_0</name>
+      <description>Serial Flash 2 Control Register 0</description>
+      <addressOffset>0xC0</addressOffset>
+      <fields>
+        <field><name>sf_clk_sf_if2_rx_inv_sel</name><bitOffset>2</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_read_dly_n</name><bitOffset>8</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if2_read_dly_en</name><bitOffset>11</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_int</name><bitOffset>16</bitOffset><bitWidth>1</bitWidth><access>read-only</access></field>
+        <field><name>sf_if2_int_clr</name><bitOffset>17</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_int_set</name><bitOffset>18</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_replace_sf1</name><bitOffset>23</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_replace_sf2</name><bitOffset>24</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_replace_sf3</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_pad_sel</name><bitOffset>26</bitOffset><bitWidth>2</bitWidth></field>
+        <field><name>sf_if2_bk_swap</name><bitOffset>28</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_bk2_mode</name><bitOffset>29</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_bk2_en</name><bitOffset>30</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_bk_sel</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+    <register>
+      <name>SF_IF2_CTRL_1</name>
+      <description>Serial Flash 2 Control Register 1</description>
+      <addressOffset>0xC4</addressOffset>
+      <fields>
+        <field><name>sf_if2_sr_pat_mask</name><bitOffset>0</bitOffset><bitWidth>8</bitWidth></field>
+        <field><name>sf_if2_sr_pat</name><bitOffset>8</bitOffset><bitWidth>8</bitWidth></field>
+        <field><name>sf_if2_sr_int</name><bitOffset>16</bitOffset><bitWidth>1</bitWidth><access>read-only</access></field>
+        <field><name>sf_if2_sr_int_en</name><bitOffset>17</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_sr_int_set</name><bitOffset>18</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_ack_lat</name><bitOffset>20</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if2_reg_hold</name><bitOffset>24</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_reg_wp</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_fn_sel</name><bitOffset>28</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_en</name><bitOffset>29</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_IF2_SAHB_0</name>
+      <description>SF2 System AHB Interface Register 0</description>
+      <addressOffset>0xC8</addressOffset>
+      <fields>
+        <field><name>sf_if2_busy</name><bitOffset>0</bitOffset><bitWidth>1</bitWidth><access>read-only</access></field>
+        <field><name>sf_if2_0_trig</name><bitOffset>1</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_dat_byte</name><bitOffset>2</bitOffset><bitWidth>10</bitWidth></field>
+        <field><name>sf_if2_0_dmy_byte</name><bitOffset>12</bitOffset><bitWidth>5</bitWidth></field>
+        <field><name>sf_if2_0_adr_byte</name><bitOffset>17</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if2_0_cmd_byte</name><bitOffset>20</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if2_0_dat_rw</name><bitOffset>23</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_dat_en</name><bitOffset>24</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_dmy_en</name><bitOffset>25</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_adr_en</name><bitOffset>26</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_cmd_en</name><bitOffset>27</bitOffset><bitWidth>1</bitWidth></field>
+        <field><name>sf_if2_0_spi_mode</name><bitOffset>28</bitOffset><bitWidth>3</bitWidth></field>
+        <field><name>sf_if2_0_qpi_mode_en</name><bitOffset>31</bitOffset><bitWidth>1</bitWidth></field>
+      </fields>
+    </register>
+    <register>
+      <name>SF_IF2_SAHB_1</name>
+      <description>SF2 System AHB Command Buffer 0</description>
+      <addressOffset>0xCC</addressOffset>
+      <fields><field><name>sf_if2_0_cmd_buf_0</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+    <register>
+      <name>SF_IF2_SAHB_2</name>
+      <description>SF2 System AHB Command Buffer 1</description>
+      <addressOffset>0xD0</addressOffset>
+      <fields><field><name>sf_if2_0_cmd_buf_1</name><bitOffset>0</bitOffset><bitWidth>32</bitWidth></field></fields>
+    </register>
+
+    <register>
+      <name>SF_CTRL_PROT_EN_RD</name>
+      <description>TrustZone Protection Read Status</description>
+      <addressOffset>0x100</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sf_ctrl_id0_en_rd</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_ctrl_id1_en_rd</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_sec_tzsid_lock</name>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if2_0_trig_wr_lock</name>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_if_0_trig_wr_lock</name>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_dbg_dis</name>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SF_CTRL_PROT_EN</name>
+      <description>TrustZone Protection Configuration</description>
+      <addressOffset>0x104</addressOffset>
+      <fields>
+        <field>
+          <name>sf_ctrl_id0_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sf_ctrl_id1_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- AES Region Cluster -->
+    <cluster>
+      <name>AES_REGION%s</name>
+      <description>AES Encryption Regions for Flash</description>
+      <addressOffset>0x200</addressOffset>
+      <dim>3</dim>
+      <dimIncrement>0x80</dimIncrement>
+      <register>
+        <name>KEY%s</name>
+        <description>AES Key Word</description>
+        <addressOffset>0x00</addressOffset>
+        <dim>8</dim>
+        <dimIncrement>0x04</dimIncrement>
+        <fields>
+          <field>
+            <name>key</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>IV%s</name>
+        <description>AES Initialization Vector Word</description>
+        <addressOffset>0x20</addressOffset>
+        <dim>4</dim>
+        <dimIncrement>0x04</dimIncrement>
+        <fields>
+          <field>
+            <name>iv</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>START</name>
+        <description>Region Start Address and Config</description>
+        <addressOffset>0x30</addressOffset>
+        <fields>
+          <field>
+            <name>addr_start</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>19</bitWidth>
+          </field>
+          <field>
+            <name>hw_key_en</name>
+            <bitOffset>29</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>en</name>
+            <bitOffset>30</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>lock</name>
+            <bitOffset>31</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>END</name>
+        <description>Region End Address</description>
+        <addressOffset>0x34</addressOffset>
+        <fields>
+          <field>
+            <name>addr_end</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>19</bitWidth>
+          </field>
+        </fields>
+      </register>
+    </cluster>
+  </registers>
+</peripheral>

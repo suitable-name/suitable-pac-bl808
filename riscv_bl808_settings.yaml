@@ -1,0 +1,3 @@
+# riscv_bl808_settings.yaml
+riscv_config:
+  base_isa: "rv32i"

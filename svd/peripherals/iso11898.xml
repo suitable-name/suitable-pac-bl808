@@ -1,0 +1,419 @@
+<peripheral>
+    <name>ISO11898</name>
+    <description>Controller Area Network (CAN) Controller (ISO 11898-1/2)</description>
+    <groupName>ISO11898</groupName>
+    <baseAddress>0x2000AA00</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x80</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>MODE</name>
+            <description>Operating Mode and Reset Mode Configuration</description>
+            <addressOffset>0x00</addressOffset>
+            <fields>
+                <field>
+                    <name>reset_request</name>
+                    <description>Request reset mode</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>listen_only</name>
+                    <description>Listen Only Mode enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>selt_test</name>
+                    <description>Self Test Mode enable (e.g., Loopback)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>acceptance_filter</name>
+                    <description>Acceptance Filter enable</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>COMMAND</name>
+            <description>Command Register (Write Only)</description>
+            <addressOffset>0x04</addressOffset>
+            <access>write-only</access>
+            <fields>
+                <field>
+                    <name>transmit_request</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>abort_transmission</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>release_receive_buffer</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>clear_data_overrun</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>self_request</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>STATUS</name>
+            <description>Status Register</description>
+            <addressOffset>0x08</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>receive_buffer_sts</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>data_overrun_sts</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>transmit_buffer_sts</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>transmit_complete_sts</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>receive_sts</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>transmit_sts</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>error_sts</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bus_sts</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>INTERRUPT</name>
+            <description>Interrupt Status Register (Reading clears CAN interrupt line)</description>
+            <addressOffset>0x0C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>receive_int</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>transmit_int</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>error_int</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>data_overrun_int</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>error_passive_int</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>arb_lost_int</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bus_error_int</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>INTERRUPT_ENABLE</name>
+            <description>Interrupt Enable Register</description>
+            <addressOffset>0x10</addressOffset>
+            <fields>
+                <field>
+                    <name>receive_int_en</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>transmit_int_en</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>error_int_en</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>data_overrun_int_en</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>error_passive_int_en</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>arb_lost_int_en</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bus_error_int_en</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>BUS_TIMING_0</name>
+            <description>Bus Timing Register 0</description>
+            <addressOffset>0x18</addressOffset>
+            <fields>
+                <field>
+                    <name>baud_rate_prescaler</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+                <field>
+                    <name>sync_jump_width</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>BUS_TIMING_1</name>
+            <description>Bus Timing Register 1</description>
+            <addressOffset>0x1C</addressOffset>
+            <fields>
+                <field>
+                    <name>time_segment_1</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>time_segment_2</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>sampling</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>ARB_LOST_CAPTURE</name>
+            <description>Arbitration Lost Capture Register</description>
+            <addressOffset>0x2C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>ALC4_0</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>ERROR_CODE_CAPTURE</name>
+            <description>Error Code Capture Register</description>
+            <addressOffset>0x30</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>segment4_0</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+                <field>
+                    <name>dir</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>err_code</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>ERROR_WARNING_LIMIT</name>
+            <description>Error Warning Limit Register. Defines the threshold for triggering the error warning interrupt.</description>
+            <addressOffset>0x34</addressOffset>
+            <fields>
+                <field>
+                    <name>err_warning_limit</name>
+                    <description>8-bit error warning threshold</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>RX_ERR_COUNT</name>
+            <description>Receive Error Counter Register. Reflects the current value of the CAN receive error counter (REC).</description>
+            <addressOffset>0x38</addressOffset>
+            <fields>
+                <field>
+                    <name>rx_err_cnt</name>
+                    <description>8-bit REC value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TX_ERR_COUNT</name>
+            <description>Transmit Error Counter Register. Reflects the current value of the CAN transmit error counter (TEC).</description>
+            <addressOffset>0x3C</addressOffset>
+            <fields>
+                <field>
+                    <name>tx_err_cnt</name>
+                    <description>8-bit TEC value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- DATA BUFFER CLUSTER (Offsets 0x40 - 0x70) -->
+        <cluster>
+            <name>BUFFER%s</name>
+            <description>Multiplexed Data/Filter Buffer Cluster</description>
+            <addressOffset>0x40</addressOffset>
+            <dim>13</dim>            <!-- 0x40 to 0x70: 0x40, 44, 48, 4C, 50, 54, 58, 5C, 60, 64, 68, 6C, 70 -->
+            <dimIncrement>4</dimIncrement>
+            <register>
+                <name>REG</name>
+                <description>CAN Data/Filter Access Register. Maps to RX/TX data in Operating Mode or Acceptance Filter parameters in Reset Mode.</description>
+                <addressOffset>0x00</addressOffset>
+                <fields>
+                    <field>
+                        <name>data</name>
+                        <description>8-bit data/mask/filter word</description>
+                        <bitOffset>0</bitOffset>
+                        <bitWidth>8</bitWidth>
+                    </field>
+                </fields>
+            </register>
+        </cluster>
+
+        <register>
+            <name>RX_MESSAGE_COUNT</name>
+            <description>Receive Message Counter Register. Indicates the number of messages currently stored in the receive FIFO.</description>
+            <addressOffset>0x74</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>rx_message_cnt</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>CLOCK_DIVIDER</name>
+            <description>Clock Divider and Control</description>
+            <addressOffset>0x7C</addressOffset>
+            <fields>
+                <field>
+                    <name>cd</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>clockoff</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>readonly</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rxinten</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cbp</name>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>mode</name>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

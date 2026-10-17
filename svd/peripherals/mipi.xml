@@ -1,0 +1,473 @@
+<peripheral>
+    <name>CSI</name>
+    <description>MIPI Camera Serial Interface (CSI-2)</description>
+    <groupName>MIPI</groupName>
+    <baseAddress>0x3001A000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <interrupt>
+        <name>MIPI_CSI</name>
+        <value>53</value>
+    </interrupt>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>MIPI_CONFIG</name>
+            <description>MIPI CSI Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x00004042</resetValue>
+            <fields>
+                <field>
+                    <name>cr_csi_en</name>
+                    <description>Master enable for MIPI CSI module</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_lane_num</name>
+                    <description>Number of data lanes (0:1-lane, 1:2-lane)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_lane_inv</name>
+                    <description>Invert lane order</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_data_bit_inv</name>
+                    <description>Invert data bit order</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_sync_sp_en</name>
+                    <description>Enable sync short packet mode</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_unpack_en</name>
+                    <description>Unpack pixel data enable (e.g., for 10-bit packing)</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cr_vc_dvp0</name>
+                    <description>Virtual Channel (VC) selection for DVP0 output</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cr_vc_dvp1</name>
+                    <description>Virtual Channel (VC) selection for DVP1 output</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MIPI_INT_STATUS</name>
+            <description>MIPI CSI Interrupt Status</description>
+            <addressOffset>0x10</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>csi_int_status</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MIPI_INT_MASK</name>
+            <description>MIPI CSI Interrupt Mask</description>
+            <addressOffset>0x14</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>csi_int_mask</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MIPI_INT_CLEAR</name>
+            <description>MIPI CSI Interrupt Clear</description>
+            <addressOffset>0x18</addressOffset>
+            <access>write-only</access>
+            <modifiedWriteValues>oneToClear</modifiedWriteValues>
+            <fields>
+                <field>
+                    <name>csi_int_clear</name>
+                    <description>Write 1 to clear interrupt status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>MIPI_INT_ENABLE</name>
+            <description>MIPI CSI Interrupt Enable</description>
+            <addressOffset>0x1C</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>csi_int_enable</name>
+                    <description>Interrupt enable bits for CSI events</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>GNR_BUF_STATUS</name>
+            <description>Generic Buffer Status</description>
+            <addressOffset>0x20</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>st_gnr_fifo_cnt</name>
+                    <description>Generic FIFO data count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>GNR_BUF_RDATA</name>
+            <description>Generic Buffer Read Data</description>
+            <addressOffset>0x24</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>gnr_buf_rdata</name>
+                    <description>Read data from generic short/long packet buffer</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_0</name>
+            <description>D-PHY Configuration 0 (Lane/Mode Status)</description>
+            <addressOffset>0x80</addressOffset>
+            <resetValue>0x00007070</resetValue>
+            <fields>
+                <field>
+                    <name>dl0_enable</name>
+                    <description>Data lane 0 enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dl1_enable</name>
+                    <description>Data lane 1 enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cl_enable</name>
+                    <description>Clock lane enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dl0_stopstate</name>
+                    <description>Data lane 0 stop state status</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>dl1_stopstate</name>
+                    <description>Data lane 1 stop state status</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>cl_stopstate</name>
+                    <description>Clock lane stop state status</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>dl0_ulpsactivenot</name>
+                    <description>Data lane 0 ULPS active status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>dl1_ulpsactivenot</name>
+                    <description>Data lane 1 ULPS active status</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>cl_ulpsactivenot</name>
+                    <description>Clock lane ULPS active status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>dl0_forcerxmode</name>
+                    <description>Force Data Lane 0 into RX mode (LP mode)</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dl1_forcerxmode</name>
+                    <description>Force Data Lane 1 into RX mode (LP mode)</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>cl_rxclkactivehs</name>
+                    <description>Clock lane High Speed active status</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>cl_rxulpsclknot</name>
+                    <description>Clock lane ULPS clock status</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>csi_reset_n</name>
+                    <description>CSI reset control (Active Low)</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_1</name>
+            <description>D-PHY Timing Configuration</description>
+            <addressOffset>0x84</addressOffset>
+            <resetValue>0x0F2F010A</resetValue>
+            <fields>
+                <field>
+                    <name>reg_time_ck_settle</name>
+                    <description>Clock lane settling time</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_time_ck_term_en</name>
+                    <description>Clock lane termination enable time</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_time_hs_settle</name>
+                    <description>Data lane High Speed settling time</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_time_hs_term_en</name>
+                    <description>Data lane High Speed termination enable time</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_2</name>
+            <description>D-PHY Analog Configuration and Test</description>
+            <addressOffset>0x88</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_ana_lprxen_clk</name>
+                    <description>Analog LP receive enable for clock lane</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_hsrxen_clk</name>
+                    <description>Analog HS receive enable for clock lane</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_hsrx_stop_state</name>
+                    <description>Analog HS receive stop state control</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_hsrx_sync_en</name>
+                    <description>Analog HS receive synchronization enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_lprxen</name>
+                    <description>Analog LP receive enable for data lanes</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_hsrxen</name>
+                    <description>Analog HS receive enable for data lanes</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_term_en</name>
+                    <description>Analog termination enable control</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>5</bitWidth>
+                </field>
+                <field>
+                    <name>reg_ana_test_en</name>
+                    <description>Analog test mode enable</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pt_lock_counter</name>
+                    <description>Pattern test lock counter threshold</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pt_prbs_or_jitt</name>
+                    <description>Pattern test select: 0: PRBS, 1: Jitter</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pt_lp_mode</name>
+                    <description>Pattern test LP mode enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pt_en</name>
+                    <description>Pattern test enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pt_lock</name>
+                    <description>Pattern test lock status (read-only)</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_pt_pass</name>
+                    <description>Pattern test pass status (read-only)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_3</name>
+            <description>D-PHY Analog Configuration 3</description>
+            <addressOffset>0x8C</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_csi_ana_1</name>
+                    <description>CSI Analog Register 1</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>reg_csi_ana_0</name>
+                    <description>CSI Analog Register 0</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_4</name>
+            <description>D-PHY Analog Configuration 4</description>
+            <addressOffset>0x90</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_csi_dc_tp_out_en</name>
+                    <description>DC test pattern output enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_csi_pw_avdd1815</name>
+                    <description>CSI analog power supply select (1.8V/1.5V)</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DPHY_CONFIG_5</name>
+            <description>D-PHY Clock Inversion Configuration</description>
+            <addressOffset>0x94</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_csi_byte_clk_inv</name>
+                    <description>Invert CSI byte clock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_csi_ddr_clk_inv</name>
+                    <description>Invert CSI DDR clock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>DUMMY_REG</name>
+            <description>Dummy Register (0xFC)</description>
+            <addressOffset>0xFC</addressOffset>
+            <fields>
+                <field>
+                    <name>dummy_reg</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

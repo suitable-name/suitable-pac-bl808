@@ -1,0 +1,689 @@
+<!-- | Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `pdm_reg.h`. Defines controls for PDM/ADC audio input channels, filtering, volume, and the RX FIFO.                                                                                                                                                                |
+| **Base Address**       | **Complex**| Based on `bl808.h` (`AUDIO_BASE` 0x20055000) and header offsets (`0xC00`). The peripheral name should be PDM, and the base address should be derived from the largest consecutive block, though for PAC generation, the offset values must be used. We use 0x20055000 as base and shift. |
+| **ADC Channels**       | **FULL**  | Supports three independent ADC channels (0, 1, 2) with individual enable, FIR mode, scaling (`_scal`), and K1/K2 dynamic filtering.                                                                                                                                                   |
+| **Clocking/Rate**      | **FULL**  | Includes global clock gating (`audio_ckg_en`) and `adc_rate` settings (0xC00).                                                                                                                                                                                                         |
+| **FIFO Management**    | **FULL**  | Detailed RX FIFO control (`rx_fifo_ctrl`) including flush, DMA request settings, threshold, and data width (`rx_data_res`).                                                                                                                                                            |
+| **Volume Control**     | **FULL**  | Separate registers (`pdm_adc_s0-s2`) for independent digital volume scaling on each of the three ADC input streams.                                                                                                                                                                     |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct pdm_reg` bitfield annotations.                                                                                                                                                                                               |
+-->
+<peripheral>
+    <name>PDM</name>
+    <description>Pulse Density Modulation / Digital Audio Interface (Sub-Module of AUDIO block at 0x20055000 + 0xC00)</description>
+    <groupName>PDM</groupName>
+    <!-- Using the base address 0x20055000 and applying the offset internally for registers starting at 0xC00 -->
+    <baseAddress>0x20055000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0xD00</size>
+        <usage>registers</usage>
+    </addressBlock>
+    <registers>
+        <register>
+            <name>AUDPDM_TOP</name>
+            <description>Audio PDM Top Level Configuration</description>
+            <addressOffset>0xC00</addressOffset>
+            <resetValue>0x10000000</resetValue>
+            <fields>
+                <field>
+                    <name>audio_ckg_en</name>
+                    <description>Audio Clock Gating Enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_itf_inv_sel</name>
+                    <description>ADC interface inversion select</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>pdm_itf_inv_sel</name>
+                    <description>PDM interface inversion select</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_rate</name>
+                    <description>ADC sample rate setting</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AUDPDM_ITF</name>
+            <description>Audio PDM Interface Configuration</description>
+            <addressOffset>0xC04</addressOffset>
+            <resetValue>0x00110000</resetValue>
+            <fields>
+                <field>
+                    <name>adc_0_en</name>
+                    <description>ADC Channel 0 enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_en</name>
+                    <description>ADC Channel 1 enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_en</name>
+                    <description>ADC Channel 2 enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>aud_rx0_sel</name>
+                    <description>Audio RX0 source select</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>aud_rx1_sel</name>
+                    <description>Audio RX1 source select</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>aud_rx2_sel</name>
+                    <description>Audio RX2 source select</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_itf_en</name>
+                    <description>ADC Interface master enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_ADC_0</name>
+            <description>PDM ADC Filter and Scaling 0 (Channel 0-2)</description>
+            <addressOffset>0xC08</addressOffset>
+            <resetValue>0x00104100</resetValue>
+            <fields>
+                <field>
+                    <name>adc_0_fir_mode</name>
+                    <description>ADC 0 FIR filter mode</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_fir_mode</name>
+                    <description>ADC 1 FIR filter mode</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_fir_mode</name>
+                    <description>ADC 2 FIR filter mode</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_scal</name>
+                    <description>ADC 0 digital volume scale value</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_scal</name>
+                    <description>ADC 1 digital volume scale value</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_scal</name>
+                    <description>ADC 2 digital volume scale value</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_ADC_1</name>
+            <description>PDM ADC Dynamic Filter (K1/K2) Configuration</description>
+            <addressOffset>0xC0C</addressOffset>
+            <resetValue>0x1b86e1b8</resetValue>
+            <fields>
+                <field>
+                    <name>adc_0_k1</name>
+                    <description>ADC 0 Dynamic coefficient K1 value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_k1_en</name>
+                    <description>ADC 0 Dynamic K1 enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_k2</name>
+                    <description>ADC 0 Dynamic coefficient K2 value</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_k2_en</name>
+                    <description>ADC 0 Dynamic K2 enable</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_k1</name>
+                    <description>ADC 1 Dynamic coefficient K1 value</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_k1_en</name>
+                    <description>ADC 1 Dynamic K1 enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_k2</name>
+                    <description>ADC 1 Dynamic coefficient K2 value</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_k2_en</name>
+                    <description>ADC 1 Dynamic K2 enable</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_k1</name>
+                    <description>ADC 2 Dynamic coefficient K1 value</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_k1_en</name>
+                    <description>ADC 2 Dynamic K1 enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_k2</name>
+                    <description>ADC 2 Dynamic coefficient K2 value</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_k2_en</name>
+                    <description>ADC 2 Dynamic K2 enable</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_DAC_0</name>
+            <description>PDM Interface Timing and Level Swap</description>
+            <addressOffset>0xC10</addressOffset>
+            <resetValue>0x00000fc1</resetValue>
+            <fields>
+                <field>
+                    <name>adc_pdm_h</name>
+                    <description>PDM input clock high period</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_pdm_l</name>
+                    <description>PDM input clock low period</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_pdm_lvl_swap</name>
+                    <description>ADC 0 PDM level swap</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_pdm_lvl_swap</name>
+                    <description>ADC 1 PDM level swap</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_pdm_lvl_swap</name>
+                    <description>ADC 2 PDM level swap</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_PDM_0</name>
+            <description>PDM Interface Enable and Channel Select</description>
+            <addressOffset>0xC1C</addressOffset>
+            <resetValue>0x00000440</resetValue>
+            <fields>
+                <field>
+                    <name>pdm_0_en</name>
+                    <description>PDM Interface 0 enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>pdm_1_en</name>
+                    <description>PDM Interface 1 enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>pdm_2_en</name>
+                    <description>PDM Interface 2 enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_pdm_sel</name>
+                    <description>ADC 0 PDM source select</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_pdm_sel</name>
+                    <description>ADC 1 PDM source select</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_pdm_sel</name>
+                    <description>ADC 2 PDM source select</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_RSVD0</name>
+            <description>PDM Reserved Register 0</description>
+            <addressOffset>0xC20</addressOffset>
+            <resetValue>0x0000ffff</resetValue>
+            <fields>
+                <field>
+                    <name>rsvd0</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_DBG_0</name>
+            <description>PDM Debug Register 0</description>
+            <addressOffset>0xC24</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_test_clkin_en</name>
+                    <description>ADC test clock input enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_test_din_en</name>
+                    <description>ADC test data input enable</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>aud_test_read_sel</name>
+                    <description>Audio test read select</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_DBG_1</name>
+            <description>PDM Debug Read Register 1</description>
+            <addressOffset>0xC28</addressOffset>
+            <fields>
+                <field>
+                    <name>aud_test_read</name>
+                    <description>Audio test read data</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_DBG_2</name>
+            <description>PDM Debug Register 2 (FIR 4S)</description>
+            <addressOffset>0xC2C</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_fir_4s_val</name>
+                    <description>ADC FIR 4S value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>20</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_0_fir_4s_en</name>
+                    <description>ADC 0 FIR 4S enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_1_fir_4s_en</name>
+                    <description>ADC 1 FIR 4S enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_2_fir_4s_en</name>
+                    <description>ADC 2 FIR 4S enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_0_test_sel</name>
+                    <description>ADC Input 0 test select</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_1_test_sel</name>
+                    <description>ADC Input 1 test select</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_2_test_sel</name>
+                    <description>ADC Input 2 test select</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_DBG_3</name>
+            <description>PDM Debug Register 3 (reserved)</description>
+            <addressOffset>0xC30</addressOffset>
+            <resetValue>0x00000000</resetValue>
+        </register>
+        <register>
+            <name>PDM_DBG_4</name>
+            <description>PDM Debug Register 4 (ADC Ratio)</description>
+            <addressOffset>0xC34</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_in_ratio_4s_val</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_ch0_ratio_4s_val</name>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_ch1_ratio_4s_val</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>adc_in_ch2_ratio_4s_val</name>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>pdm_in_ratio_4s_val</name>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>pdm_in_ratio_4s</name>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_ADC_S0</name>
+            <description>ADC Channel 0 Digital Volume Scale</description>
+            <addressOffset>0xC38</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_s0_volume</name>
+                    <description>Digital Volume 0 (9 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>9</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_ADC_S1</name>
+            <description>ADC Channel 1 Digital Volume Scale</description>
+            <addressOffset>0xC3C</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_s1_volume</name>
+                    <description>Digital Volume 1 (9 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>9</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_ADC_S2</name>
+            <description>ADC Channel 2 Digital Volume Scale</description>
+            <addressOffset>0xC40</addressOffset>
+            <fields>
+                <field>
+                    <name>adc_s2_volume</name>
+                    <description>Digital Volume 2 (9 bits)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>9</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_RX_FIFO_CTRL</name>
+            <description>PDM RX FIFO Control Register</description>
+            <addressOffset>0xC80</addressOffset>
+            <resetValue>0x00170000</resetValue>
+            <fields>
+                <field>
+                    <name>rx_fifo_flush</name>
+                    <description>Flush RX FIFO</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToClear</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>rxo_int_en</name>
+                    <description>RX Overflow Interrupt Enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rxu_int_en</name>
+                    <description>RX Underflow Interrupt Enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rxa_int_en</name>
+                    <description>RX Available Interrupt Enable</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_drq_en</name>
+                    <description>RX DMA Request Enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_data_res</name>
+                    <description>RX data resolution (0: 16-bit, 1: 20-bit)</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_ch_en</name>
+                    <description>Enabled RX channels (Bit 0:Ch0, Bit 1:Ch1, Bit 2:Ch2)</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_drq_cnt</name>
+                    <description>RX DMA Request count/unit</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_trg_level</name>
+                    <description>RX FIFO available trigger level</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>rx_data_mode</name>
+                    <description>RX FIFO data storage mode</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_RX_FIFO_STATUS</name>
+            <description>PDM RX FIFO Status Register</description>
+            <addressOffset>0xC84</addressOffset>
+            <fields>
+                <field>
+                    <name>rxo_int</name>
+                    <description>RX Overflow Interrupt Status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rxu_int</name>
+                    <description>RX Underflow Interrupt Status</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rxa_int</name>
+                    <description>RX Available Interrupt Status</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rxa_cnt</name>
+                    <description>RX FIFO available data count</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>6</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>rxa</name>
+                    <description>RX FIFO available flag</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PDM_RX_FIFO_DATA</name>
+            <description>PDM RX FIFO Read Data Register</description>
+            <addressOffset>0xC88</addressOffset>
+            <fields>
+                <field>
+                    <name>rx_data</name>
+                    <description>Read data from RX FIFO</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

@@ -1,0 +1,3644 @@
+<!-- | Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Mapping**            | **FULL**  | Populated based on `tzc_sec_reg.h`. This covers multiple regions: ROM, BMX (Bus Matrix), OCRAM, WRAM, SF (Flash), PSRAM-A, PSRAM-B, XRAM, and global controls.                                                                                                                          |
+| **TZSRG Regions**      | **FULL**  | Defines Security Region Generator (TZSRG) control blocks for internal memory and XIP space. Each SRG supports multiple regions (R0, R1, R2, R3) defined by start/end addresses, protection IDs (ID_EN), and enablement/lock bits (R0_EN, R0_LOCK).                                       |
+| **TZID/Bus Master**    | **FULL**  | Implements TZID registers (`tzc_bmx_tzmid`, `tzc_mm_bmx_tzmid`) which assign TrustZone IDs (TZIDs) to major bus masters (CPUs, DMA, LZ4, WiFi, EMAC). TZIDs are used by the TZC to check permissions against memory regions.                                                              |
+| **Memory Segmentation**| **FULL**  | Detailed registers for OCRAM, WRAM, PSRAM-A/B, VRAM, and L2SRAM, allowing dynamic memory partitioning between Secure and Non-Secure domains.                                                                                                                                             |
+| **Global Controls**    | **FULL**  | Includes global controls (`tzc_glb_ctrl_0/2`) which enforce security policies on reset sources and various global miscellaneous blocks.                                                                                                                                                |
+| **Base Address**       | Explicit | 0x20005000 (TZ1_BASE / TZC_SEC_BASE).                                                                                                                                                                                                                                                 |
+-->
+<peripheral>
+    <name>TZC_SEC</name>
+    <description>TrustZone Controller (Secure Domain) - Controls access to ROM, SRAMs, Flash, and Bus Masters.</description>
+    <groupName>TZC</groupName>
+    <baseAddress>0x20005000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x1000</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <!-- ================================================================================== -->
+        <!-- ROM TZC Registers (0x40 - 0x54)                                                    -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_ROM_TZSRG_CTRL</name>
+            <description>ROM Security Region Generator Control</description>
+            <addressOffset>0x40</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_rom_tzsrg_r0_id_en</name>
+                    <description>Region 0 permission settings</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r1_id_en</name>
+                    <description>Region 1 permission settings</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r2_id_en</name>
+                    <description>Region 2 permission settings</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sboot_done</name>
+                    <description>Secure boot completion flag/control</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_ROM_TZSRG_ADR_MASK</name>
+            <description>ROM Security Region Address Mask</description>
+            <addressOffset>0x44</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_rom_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_ROM_TZSRG_R0</name>
+            <description>ROM Security Region 0 Start/End Address</description>
+            <addressOffset>0x48</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_rom_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_ROM_TZSRG_R1</name>
+            <description>ROM Security Region 1 Start/End Address</description>
+            <addressOffset>0x4C</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_rom_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_ROM_TZSRG_R2</name>
+            <description>ROM Security Region 2 Start/End Address</description>
+            <addressOffset>0x50</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_rom_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_rom_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_ROM_TZSRG_R3</name>
+            <description>ROM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x54</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- BMX TZC Master ID Registers (0x100 - 0x114)                                        -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_BMX_TZMID</name>
+            <description>Bus Matrix Master TZID Assignment</description>
+            <addressOffset>0x100</addressOffset>
+            <resetValue>0x07FF0000</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_pico_tzmid</name>
+                    <description>PICO core TZID value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_tzmid</name>
+                    <description>Multimedia core TZID value</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_usb_tzmid</name>
+                    <description>USB controller TZID value</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wifi_tzmid</name>
+                    <description>WiFi controller TZID value</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cci_tzmid</name>
+                    <description>CCI controller TZID value</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sdhm_tzmid</name>
+                    <description>SD Host Master TZID value</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_emacA_tzmid</name>
+                    <description>EMAC A TZID value</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cpu_tzmid</name>
+                    <description>M0 CPU TZID value</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma_tzmid</name>
+                    <description>DMA0/DMA1 TZID value</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma2_tzmid</name>
+                    <description>DMA2 TZID value</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_lz4_tzmid</name>
+                    <description>LZ4 TZID value</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_pico_tzmid_sel</name>
+                    <description>PICO core TZID select enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_tzmid_sel</name>
+                    <description>Multimedia core TZID select enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_usb_tzmid_sel</name>
+                    <description>USB controller TZID select enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wifi_tzmid_sel</name>
+                    <description>WiFi controller TZID select enable</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cci_tzmid_sel</name>
+                    <description>CCI controller TZID select enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sdhm_tzmid_sel</name>
+                    <description>SD Host Master TZID select enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_emacA_tzmid_sel</name>
+                    <description>EMAC A TZID select enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cpu_tzmid_sel</name>
+                    <description>M0 CPU TZID select enable</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma_tzmid_sel</name>
+                    <description>DMA0/DMA1 TZID select enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma2_tzmid_sel</name>
+                    <description>DMA2 TZID select enable</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_lz4_tzmid_sel</name>
+                    <description>LZ4 TZID select enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_BMX_TZMID_LOCK</name>
+            <description>Bus Matrix Master TZID Lock (Write-Once)</description>
+            <addressOffset>0x104</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_pico_tzmid_lock</name>
+                    <description>PICO core TZID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_tzmid_lock</name>
+                    <description>Multimedia core TZID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_usb_tzmid_lock</name>
+                    <description>USB controller TZID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wifi_tzmid_lock</name>
+                    <description>WiFi controller TZID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cci_tzmid_lock</name>
+                    <description>CCI controller TZID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sdhm_tzmid_lock</name>
+                    <description>SD Host Master TZID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_emacA_tzmid_lock</name>
+                    <description>EMAC A TZID lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_cpu_tzmid_lock</name>
+                    <description>M0 CPU TZID lock</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma_tzmid_lock</name>
+                    <description>DMA0/DMA1 TZID lock</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_dma2_tzmid_lock</name>
+                    <description>DMA2 TZID lock</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_lz4_tzmid_lock</name>
+                    <description>LZ4 TZID lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_BMX_S0</name>
+            <description>Bus Matrix Slave 0 Access Control Enable (MM, DMA, PWR, SDH, EMAC)</description>
+            <addressOffset>0x108</addressOffset>
+            <resetValue>0x00000FFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_bmx_mm_tzsid_en</name>
+                    <description>MM TZSID enable (bits [1:0] = R/W permission)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_dma_tzsid_en</name>
+                    <description>DMA TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_dma2_tzsid_en</name>
+                    <description>DMA2 TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_pwr_tzsid_en</name>
+                    <description>Power (PDS/HBN/AON) TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_sdh_tzsid_en</name>
+                    <description>SD Host TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_emac_tzsid_en</name>
+                    <description>EMAC TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_mm_tzsid_lock</name>
+                    <description>MM TZSID Lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_dma_tzsid_lock</name>
+                    <description>DMA TZSID Lock</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_dma2_tzsid_lock</name>
+                    <description>DMA2 TZSID Lock</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_pwr_tzsid_lock</name>
+                    <description>Power (PDS/HBN/AON) TZSID Lock</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_sdh_tzsid_lock</name>
+                    <description>SDH TZSID Lock</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_emac_tzsid_lock</name>
+                    <description>EMAC TZSID Lock</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_BMX_S1</name>
+            <description>Bus Matrix Slave 1 Access Control Enable (Peripherals: UART, SPI, I2C, etc.)</description>
+            <addressOffset>0x10C</addressOffset>
+            <resetValue>0xFFFFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_bmx_s10_tzsid_en</name>
+                    <description>Slave 10 (UART0) TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s11_tzsid_en</name>
+                    <description>Slave 11 (UART1) TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s12_tzsid_en</name>
+                    <description>Slave 12 (SPI0) TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s13_tzsid_en</name>
+                    <description>Slave 13 (I2C0) TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s14_tzsid_en</name>
+                    <description>Slave 14 (PWM) TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s15_tzsid_en</name>
+                    <description>Slave 15 (TIMER0) TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s16_tzsid_en</name>
+                    <description>Slave 16 (IR) TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s17_tzsid_en</name>
+                    <description>Slave 17 (CKS) TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s18_tzsid_en</name>
+                    <description>Slave 18 (QDEC) TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s19_tzsid_en</name>
+                    <description>Slave 19 (KYS) TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1a_tzsid_en</name>
+                    <description>Slave 1A (UART2) TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1b_tzsid_en</name>
+                    <description>Slave 1B (Reserved) TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1c_tzsid_en</name>
+                    <description>Slave 1C (Reserved) TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1d_tzsid_en</name>
+                    <description>Slave 1D (Reserved) TZSID enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1e_tzsid_en</name>
+                    <description>Slave 1E (Reserved) TZSID enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1f_tzsid_en</name>
+                    <description>Slave 1F (Reserved) TZSID enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_BMX_S2</name>
+            <description>Bus Matrix Slave 2 Access Control Enable (Ext/Wireless)</description>
+            <addressOffset>0x110</addressOffset>
+            <resetValue>0xFFFFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_bmx_s20_tzsid_en</name>
+                    <description>Slave 20 TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s21_tzsid_en</name>
+                    <description>Slave 21 TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s22_tzsid_en</name>
+                    <description>Slave 22 TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s23_tzsid_en</name>
+                    <description>Slave 23 TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s24_tzsid_en</name>
+                    <description>Slave 24 TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s25_tzsid_en</name>
+                    <description>Slave 25 TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s26_tzsid_en</name>
+                    <description>Slave 26 TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s27_tzsid_en</name>
+                    <description>Slave 27 TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s28_tzsid_en</name>
+                    <description>Slave 28 TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s29_tzsid_en</name>
+                    <description>Slave 29 TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2a_tzsid_en</name>
+                    <description>Slave 2A TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2b_tzsid_en</name>
+                    <description>Slave 2B TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2c_tzsid_en</name>
+                    <description>Slave 2C TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2d_tzsid_en</name>
+                    <description>Slave 2D TZSID enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2e_tzsid_en</name>
+                    <description>Slave 2E TZSID enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2f_tzsid_en</name>
+                    <description>Slave 2F TZSID enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_BMX_S_LOCK</name>
+            <description>Bus Matrix Slave Access Control Lock (Write-Once)</description>
+            <addressOffset>0x114</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_bmx_s10_tzsid_lock</name>
+                    <description>Slave 10 (UART0) lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s11_tzsid_lock</name>
+                    <description>Slave 11 (UART1) lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s12_tzsid_lock</name>
+                    <description>Slave 12 (SPI0) lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s13_tzsid_lock</name>
+                    <description>Slave 13 (I2C0) lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s14_tzsid_lock</name>
+                    <description>Slave 14 (PWM) lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s15_tzsid_lock</name>
+                    <description>Slave 15 (TIMER0) lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s16_tzsid_lock</name>
+                    <description>Slave 16 (IR) lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s17_tzsid_lock</name>
+                    <description>Slave 17 (CKS) lock</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s18_tzsid_lock</name>
+                    <description>Slave 18 (QDEC) lock</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s19_tzsid_lock</name>
+                    <description>Slave 19 (KYS) lock</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1a_tzsid_lock</name>
+                    <description>Slave 1A (UART2) lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1b_tzsid_lock</name>
+                    <description>Slave 1B lock</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1c_tzsid_lock</name>
+                    <description>Slave 1C lock</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1d_tzsid_lock</name>
+                    <description>Slave 1D lock</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1e_tzsid_lock</name>
+                    <description>Slave 1E lock</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s1f_tzsid_lock</name>
+                    <description>Slave 1F lock</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s20_tzsid_lock</name>
+                    <description>Slave 20 lock</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s21_tzsid_lock</name>
+                    <description>Slave 21 lock</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s22_tzsid_lock</name>
+                    <description>Slave 22 lock</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s23_tzsid_lock</name>
+                    <description>Slave 23 lock</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s24_tzsid_lock</name>
+                    <description>Slave 24 lock</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s25_tzsid_lock</name>
+                    <description>Slave 25 lock</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s26_tzsid_lock</name>
+                    <description>Slave 26 lock</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s27_tzsid_lock</name>
+                    <description>Slave 27 lock</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s28_tzsid_lock</name>
+                    <description>Slave 28 lock</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s29_tzsid_lock</name>
+                    <description>Slave 29 lock</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2a_tzsid_lock</name>
+                    <description>Slave 2A lock</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2b_tzsid_lock</name>
+                    <description>Slave 2B lock</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2c_tzsid_lock</name>
+                    <description>Slave 2C lock</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2d_tzsid_lock</name>
+                    <description>Slave 2D lock</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2e_tzsid_lock</name>
+                    <description>Slave 2E lock</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_bmx_s2f_tzsid_lock</name>
+                    <description>Slave 2F lock</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- OCRAM TZC Registers (0x140 - 0x154)                                                -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_OCRAM_TZSRG_CTRL</name>
+            <description>OCRAM Security Region Generator Control</description>
+            <addressOffset>0x140</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_ocram_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map (4 bits = 4 masters)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_rx_id_en</name>
+                    <description>Region X (reserved) TZID permission map</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_rx_en</name>
+                    <description>Region X (reserved) enable</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_rx_lock</name>
+                    <description>Region X (reserved) lock (Write-Once)</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_OCRAM_TZSRG_ADR_MASK</name>
+            <description>OCRAM Security Region Address Mask</description>
+            <addressOffset>0x144</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_ocram_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_OCRAM_TZSRG_R0</name>
+            <description>OCRAM Security Region 0 Start/End Address</description>
+            <addressOffset>0x148</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_ocram_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_OCRAM_TZSRG_R1</name>
+            <description>OCRAM Security Region 1 Start/End Address</description>
+            <addressOffset>0x14C</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_ocram_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_OCRAM_TZSRG_R2</name>
+            <description>OCRAM Security Region 2 Start/End Address</description>
+            <addressOffset>0x150</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_ocram_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_ocram_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_OCRAM_TZSRG_R3</name>
+            <description>OCRAM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x154</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- WRAM TZC Registers (0x180 - 0x194)                                                 -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_WRAM_TZSRG_CTRL</name>
+            <description>WRAM Security Region Generator Control</description>
+            <addressOffset>0x180</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_wram_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_rx_id_en</name>
+                    <description>Region X (reserved) TZID permission map</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_rx_en</name>
+                    <description>Region X (reserved) enable</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_rx_lock</name>
+                    <description>Region X (reserved) lock (Write-Once)</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WRAM_TZSRG_ADR_MASK</name>
+            <description>WRAM Security Region Address Mask</description>
+            <addressOffset>0x184</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_wram_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WRAM_TZSRG_R0</name>
+            <description>WRAM Security Region 0 Start/End Address</description>
+            <addressOffset>0x188</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_wram_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WRAM_TZSRG_R1</name>
+            <description>WRAM Security Region 1 Start/End Address</description>
+            <addressOffset>0x18C</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_wram_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WRAM_TZSRG_R2</name>
+            <description>WRAM Security Region 2 Start/End Address</description>
+            <addressOffset>0x190</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_wram_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_wram_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WRAM_TZSRG_R3</name>
+            <description>WRAM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x194</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_WIFI_DBG</name>
+            <description>WiFi Debug Disable Control</description>
+            <addressOffset>0x198</addressOffset>
+            <resetValue>0x00000001</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_mac_dbg_dis</name>
+                    <description>Disable MAC debug access</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- Misc Peripheral TZC Control (0x240 - 0x250) - Currently reserved/dummy             -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_PDM_CTRL</name>
+            <description>PDM TrustZone Control (Reserved)</description>
+            <addressOffset>0x240</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_UART_CTRL</name>
+            <description>UART TrustZone Control (Reserved)</description>
+            <addressOffset>0x244</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_I2C_CTRL</name>
+            <description>I2C TrustZone Control (Reserved)</description>
+            <addressOffset>0x248</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_TIMER_CTRL</name>
+            <description>TIMER TrustZone Control (Reserved)</description>
+            <addressOffset>0x24C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_I2S_CTRL</name>
+            <description>I2S TrustZone Control (Reserved)</description>
+            <addressOffset>0x250</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- SF (Flash) TZC Registers (0x280 - 0x298)                                           -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_SF_TZSRG_CTRL</name>
+            <description>Serial Flash (XIP) Security Region Generator Control</description>
+            <addressOffset>0x280</addressOffset>
+            <resetValue>0x000FFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_id_en</name>
+                    <description>Region 3 TZID permission map</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_rx_id_en</name>
+                    <description>Region X (reserved) TZID permission map</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_en</name>
+                    <description>Region 3 enable</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_rx_en</name>
+                    <description>Region X (reserved) enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_lock</name>
+                    <description>Region 3 lock (Write-Once)</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_rx_lock</name>
+                    <description>Region X (reserved) lock (Write-Once)</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_ADR_MASK</name>
+            <description>Serial Flash Security Region Address Mask</description>
+            <addressOffset>0x284</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_adr_mask</name>
+                    <description>Address mask bits [18:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>19</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_R0</name>
+            <description>Serial Flash Security Region 0 Start/End Address</description>
+            <addressOffset>0x288</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_R1</name>
+            <description>Serial Flash Security Region 1 Start/End Address</description>
+            <addressOffset>0x28C</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_R2</name>
+            <description>Serial Flash Security Region 2 Start/End Address</description>
+            <addressOffset>0x290</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_R3</name>
+            <description>Serial Flash Security Region 3 Start/End Address</description>
+            <addressOffset>0x294</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SF_TZSRG_MSB</name>
+            <description>Serial Flash Security Region Address MSBs</description>
+            <addressOffset>0x298</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_end_msb</name>
+                    <description>Region 0 end address MSBs</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r0_start_msb</name>
+                    <description>Region 0 start address MSBs</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_end_msb</name>
+                    <description>Region 1 end address MSBs</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r1_start_msb</name>
+                    <description>Region 1 start address MSBs</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_end_msb</name>
+                    <description>Region 2 end address MSBs</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r2_start_msb</name>
+                    <description>Region 2 start address MSBs</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_end_msb</name>
+                    <description>Region 3 end address MSBs</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsrg_r3_start_msb</name>
+                    <description>Region 3 start address MSBs</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- Multimedia BMX TZC Registers (0x300 - 0x318)                                       -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_MM_BMX_TZMID</name>
+            <description>Multimedia Bus Matrix Master TZID Assignment</description>
+            <addressOffset>0x300</addressOffset>
+            <resetValue>0x003F0000</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_mmcpu_tzmid</name>
+                    <description>MM CPU (D0) TZID value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_blai_tzmid</name>
+                    <description>BLAI (NPU) TZID value</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_tzmid</name>
+                    <description>CODEC TZID value</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_subsys_tzmid</name>
+                    <description>Multimedia Subsystem TZID value</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_x2ddma_tzmid</name>
+                    <description>2D DMA TZID value</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xdma_tzmid</name>
+                    <description>DMA2 TZID value</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmcpu_tzmid_sel</name>
+                    <description>MM CPU (D0) TZID select enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_blai_tzmid_sel</name>
+                    <description>BLAI (NPU) TZID select enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_tzmid_sel</name>
+                    <description>CODEC TZID select enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_subsys_tzmid_sel</name>
+                    <description>Multimedia Subsystem TZID select enable</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_x2ddma_tzmid_sel</name>
+                    <description>2D DMA TZID select enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xdma_tzmid_sel</name>
+                    <description>DMA2 TZID select enable</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_TZMID_LOCK</name>
+            <description>Multimedia Bus Matrix Master TZID Lock (Write-Once)</description>
+            <addressOffset>0x304</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_mmcpu_tzmid_lock</name>
+                    <description>MM CPU (D0) TZID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_blai_tzmid_lock</name>
+                    <description>BLAI (NPU) TZID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_tzmid_lock</name>
+                    <description>CODEC TZID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_subsys_tzmid_lock</name>
+                    <description>Multimedia Subsystem TZID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_x2ddma_tzmid_lock</name>
+                    <description>2D DMA TZID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xdma_tzmid_lock</name>
+                    <description>DMA2 TZID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_S0</name>
+            <description>Multimedia Bus Matrix Slave 0 Access Control Enable (MM Peripherals)</description>
+            <addressOffset>0x308</addressOffset>
+            <resetValue>0xFFFFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_mmperi_s10_tzsid_en</name>
+                    <description>Slave 10 (MM Periph) TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s11_tzsid_en</name>
+                    <description>Slave 11 TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s12_tzsid_en</name>
+                    <description>Slave 12 TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s13_tzsid_en</name>
+                    <description>Slave 13 TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s14_tzsid_en</name>
+                    <description>Slave 14 TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s15_tzsid_en</name>
+                    <description>Slave 15 TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s16_tzsid_en</name>
+                    <description>Slave 16 TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s17_tzsid_en</name>
+                    <description>Slave 17 TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s18_tzsid_en</name>
+                    <description>Slave 18 TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s19_tzsid_en</name>
+                    <description>Slave 19 TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1a_tzsid_en</name>
+                    <description>Slave 1A TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1b_tzsid_en</name>
+                    <description>Slave 1B TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1c_tzsid_en</name>
+                    <description>Slave 1C TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1d_tzsid_en</name>
+                    <description>Slave 1D TZSID enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1e_tzsid_en</name>
+                    <description>Slave 1E TZSID enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1f_tzsid_en</name>
+                    <description>Slave 1F TZSID enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_S1</name>
+            <description>Multimedia Bus Matrix Slave 1 Access Control Enable (Codec Peripherals)</description>
+            <addressOffset>0x30C</addressOffset>
+            <resetValue>0xFFFFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_s10_tzsid_en</name>
+                    <description>Slave 10 TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s11_tzsid_en</name>
+                    <description>Slave 11 TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s12_tzsid_en</name>
+                    <description>Slave 12 TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s13_tzsid_en</name>
+                    <description>Slave 13 TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s14_tzsid_en</name>
+                    <description>Slave 14 TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s15_tzsid_en</name>
+                    <description>Slave 15 TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s16_tzsid_en</name>
+                    <description>Slave 16 TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s17_tzsid_en</name>
+                    <description>Slave 17 TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s18_tzsid_en</name>
+                    <description>Slave 18 TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s19_tzsid_en</name>
+                    <description>Slave 19 TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1a_tzsid_en</name>
+                    <description>Slave 1A TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1b_tzsid_en</name>
+                    <description>Slave 1B TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1c_tzsid_en</name>
+                    <description>Slave 1C TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1d_tzsid_en</name>
+                    <description>Slave 1D TZSID enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1e_tzsid_en</name>
+                    <description>Slave 1E TZSID enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1f_tzsid_en</name>
+                    <description>Slave 1F TZSID enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_S2</name>
+            <description>Multimedia Bus Matrix Slave 2 Access Control Enable (Codec Slaves)</description>
+            <addressOffset>0x310</addressOffset>
+            <resetValue>0xFFFFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_codec_s10_tzsid_en</name>
+                    <description>Codec Slave 10 TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s11_tzsid_en</name>
+                    <description>Codec Slave 11 TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s12_tzsid_en</name>
+                    <description>Codec Slave 12 TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s13_tzsid_en</name>
+                    <description>Codec Slave 13 TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s14_tzsid_en</name>
+                    <description>Codec Slave 14 TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s15_tzsid_en</name>
+                    <description>Codec Slave 15 TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s16_tzsid_en</name>
+                    <description>Codec Slave 16 TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s17_tzsid_en</name>
+                    <description>Codec Slave 17 TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s18_tzsid_en</name>
+                    <description>Codec Slave 18 TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s19_tzsid_en</name>
+                    <description>Codec Slave 19 TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1a_tzsid_en</name>
+                    <description>Codec Slave 1A TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1b_tzsid_en</name>
+                    <description>Codec Slave 1B TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1c_tzsid_en</name>
+                    <description>Codec Slave 1C TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1d_tzsid_en</name>
+                    <description>Codec Slave 1D TZSID enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1e_tzsid_en</name>
+                    <description>Codec Slave 1E TZSID enable</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1f_tzsid_en</name>
+                    <description>Codec Slave 1F TZSID enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_S_LOCK0</name>
+            <description>Multimedia Bus Matrix Slave Lock 0 (Write-Once)</description>
+            <addressOffset>0x314</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_mmperi_s10_tzsid_lock</name>
+                    <description>Slave 10 TZSID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s11_tzsid_lock</name>
+                    <description>Slave 11 TZSID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s12_tzsid_lock</name>
+                    <description>Slave 12 TZSID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s13_tzsid_lock</name>
+                    <description>Slave 13 TZSID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s14_tzsid_lock</name>
+                    <description>Slave 14 TZSID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s15_tzsid_lock</name>
+                    <description>Slave 15 TZSID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s16_tzsid_lock</name>
+                    <description>Slave 16 TZSID lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s17_tzsid_lock</name>
+                    <description>Slave 17 TZSID lock</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s18_tzsid_lock</name>
+                    <description>Slave 18 TZSID lock</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s19_tzsid_lock</name>
+                    <description>Slave 19 TZSID lock</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1a_tzsid_lock</name>
+                    <description>Slave 1A TZSID lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1b_tzsid_lock</name>
+                    <description>Slave 1B TZSID lock</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1c_tzsid_lock</name>
+                    <description>Slave 1C TZSID lock</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1d_tzsid_lock</name>
+                    <description>Slave 1D TZSID lock</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1e_tzsid_lock</name>
+                    <description>Slave 1E TZSID lock</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mmperi_s1f_tzsid_lock</name>
+                    <description>Slave 1F TZSID lock</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_BMX_S_LOCK1</name>
+            <description>Multimedia Bus Matrix Slave Lock 1 (Write-Once)</description>
+            <addressOffset>0x318</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_codec_s10_tzsid_lock</name>
+                    <description>Codec Slave 10 TZSID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s11_tzsid_lock</name>
+                    <description>Codec Slave 11 TZSID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s12_tzsid_lock</name>
+                    <description>Codec Slave 12 TZSID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s13_tzsid_lock</name>
+                    <description>Codec Slave 13 TZSID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s14_tzsid_lock</name>
+                    <description>Codec Slave 14 TZSID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s15_tzsid_lock</name>
+                    <description>Codec Slave 15 TZSID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s16_tzsid_lock</name>
+                    <description>Codec Slave 16 TZSID lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s17_tzsid_lock</name>
+                    <description>Codec Slave 17 TZSID lock</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s18_tzsid_lock</name>
+                    <description>Codec Slave 18 TZSID lock</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s19_tzsid_lock</name>
+                    <description>Codec Slave 19 TZSID lock</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1a_tzsid_lock</name>
+                    <description>Codec Slave 1A TZSID lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1b_tzsid_lock</name>
+                    <description>Codec Slave 1B TZSID lock</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1c_tzsid_lock</name>
+                    <description>Codec Slave 1C TZSID lock</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1d_tzsid_lock</name>
+                    <description>Codec Slave 1D TZSID lock</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1e_tzsid_lock</name>
+                    <description>Codec Slave 1E TZSID lock</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_codec_s1f_tzsid_lock</name>
+                    <description>Codec Slave 1F TZSID lock</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s10_tzsid_lock</name>
+                    <description>Slave 10 lock</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s11_tzsid_lock</name>
+                    <description>Slave 11 lock</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s12_tzsid_lock</name>
+                    <description>Slave 12 lock</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s13_tzsid_lock</name>
+                    <description>Slave 13 lock</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s14_tzsid_lock</name>
+                    <description>Slave 14 lock</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s15_tzsid_lock</name>
+                    <description>Slave 15 lock</description>
+                    <bitOffset>21</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s16_tzsid_lock</name>
+                    <description>Slave 16 lock</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s17_tzsid_lock</name>
+                    <description>Slave 17 lock</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s18_tzsid_lock</name>
+                    <description>Slave 18 lock</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s19_tzsid_lock</name>
+                    <description>Slave 19 lock</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1a_tzsid_lock</name>
+                    <description>Slave 1A lock</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1b_tzsid_lock</name>
+                    <description>Slave 1B lock</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1c_tzsid_lock</name>
+                    <description>Slave 1C lock</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1d_tzsid_lock</name>
+                    <description>Slave 1D lock</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1e_tzsid_lock</name>
+                    <description>Slave 1E lock</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_s1f_tzsid_lock</name>
+                    <description>Slave 1F lock</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- PSRAMA TZC Registers (0x380 - 0x394)                                               -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_PSRAMA_TZSRG_CTRL</name>
+            <description>PSRAM-A Security Region Generator Control</description>
+            <addressOffset>0x380</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psrama_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMA_TZSRG_ADR_MASK</name>
+            <description>PSRAM-A Security Region Address Mask</description>
+            <addressOffset>0x384</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_psrama_tzsrg_adr_mask</name>
+                    <description>Address mask bits [15:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMA_TZSRG_R0</name>
+            <description>PSRAM-A Security Region 0 Start/End Address</description>
+            <addressOffset>0x388</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psrama_tzsrg_r0_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r0_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMA_TZSRG_R1</name>
+            <description>PSRAM-A Security Region 1 Start/End Address</description>
+            <addressOffset>0x38C</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psrama_tzsrg_r1_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r1_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMA_TZSRG_R2</name>
+            <description>PSRAM-A Security Region 2 Start/End Address</description>
+            <addressOffset>0x390</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psrama_tzsrg_r2_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psrama_tzsrg_r2_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMA_TZSRG_R3</name>
+            <description>PSRAM-A Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x394</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- PSRAMB TZC Registers (0x3A0 - 0x3B4)                                               -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_PSRAMB_TZSRG_CTRL</name>
+            <description>PSRAM-B Security Region Generator Control</description>
+            <addressOffset>0x3A0</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psramb_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMB_TZSRG_ADR_MASK</name>
+            <description>PSRAM-B Security Region Address Mask</description>
+            <addressOffset>0x3A4</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_psramb_tzsrg_adr_mask</name>
+                    <description>Address mask bits [15:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMB_TZSRG_R0</name>
+            <description>PSRAM-B Security Region 0 Start/End Address</description>
+            <addressOffset>0x3A8</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psramb_tzsrg_r0_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r0_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMB_TZSRG_R1</name>
+            <description>PSRAM-B Security Region 1 Start/End Address</description>
+            <addressOffset>0x3AC</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psramb_tzsrg_r1_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r1_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMB_TZSRG_R2</name>
+            <description>PSRAM-B Security Region 2 Start/End Address</description>
+            <addressOffset>0x3B0</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_psramb_tzsrg_r2_end</name>
+                    <description>End address boundary (16-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_psramb_tzsrg_r2_start</name>
+                    <description>Start address boundary (16-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_PSRAMB_TZSRG_R3</name>
+            <description>PSRAM-B Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x3B4</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- XRAM TZC Registers (0x3C0 - 0x3D4)                                                 -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_XRAM_TZSRG_CTRL</name>
+            <description>XRAM Security Region Generator Control</description>
+            <addressOffset>0x3C0</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_xram_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_XRAM_TZSRG_ADR_MASK</name>
+            <description>XRAM Security Region Address Mask</description>
+            <addressOffset>0x3C4</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_xram_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_XRAM_TZSRG_R0</name>
+            <description>XRAM Security Region 0 Start/End Address</description>
+            <addressOffset>0x3C8</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_xram_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_XRAM_TZSRG_R1</name>
+            <description>XRAM Security Region 1 Start/End Address</description>
+            <addressOffset>0x3CC</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_xram_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_XRAM_TZSRG_R2</name>
+            <description>XRAM Security Region 2 Start/End Address</description>
+            <addressOffset>0x3D0</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_xram_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_xram_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_XRAM_TZSRG_R3</name>
+            <description>XRAM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x3D4</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- L2SRAM TZC Registers (0x340 - 0x354)                                               -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_L2SRAM_TZSRG_CTRL</name>
+            <description>L2SRAM Security Region Generator Control</description>
+            <addressOffset>0x340</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_L2SRAM_TZSRG_ADR_MASK</name>
+            <description>L2SRAM Security Region Address Mask</description>
+            <addressOffset>0x344</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_l2sram_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_L2SRAM_TZSRG_R0</name>
+            <description>L2SRAM Security Region 0 Start/End Address</description>
+            <addressOffset>0x348</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_L2SRAM_TZSRG_R1</name>
+            <description>L2SRAM Security Region 1 Start/End Address</description>
+            <addressOffset>0x34C</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_L2SRAM_TZSRG_R2</name>
+            <description>L2SRAM Security Region 2 Start/End Address</description>
+            <addressOffset>0x350</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_l2sram_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_L2SRAM_TZSRG_R3</name>
+            <description>L2SRAM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x354</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- VRAM TZC Registers (0x360 - 0x374)                                                 -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_VRAM_TZSRG_CTRL</name>
+            <description>VRAM Security Region Generator Control</description>
+            <addressOffset>0x360</addressOffset>
+            <resetValue>0x0000003F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_vram_tzsrg_r0_id_en</name>
+                    <description>Region 0 TZID permission map</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r1_id_en</name>
+                    <description>Region 1 TZID permission map</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r2_id_en</name>
+                    <description>Region 2 TZID permission map</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r0_en</name>
+                    <description>Region 0 enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r1_en</name>
+                    <description>Region 1 enable</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r2_en</name>
+                    <description>Region 2 enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r0_lock</name>
+                    <description>Region 0 lock (Write-Once)</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r1_lock</name>
+                    <description>Region 1 lock (Write-Once)</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r2_lock</name>
+                    <description>Region 2 lock (Write-Once)</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_VRAM_TZSRG_ADR_MASK</name>
+            <description>VRAM Security Region Address Mask</description>
+            <addressOffset>0x364</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_vram_tzsrg_adr_mask</name>
+                    <description>Address mask bits [9:0]</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_adr_mask_lock</name>
+                    <description>Address mask lock (Write-Once)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_VRAM_TZSRG_R0</name>
+            <description>VRAM Security Region 0 Start/End Address</description>
+            <addressOffset>0x368</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_vram_tzsrg_r0_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r0_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_VRAM_TZSRG_R1</name>
+            <description>VRAM Security Region 1 Start/End Address</description>
+            <addressOffset>0x36C</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_vram_tzsrg_r1_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r1_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_VRAM_TZSRG_R2</name>
+            <description>VRAM Security Region 2 Start/End Address</description>
+            <addressOffset>0x370</addressOffset>
+            <resetValue>0x000003FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_vram_tzsrg_r2_end</name>
+                    <description>End address boundary (10-bit offset)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_vram_tzsrg_r2_start</name>
+                    <description>Start address boundary (10-bit offset)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>10</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_VRAM_TZSRG_R3</name>
+            <description>VRAM Security Region 3 (Reserved/Dummy Register)</description>
+            <addressOffset>0x374</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- Global TZC Controls (0xF00 - 0xF28)                                                -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_GLB_CTRL_0</name>
+            <description>Global TrustZone Control Register 0</description>
+            <addressOffset>0xF00</addressOffset>
+            <resetValue>0x03FFFFFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_glb_pwron_rst_tzsid_en</name>
+                    <description>Power-on reset TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_cpu_reset_tzsid_en</name>
+                    <description>CPU reset TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_sys_reset_tzsid_en</name>
+                    <description>System reset TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_cpu2_reset_tzsid_en</name>
+                    <description>CPU2 reset TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_misc_tzsid_en</name>
+                    <description>Miscellaneous TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_sram_tzsid_en</name>
+                    <description>SRAM TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_swrst_tzsid_en</name>
+                    <description>Software reset TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_bmx_tzsid_en</name>
+                    <description>BMX TZSID enable</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_dbg_tzsid_en</name>
+                    <description>Debug TZSID enable</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_mbist_tzsid_en</name>
+                    <description>MBIST TZSID enable</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_clk_tzsid_en</name>
+                    <description>Clock TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_int_tzsid_en</name>
+                    <description>Interrupt TZSID enable</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_pwr_tzsid_en</name>
+                    <description>Power TZSID enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_GLB_CTRL_1</name>
+            <description>Global TrustZone Control Register 1 (Reserved)</description>
+            <addressOffset>0xF04</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_GLB_CTRL_2</name>
+            <description>Global TrustZone Control Register 2 (Lock)</description>
+            <addressOffset>0xF08</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_glb_pwron_rst_tzsid_lock</name>
+                    <description>Power-on reset TZSID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_cpu_reset_tzsid_lock</name>
+                    <description>CPU reset TZSID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_sys_reset_tzsid_lock</name>
+                    <description>System reset TZSID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_cpu2_reset_tzsid_lock</name>
+                    <description>CPU2 reset TZSID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_misc_tzsid_lock</name>
+                    <description>Miscellaneous TZSID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_sram_tzsid_lock</name>
+                    <description>SRAM TZSID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_swrst_tzsid_lock</name>
+                    <description>Software reset TZSID lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_bmx_tzsid_lock</name>
+                    <description>BMX TZSID lock</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_dbg_tzsid_lock</name>
+                    <description>Debug TZSID lock</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_mbist_tzsid_lock</name>
+                    <description>MBIST TZSID lock</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_clk_tzsid_lock</name>
+                    <description>Clock TZSID lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_int_tzsid_lock</name>
+                    <description>Interrupt TZSID lock</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_glb_pwr_tzsid_lock</name>
+                    <description>Power TZSID lock</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- Multimedia TZC Controls (0xF20 - 0xF28)                                            -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_MM_CTRL_0</name>
+            <description>Multimedia TrustZone Control Register 0</description>
+            <addressOffset>0xF20</addressOffset>
+            <resetValue>0x003033FF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_mm_pwron_rst_tzsid_en</name>
+                    <description>MM Power-on reset TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_cpu0_reset_tzsid_en</name>
+                    <description>MM CPU0 reset TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_sys_reset_tzsid_en</name>
+                    <description>MM system reset TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_cpu0_tzsid_en</name>
+                    <description>MM CPU0 TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_sram_tzsid_en</name>
+                    <description>MM SRAM TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_swrst_tzsid_en</name>
+                    <description>MM software reset TZSID enable</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_clk_tzsid_en</name>
+                    <description>MM clock TZSID enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_CTRL_1</name>
+            <description>Multimedia TrustZone Control Register 1 (Reserved)</description>
+            <addressOffset>0xF24</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>reserved</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_MM_CTRL_2</name>
+            <description>Multimedia TrustZone Control Register 2 (Lock)</description>
+            <addressOffset>0xF28</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_mm_pwron_rst_tzsid_lock</name>
+                    <description>MM Power-on reset TZSID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_cpu0_reset_tzsid_lock</name>
+                    <description>MM CPU0 reset TZSID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_sys_reset_tzsid_lock</name>
+                    <description>MM system reset TZSID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_cpu0_tzsid_lock</name>
+                    <description>MM CPU0 TZSID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_sram_tzsid_lock</name>
+                    <description>MM SRAM TZSID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_swrst_tzsid_lock</name>
+                    <description>MM software reset TZSID lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_mm_clk_tzsid_lock</name>
+                    <description>MM clock TZSID lock</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- ================================================================================== -->
+        <!-- Security Engine TZC Controls (0xF40 - 0xF48)                                       -->
+        <!-- ================================================================================== -->
+        <register>
+            <name>TZC_SE_CTRL_0</name>
+            <description>Security Engine TrustZone Control Register 0</description>
+            <addressOffset>0xF40</addressOffset>
+            <resetValue>0x00050FFF</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_se_sha_tzsid_en</name>
+                    <description>SHA TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_aes_tzsid_en</name>
+                    <description>AES TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_trng_tzsid_en</name>
+                    <description>TRNG TZSID enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_pka_tzsid_en</name>
+                    <description>PKA TZSID enable</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_cdet_tzsid_en</name>
+                    <description>CDET TZSID enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_gmac_tzsid_en</name>
+                    <description>GMAC TZSID enable</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_tzsid_crmd</name>
+                    <description>Security Engine TZID Command Mode</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_wdt_dly</name>
+                    <description>Security Engine Watchdog Delay Cycles</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SE_CTRL_1</name>
+            <description>Security Engine TrustZone Control Register 1</description>
+            <addressOffset>0xF44</addressOffset>
+            <resetValue>0x0000000F</resetValue>
+            <fields>
+                <field>
+                    <name>tzc_sf_cr_tzsid_en</name>
+                    <description>SF Control Register TZSID enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_sec_tzsid_en</name>
+                    <description>SF Security Register TZSID enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsid_crmd</name>
+                    <description>SF TZID Command Mode</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>TZC_SE_CTRL_2</name>
+            <description>Security Engine TrustZone Control Register 2 (Lock)</description>
+            <addressOffset>0xF48</addressOffset>
+            <fields>
+                <field>
+                    <name>tzc_se_sha_tzsid_lock</name>
+                    <description>SHA TZSID lock</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_aes_tzsid_lock</name>
+                    <description>AES TZSID lock</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_trng_tzsid_lock</name>
+                    <description>TRNG TZSID lock</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_pka_tzsid_lock</name>
+                    <description>PKA TZSID lock</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_cdet_tzsid_lock</name>
+                    <description>CDET TZSID lock</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_gmac_tzsid_lock</name>
+                    <description>GMAC TZSID lock</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_se_tzsid_crmd_lock</name>
+                    <description>Security Engine TZID Command Mode lock</description>
+                    <bitOffset>6</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_cr_tzsid_lock</name>
+                    <description>SF Control Register TZSID lock</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_sec_tzsid_lock</name>
+                    <description>SF Security Register TZSID lock</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tzc_sf_tzsid_crmd_lock</name>
+                    <description>SF TZID Command Mode lock</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

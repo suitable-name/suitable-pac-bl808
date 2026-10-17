@@ -1,0 +1,24 @@
+[package]
+name = "bl808-d0"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bouffalo Lab Community"]
+description = "Peripheral Access Crate for Bouffalo Lab BL808 (RISC-V D0 Core)"
+license = "MulanPSL-2.0"
+
+[dependencies]
+# Required dependency
+vcell = { workspace = true }
+
+# Optional dependencies (Workspace inheritance + local optional flag)
+critical-section = { workspace = true, optional = true }
+riscv = { workspace = true }
+riscv-rt = { workspace = true, optional = true }
+
+[features]
+default = ["critical-section"]
+# 'rt' enables the optional dependencies AND sets the correct riscv feature
+rt = ["dep:riscv-rt", "riscv/critical-section-single-hart"]
+
+# 'critical-section' simply enables the dependency
+critical-section = ["dep:critical-section"]

@@ -1,0 +1,473 @@
+<peripheral>
+  <name>DMA2D</name>
+  <description>2D Direct Memory Access Controller (Multimedia Subsystem)</description>
+  <groupName>DMA2D</groupName>
+  <baseAddress>0x30006000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>DMA2D_INT0</name>
+    <value>61</value>
+  </interrupt>
+  <interrupt>
+    <name>DMA2D_INT1</name>
+    <value>62</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>DMA_IntStatus</name>
+      <description>Status of the DMA interrupts after masking</description>
+      <addressOffset>0x000</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>IntStatus</name>
+          <description>Interrupt status for channels 0-7. Bit n corresponds to channel n.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_IntTCStatus</name>
+      <description>Interrupt terminal count request status</description>
+      <addressOffset>0x004</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>IntTCStatus</name>
+          <description>Terminal count interrupt status for channels 0-7.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_IntTCClear</name>
+      <description>Terminal count request clear</description>
+      <addressOffset>0x008</addressOffset>
+      <access>write-only</access>
+      <modifiedWriteValues>oneToClear</modifiedWriteValues>
+      <fields>
+        <field>
+          <name>IntTCClear</name>
+          <description>Clear terminal count interrupt for channels 0-7.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_EnbldChns</name>
+      <description>Channel enable status</description>
+      <addressOffset>0x00C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>EnabledChannels</name>
+          <description>Enable status for channels 0-7.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_Config</name>
+      <description>DMA Configuration Register</description>
+      <addressOffset>0x010</addressOffset>
+      <resetValue>0x00FF0000</resetValue>
+      <fields>
+        <field>
+          <name>E</name>
+          <description>SMDMA Enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>ChClkCG</name>
+          <description>Channel Clock Gating Enable. Bit n corresponds to channel n.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_Sync</name>
+      <description>DMA Synchronization Logic</description>
+      <addressOffset>0x014</addressOffset>
+      <fields>
+        <field>
+          <name>DMA_Sync</name>
+          <description>Synchronization for DMA request signals</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_SoftBReq</name>
+      <description>DMA Software Burst Request</description>
+      <addressOffset>0x018</addressOffset>
+      <fields>
+        <field>
+          <name>SoftBReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_SoftLBReq</name>
+      <description>DMA Software Last Burst Request</description>
+      <addressOffset>0x01C</addressOffset>
+      <fields>
+        <field>
+          <name>SoftLBReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_SoftSReq</name>
+      <description>DMA Software Single Request</description>
+      <addressOffset>0x020</addressOffset>
+      <fields>
+        <field>
+          <name>SoftSReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>DMA_SoftLSReq</name>
+      <description>DMA Software Last Single Request</description>
+      <addressOffset>0x024</addressOffset>
+      <fields>
+        <field>
+          <name>SoftLSReq</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <cluster>
+      <name>LANE%s</name>
+      <description>2D DMA Lane Registers</description>
+      <addressOffset>0x100</addressOffset>
+      <dim>2</dim>
+      <dimIncrement>0x100</dimIncrement>
+      <register>
+        <name>SrcAddr</name>
+        <description>Source start address</description>
+        <addressOffset>0x00</addressOffset>
+        <fields>
+          <field>
+            <name>SrcAddr</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>DstAddr</name>
+        <description>Destination start address</description>
+        <addressOffset>0x04</addressOffset>
+        <fields>
+          <field>
+            <name>DstAddr</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>LLI</name>
+        <description>Next LLI Address and control</description>
+        <addressOffset>0x08</addressOffset>
+        <fields>
+          <field>
+            <name>LLI_EN</name>
+            <description>Linked List Item enable</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>LLI_ADDR</name>
+            <description>Next LLI descriptor address (word-aligned)</description>
+            <bitOffset>2</bitOffset>
+            <bitWidth>30</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>BUS</name>
+        <description>Lane Bus and Burst Control</description>
+        <addressOffset>0x0C</addressOffset>
+        <resetValue>0x0C489000</resetValue>
+        <fields>
+          <field>
+            <name>TransferSize</name>
+            <description>Number of transfers (bursts or singles)</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>12</bitWidth>
+          </field>
+          <field>
+            <name>SRC_BURST</name>
+            <description>Source burst size: 0:1, 1:4, 2:8, 3:16</description>
+            <bitOffset>12</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>DST_BURST</name>
+            <description>Destination burst size: 0:1, 1:4, 2:8, 3:16</description>
+            <bitOffset>15</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>SRC_SIZE</name>
+            <description>Source transfer width: 0:8-bit, 1:16-bit, 2:32-bit</description>
+            <bitOffset>18</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>DST_SIZE</name>
+            <description>Destination transfer width: 0:8-bit, 1:16-bit, 2:32-bit</description>
+            <bitOffset>21</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>SI</name>
+            <description>Source increment</description>
+            <bitOffset>26</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>DI</name>
+            <description>Destination increment</description>
+            <bitOffset>27</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>Prot</name>
+            <description>Protection control</description>
+            <bitOffset>28</bitOffset>
+            <bitWidth>3</bitWidth>
+          </field>
+          <field>
+            <name>I</name>
+            <description>Terminal count interrupt enable</description>
+            <bitOffset>31</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>SRC_CNT</name>
+        <description>Source 2D Dimensions</description>
+        <addressOffset>0x10</addressOffset>
+        <fields>
+          <field>
+            <name>SRC_X_CNT</name>
+            <description>Source width in bytes/words</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>16</bitWidth>
+          </field>
+          <field>
+            <name>SRC_Y_CNT</name>
+            <description>Source height in lines</description>
+            <bitOffset>16</bitOffset>
+            <bitWidth>16</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>SRC_XIC</name>
+        <description>Source X Stride (Increment)</description>
+        <addressOffset>0x14</addressOffset>
+        <fields>
+          <field>
+            <name>SRC_X_INCR</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>SRC_YIC</name>
+        <description>Source Y Stride (Increment)</description>
+        <addressOffset>0x18</addressOffset>
+        <fields>
+          <field>
+            <name>SRC_Y_INCR</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>DST_CNT</name>
+        <description>Destination 2D Width</description>
+        <addressOffset>0x1C</addressOffset>
+        <fields>
+          <field>
+            <name>DST_X_CNT</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>16</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>DST_XIC</name>
+        <description>Destination X Stride (Increment)</description>
+        <addressOffset>0x20</addressOffset>
+        <fields>
+          <field>
+            <name>DST_X_INCR</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>DST_YIC</name>
+        <description>Destination Y Stride (Increment)</description>
+        <addressOffset>0x24</addressOffset>
+        <fields>
+          <field>
+            <name>DST_Y_INCR</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>32</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>KEY</name>
+        <description>Color Key Value</description>
+        <addressOffset>0x74</addressOffset>
+        <fields>
+          <field>
+            <name>KEY0</name>
+            <bitOffset>0</bitOffset>
+            <bitWidth>8</bitWidth>
+          </field>
+          <field>
+            <name>KEY1</name>
+            <bitOffset>8</bitOffset>
+            <bitWidth>8</bitWidth>
+          </field>
+          <field>
+            <name>KEY2</name>
+            <bitOffset>16</bitOffset>
+            <bitWidth>8</bitWidth>
+          </field>
+          <field>
+            <name>KEY3</name>
+            <bitOffset>24</bitOffset>
+            <bitWidth>8</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>KEY_EN</name>
+        <description>Color Key Control</description>
+        <addressOffset>0x78</addressOffset>
+        <fields>
+          <field>
+            <name>KEY_EN</name>
+            <description>Enable color key function</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>KEY_MODE</name>
+            <description>Key mode selection (0:8b, 1:16b, 2:24b, 3:32b)</description>
+            <bitOffset>1</bitOffset>
+            <bitWidth>2</bitWidth>
+          </field>
+          <field>
+            <name>KEY_STRB</name>
+            <bitOffset>4</bitOffset>
+            <bitWidth>4</bitWidth>
+          </field>
+        </fields>
+      </register>
+      <register>
+        <name>CFG</name>
+        <description>Lane Configuration and Flow Control</description>
+        <addressOffset>0x7C</addressOffset>
+        <fields>
+          <field>
+            <name>CH_EN</name>
+            <description>Enable channel</description>
+            <bitOffset>0</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>SrcPeripheral</name>
+            <bitOffset>1</bitOffset>
+            <bitWidth>5</bitWidth>
+          </field>
+          <field>
+            <name>DstPeripheral</name>
+            <bitOffset>6</bitOffset>
+            <bitWidth>5</bitWidth>
+          </field>
+          <field>
+            <name>FlowCntrl</name>
+            <description>Flow control type (M2M, M2P, etc)</description>
+            <bitOffset>11</bitOffset>
+            <bitWidth>3</bitWidth>
+          </field>
+          <field>
+            <name>AHB_B2B</name>
+            <bitOffset>14</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+          <field>
+            <name>FIFO_Empty</name>
+            <bitOffset>16</bitOffset>
+            <bitWidth>1</bitWidth>
+            <access>read-only</access>
+          </field>
+          <field>
+            <name>LLICounter</name>
+            <bitOffset>20</bitOffset>
+            <bitWidth>10</bitWidth>
+            <access>read-only</access>
+          </field>
+          <field>
+            <name>reg_dma_2d_en</name>
+            <description>Enable 2D DMA specific features</description>
+            <bitOffset>31</bitOffset>
+            <bitWidth>1</bitWidth>
+          </field>
+        </fields>
+      </register>
+    </cluster>
+  </registers>
+</peripheral>

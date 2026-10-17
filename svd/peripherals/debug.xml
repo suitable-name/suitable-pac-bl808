@@ -1,0 +1,183 @@
+<!-- | Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Mapping**            | **FULL**  | Populated based on `sec_dbg_reg.h`. This module controls chip ID readout and debug access authentication.                                                                                                                                                                               |
+| **Chip ID**            | **FULL**  | Implements two 32-bit registers (`sd_chip_id_low/high`) for reading the unique device identifier.                                                                                                                                                                                        |
+| **Security/JTAG**      | **FULL**  | Implements password-based authentication (two pairs of 32-bit registers: `sd_dbg_pwd` and `sd_dbg_pwd2`) used to unlock debug access, confirming the "Official SVD" assessment.                                                                                                            |
+| **Status/Control**     | **FULL**  | Includes the `sd_status` register (0x18) with control fields for triggering password verification, controlling the CCI (Chip Communication Interface), and exposing the debug state (`sd_dbg_mode`, `sd_dbg_ena`).                                                                         |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct sec_dbg_reg` bitfield annotations.                                                                                                                                                                                              |
+| **Base Address**       | Explicit | 0x20003000 (SEC_DBG_BASE in `bl808.h`).                                                                                                                                                                                                                                               |
+-->
+<peripheral>
+  <name>DEBUG</name>
+  <description>Security Debug and Chip Identification Control (SEC_DBG)</description>
+  <groupName>DEBUG</groupName>
+  <baseAddress>0x20003000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>DM</name>
+    <description>Debug Module Interrupt</description>
+    <value>61</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>SD_CHIP_ID_LOW</name>
+      <description>Chip ID Register Low Word</description>
+      <addressOffset>0x00</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sd_chip_id_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_CHIP_ID_HIGH</name>
+      <description>Chip ID Register High Word</description>
+      <addressOffset>0x04</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>sd_chip_id_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_DBG_PWD_LOW</name>
+      <description>Debug Access Password 1 Low Word</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>sd_dbg_pwd_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_DBG_PWD_HIGH</name>
+      <description>Debug Access Password 1 High Word</description>
+      <addressOffset>0x0C</addressOffset>
+      <fields>
+        <field>
+          <name>sd_dbg_pwd_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_DBG_PWD2_LOW</name>
+      <description>Debug Access Password 2 Low Word (Write to this triggers authentication)</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>sd_dbg_pwd2_low</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_DBG_PWD2_HIGH</name>
+      <description>Debug Access Password 2 High Word</description>
+      <addressOffset>0x14</addressOffset>
+      <fields>
+        <field>
+          <name>sd_dbg_pwd2_high</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_STATUS</name>
+      <description>Debug Status and Control Register</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>sd_dbg_pwd_busy</name>
+          <description>Debug password verification busy status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sd_dbg_pwd_trig</name>
+          <description>Debug password write trigger (must be set high for PWD check)</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sd_dbg_cci_read_en</name>
+          <description>CCI read enable for debug</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sd_dbg_cci_clk_sel</name>
+          <description>CCI clock select for debug</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sd_dbg_pwd_cnt</name>
+          <description>Debug password timer/counter</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>20</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sd_dbg_mode</name>
+          <description>Debug mode status</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sd_dbg_ena</name>
+          <description>Debug interface enable status</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SD_DBG_RESERVED</name>
+      <description>Debug Reserved Register</description>
+      <addressOffset>0x1C</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>sd_dbg_reserved</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

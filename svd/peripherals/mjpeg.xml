@@ -1,0 +1,1024 @@
+<peripheral>
+  <name>MJPEG</name>
+  <description>Motion JPEG Encoder</description>
+  <groupName>MJPEG</groupName>
+  <baseAddress>0x30021000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>MJPEG</name>
+    <description>MJPEG Interrupt</description>
+    <value>36</value>
+  </interrupt>
+  <interrupt>
+    <name>MJDEC</name>
+    <description>MJPEG Decoder Interrupt</description>
+    <value>56</value>
+  </interrupt>
+
+  <registers>
+    <!-- PART 1: Control Logic -->
+    <register>
+      <name>MJPEG_CONTROL_1</name>
+      <description>MJPEG Control Register 1: Enable, Bit Order, and Burst Length</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x00000386</resetValue>
+      <fields>
+        <field>
+          <name>reg_mjpeg_enable</name>
+          <description>MJPEG module enable.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_bit_order</name>
+          <description>Output JPEG bitstream order.</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_order_u_even</name>
+          <description>UV component order selection for even pixels.</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_last_hf_wblk_dmy</name>
+          <description>Dummy bit for last horizontal fetch block.</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_last_hf_hblk_dmy</name>
+          <description>Dummy bit for last vertical fetch block.</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_reflect_dmy</name>
+          <description>Dummy bit for reflection logic.</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_read_fwrap</name>
+          <description>Enable frame wrap for input reading.</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_w_xlen</name>
+          <description>AXI write burst length selection.</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_yuv_mode</name>
+          <description>YUV format mode selection.</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_hw_frame</name>
+          <description>Hardware frame buffer index (0-5).</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_CONTROL_2</name>
+      <description>MJPEG Control Register 2: SW Mode, Kick, and DVP Select</description>
+      <addressOffset>0x04</addressOffset>
+      <resetValue>0x01002000</resetValue>
+      <fields>
+        <field>
+          <name>reg_sw_frame</name>
+          <description>Software frame buffer index.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>reg_sw_kick</name>
+          <description>Software kick/start signal (pulse once).</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>reg_sw_kick_mode</name>
+          <description>Software kick mode enable.</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_sw_mode</name>
+          <description>MJPEG software mode enable.</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_sw_run</name>
+          <description>MJPEG software run/start.</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_yy_dvp2axi_sel</name>
+          <description>Select DVP2AXI source lane for Y component.</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_uv_dvp2axi_sel</name>
+          <description>Select DVP2AXI source lane for UV component.</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>3</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_wait_cycle</name>
+          <description>Wait cycles for FSM synchronization.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_YY_FRAME_ADDR</name>
+      <description>Y Component Input Frame Buffer Start Address</description>
+      <addressOffset>0x08</addressOffset>
+      <resetValue>0x80000000</resetValue>
+      <fields>
+        <field>
+          <name>reg_yy_addr_start</name>
+          <description>Start address for Y (Luminance) input data.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_UV_FRAME_ADDR</name>
+      <description>UV Component Input Frame Buffer Start Address</description>
+      <addressOffset>0x0C</addressOffset>
+      <resetValue>0x80000000</resetValue>
+      <fields>
+        <field>
+          <name>reg_uv_addr_start</name>
+          <description>Start address for UV (Chrominance) input data.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_YUV_MEM</name>
+      <description>YUV Memory Block Count Configuration</description>
+      <addressOffset>0x10</addressOffset>
+      <resetValue>0x00020002</resetValue>
+      <fields>
+        <field>
+          <name>reg_yy_mem_hblk</name>
+          <description>Horizontal block count for Y memory.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>reg_uv_mem_hblk</name>
+          <description>Horizontal block count for UV memory.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>JPEG_FRAME_ADDR</name>
+      <description>Output JPEG Frame Buffer Start Address</description>
+      <addressOffset>0x14</addressOffset>
+      <resetValue>0x80400000</resetValue>
+      <fields>
+        <field>
+          <name>reg_w_addr_start</name>
+          <description>Start address for compressed JPEG output stream.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>JPEG_STORE_MEMORY</name>
+      <description>JPEG Output Burst Count Configuration</description>
+      <addressOffset>0x18</addressOffset>
+      <resetValue>0x00004000</resetValue>
+      <fields>
+        <field>
+          <name>reg_w_burst_cnt</name>
+          <description>Write burst count value.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_CONTROL_3</name>
+      <description>MJPEG Interrupt, Status, and Frame Count Register</description>
+      <addressOffset>0x1C</addressOffset>
+      <resetValue>0x00000103</resetValue>
+      <fields>
+        <field>
+          <name>reg_int_normal_en</name>
+          <description>Normal interrupt enable.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_cam_en</name>
+          <description>Camera/DVP interrupt enable.</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_mem_en</name>
+          <description>Memory overrun interrupt enable.</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_frame_en</name>
+          <description>Frame complete interrupt enable.</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_normal_int</name>
+          <description>Normal interrupt status.</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_cam_int</name>
+          <description>Camera/DVP interrupt status.</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_mem_int</name>
+          <description>Memory overrun interrupt status.</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_frame_int</name>
+          <description>Frame complete interrupt status.</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_idle</name>
+          <description>MJPEG FSM idle status.</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_func</name>
+          <description>MJPEG FSM functional/running status.</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_wait</name>
+          <description>MJPEG FSM waiting status.</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_flsh</name>
+          <description>MJPEG FSM flushing status.</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_mans</name>
+          <description>MJPEG Manual Start status.</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>mjpeg_manf</name>
+          <description>MJPEG Manual Finish status.</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>axi_read_idle</name>
+          <description>AXI Read channel idle status.</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>axi_write_idle</name>
+          <description>AXI Write channel idle status.</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>reg_frame_cnt_trgr_int</name>
+          <description>Frame count to trigger an interrupt.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_idle_en</name>
+          <description>Idle state interrupt enable.</description>
+          <bitOffset>21</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_idle_int</name>
+          <description>Idle state interrupt status.</description>
+          <bitOffset>22</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>frame_valid_cnt</name>
+          <description>Number of valid frames processed.</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>5</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>reg_int_swap_en</name>
+          <description>Frame swap interrupt enable.</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_swap_int</name>
+          <description>Frame swap interrupt status.</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_FRAME_FIFO_POP</name>
+      <description>Interrupt Clear and FIFO Pop Register</description>
+      <addressOffset>0x20</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>rfifo_pop</name>
+          <description>Read FIFO pop command (pulsed).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_w_swap_clr</name>
+          <description>Write swap index clear (pulsed).</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_normal_clr</name>
+          <description>Clear normal interrupt.</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_cam_clr</name>
+          <description>Clear Camera/DVP interrupt.</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_mem_clr</name>
+          <description>Clear memory overrun interrupt.</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_frame_clr</name>
+          <description>Clear frame complete interrupt.</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_idle_clr</name>
+          <description>Clear idle state interrupt.</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_int_swap_clr</name>
+          <description>Clear frame swap interrupt.</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_FRAME_SIZE</name>
+      <description>MJPEG Resolution Configuration (Blocks)</description>
+      <addressOffset>0x24</addressOffset>
+      <resetValue>0x0014000F</resetValue>
+      <fields>
+        <field>
+          <name>reg_frame_wblk</name>
+          <description>Frame width in blocks.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>reg_frame_hblk</name>
+          <description>Frame height in blocks.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_HEADER_BYTE</name>
+      <description>MJPEG Header Byte Count and Component Order</description>
+      <addressOffset>0x28</addressOffset>
+      <resetValue>0xE4000000</resetValue>
+      <fields>
+        <field>
+          <name>reg_head_byte</name>
+          <description>Header byte count for JPEG start.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>reg_tail_exp</name>
+          <description>Tail expansion enable.</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_y0_order</name>
+          <description>Y0 data fetch order.</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_u0_order</name>
+          <description>U0 data fetch order.</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_y1_order</name>
+          <description>Y1 data fetch order.</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_v0_order</name>
+          <description>V0 data fetch order.</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_SWAP_MODE</name>
+      <description>Buffer Swap Configuration and Status</description>
+      <addressOffset>0x30</addressOffset>
+      <fields>
+        <field>
+          <name>reg_w_swap_mode</name>
+          <description>Enable hardware output buffer swap mode.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>sts_swap0_full</name>
+          <description>Swap Buffer 0 full status.</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_swap1_full</name>
+          <description>Swap Buffer 1 full status.</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_read_swap_idx</name>
+          <description>Index of the buffer currently being read.</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_swap_fstart</name>
+          <description>Frame swap start status.</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>sts_swap_fend</name>
+          <description>Frame swap end status.</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_SWAP_BIT_CNT</name>
+      <description>Swap Buffer Bit Counter</description>
+      <addressOffset>0x34</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_swap_end_bit_cnt</name>
+          <description>Bit count of the currently completed frame in the swap buffer.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_YUV_MEM_SW</name>
+      <description>Software Kick Row Count</description>
+      <addressOffset>0x38</addressOffset>
+      <resetValue>0x00000002</resetValue>
+      <fields>
+        <field>
+          <name>reg_sw_kick_hblk</name>
+          <description>Number of horizontal blocks to process when in SW kick mode.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_Y_FRAME_READ_STATUS_1</name>
+      <description>Y Component Frame Read Status 1: Memory and Frame Horizontal Block Count (read pointer)</description>
+      <addressOffset>0x40</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>yy_mem_hblk_r</name>
+          <description>Y memory horizontal block count (read pointer).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>yy_frm_hblk_r</name>
+          <description>Y frame horizontal block count (read pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_Y_FRAME_READ_STATUS_2</name>
+      <description>Y Component Frame Read Status 2: Block and Round Counters</description>
+      <addressOffset>0x44</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>yy_wblk_r</name>
+          <description>Y write-block read counter.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>yy_mem_rnd_r</name>
+          <description>Y memory round counter (read pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>yy_frm_cnt_r</name>
+          <description>Y frame count (read pointer).</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_Y_FRAME_WRITE_STATUS</name>
+      <description>Y Component Frame Write Status: Block and Round Counters</description>
+      <addressOffset>0x48</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>yy_mem_hblk_w</name>
+          <description>Y memory horizontal block count (write pointer).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>yy_mem_rnd_w</name>
+          <description>Y memory round counter (write pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>yy_frm_cnt_w</name>
+          <description>Y frame count (write pointer).</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_UV_FRAME_READ_STATUS_1</name>
+      <description>UV Component Frame Read Status 1: Memory and Frame Horizontal Block Count (read pointer)</description>
+      <addressOffset>0x4C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>uv_mem_hblk_r</name>
+          <description>UV memory horizontal block count (read pointer).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>uv_frm_hblk_r</name>
+          <description>UV frame horizontal block count (read pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_UV_FRAME_READ_STATUS_2</name>
+      <description>UV Component Frame Read Status 2: Block and Round Counters</description>
+      <addressOffset>0x50</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>uv_wblk_r</name>
+          <description>UV write-block read counter.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>uv_mem_rnd_r</name>
+          <description>UV memory round counter (read pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>uv_frm_cnt_r</name>
+          <description>UV frame count (read pointer).</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_UV_FRAME_WRITE_STATUS</name>
+      <description>UV Component Frame Write Status: Block and Round Counters</description>
+      <addressOffset>0x54</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>uv_mem_hblk_w</name>
+          <description>UV memory horizontal block count (write pointer).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>uv_mem_rnd_w</name>
+          <description>UV memory round counter (write pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>uv_frm_cnt_w</name>
+          <description>UV frame count (write pointer).</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_FRAME_W_HBLK_STATUS</name>
+      <description>Frame Write Horizontal Block Status: Y and UV write horizontal block counters</description>
+      <addressOffset>0x58</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>yy_frm_hblk_w</name>
+          <description>Y frame horizontal block count (write pointer).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+        <field>
+          <name>uv_frm_hblk_w</name>
+          <description>UV frame horizontal block count (write pointer).</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>13</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_START_ADDR0</name>
+      <description>MJPEG Start Address 0</description>
+      <addressOffset>0x80</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_0</name>
+          <description>MJPEG start address for frame 0.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_BIT_CNT0</name>
+      <description>MJPEG Bit Count 0</description>
+      <addressOffset>0x84</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_bit_cnt_0</name>
+          <description>MJPEG bit count for frame 0.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_START_ADDR1</name>
+      <description>MJPEG Start Address 1</description>
+      <addressOffset>0x88</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_1</name>
+          <description>MJPEG start address for frame 1.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_BIT_CNT1</name>
+      <description>MJPEG Bit Count 1</description>
+      <addressOffset>0x8C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_bit_cnt_1</name>
+          <description>MJPEG bit count for frame 1.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_START_ADDR2</name>
+      <description>MJPEG Start Address 2</description>
+      <addressOffset>0x90</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_2</name>
+          <description>MJPEG start address for frame 2.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_BIT_CNT2</name>
+      <description>MJPEG Bit Count 2</description>
+      <addressOffset>0x94</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_bit_cnt_2</name>
+          <description>MJPEG bit count for frame 2.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_START_ADDR3</name>
+      <description>MJPEG Start Address 3</description>
+      <addressOffset>0x98</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_start_addr_3</name>
+          <description>MJPEG start address for frame 3.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_BIT_CNT3</name>
+      <description>MJPEG Bit Count 3</description>
+      <addressOffset>0x9C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_bit_cnt_3</name>
+          <description>MJPEG bit count for frame 3.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_Q_ENC</name>
+      <description>Quantization Table Encoding Status and Control</description>
+      <addressOffset>0x100</addressOffset>
+      <fields>
+        <field>
+          <name>frame_q_sram_0</name>
+          <description>Quantization table SRAM status for frame 0.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>frame_q_sram_1</name>
+          <description>Quantization table SRAM status for frame 1.</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>frame_q_sram_2</name>
+          <description>Quantization table SRAM status for frame 2.</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>frame_q_sram_3</name>
+          <description>Quantization table SRAM status for frame 3.</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>reg_q_sram_sw</name>
+          <description>Software update command for Quantization SRAM.</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>sts_q_sram_enc</name>
+          <description>Quantization SRAM busy/encoding status.</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_FRAME_ID_10</name>
+      <description>MJPEG Frame ID Status 0 and 1</description>
+      <addressOffset>0x110</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_id_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>frame_id_1</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_FRAME_ID_32</name>
+      <description>MJPEG Frame ID Status 2 and 3</description>
+      <addressOffset>0x114</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>frame_id_2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>frame_id_3</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>MJPEG_DEBUG</name>
+      <description>MJPEG Debug Configuration</description>
+      <addressOffset>0x1F0</addressOffset>
+      <resetValue>0x00000100</resetValue>
+      <fields>
+        <field>
+          <name>reg_mjpeg_dbg_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_mjpeg_dbg_sel</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>reg_id_latch_hblk</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MJPEG_DUMMY_REG</name>
+      <description>MJPEG Dummy Register</description>
+      <addressOffset>0x1FC</addressOffset>
+      <fields>
+        <field>
+          <name>mjpeg_dummy_reg</name>
+          <description>General purpose dummy bits.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- PART 2: Quantization Tables (Array) -->
+    <register>
+      <dim>64</dim>
+      <dimIncrement>4</dimIncrement>
+      <name>MJPEG_Q_PARAM_%s</name>
+      <description>Quantization Table Parameter Register (index %s)</description>
+      <addressOffset>0x400</addressOffset>
+      <fields>
+        <field>
+          <name>reg_q_low</name>
+          <description>Even-indexed Q parameter (e.g. 0, 2, 4...)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+        <field>
+          <name>reg_q_high</name>
+          <description>Odd-indexed Q parameter (e.g. 1, 3, 5...)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+  </registers>
+</peripheral>

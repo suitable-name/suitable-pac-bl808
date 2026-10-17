@@ -1,0 +1,23 @@
+[package]
+name = "bl808-m0"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bouffalo Lab Community"]
+description = "Peripheral Access Crate for Bouffalo Lab BL808 (RISC-V M0 core)"
+license = "MulanPSL-2.0"
+# repository = "https://github.com/your-repo/bl808-pac"
+keywords = ["embedded", "riscv", "bouffalolab", "bl808", "pac"]
+categories = ["embedded", "hardware-support", "no-std"]
+
+[dependencies]
+# Inherit from root [workspace.dependencies]
+vcell = { workspace = true }
+critical-section = { workspace = true, optional = true }
+riscv = { workspace = true }
+riscv-rt = { workspace = true, optional = true }
+
+[features]
+default = ["critical-section"]
+# These features are triggered by the root bl808-pac features
+rt = ["dep:riscv-rt", "riscv/critical-section-single-hart"]
+critical-section = ["dep:critical-section"]

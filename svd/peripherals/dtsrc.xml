@@ -1,0 +1,465 @@
+<peripheral>
+    <name>DTSRC</name>
+    <description>Display Timing Source Controller (DVP/AXI Bus Source)</description>
+    <groupName>DTSRC</groupName>
+    <!-- Assuming DTSRC0 is the primary instance -->
+    <baseAddress>0x30012800</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+    <registers>
+        <register>
+            <name>CONFIG</name>
+            <description>DTSRC Global Configuration</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x02400000</resetValue>
+            <fields>
+                <field>
+                    <name>cr_enable</name>
+                    <description>DTSRC module master enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_en</name>
+                    <description>AXI bus interface enable (reads data from memory)</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_mode_cea_861</name>
+                    <description>CEA-861 Timing mode enable (for standard video formats)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_snsr_en</name>
+                    <description>Sensor input enable (generates timing from sensor stream)</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_snsr_hsync_inv</name>
+                    <description>Sensor HSYNC polarity inverse</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_snsr_vsync_inv</name>
+                    <description>Sensor VSYNC polarity inverse</description>
+                    <bitOffset>5</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_swap_mode</name>
+                    <description>AXI frame buffer swap mode enable</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_swap_idx_sel</name>
+                    <description>AXI swap buffer index selection</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_swap_idx_swm</name>
+                    <description>AXI swap index software/hardware control</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_swap_idx_swv</name>
+                    <description>AXI swap index software value</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_dvp_data_mode</name>
+                    <description>AXI to DVP output data mode (e.g., RGB888, RGB565)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_b0_sel</name>
+                    <description>AXI Band 0 (Y) source select</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_b1_sel</name>
+                    <description>AXI Band 1 (U) source select</description>
+                    <bitOffset>22</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_b2_sel</name>
+                    <description>AXI Band 2 (V) source select</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>FRAME_SIZE_H</name>
+            <description>Horizontal Frame Timing Configuration</description>
+            <addressOffset>0x04</addressOffset>
+            <resetValue>0x01170897</resetValue>
+            <fields>
+                <field>
+                    <name>cr_total_h</name>
+                    <description>Total horizontal pixel count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_blank_h</name>
+                    <description>Horizontal blanking pixel count</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>FRAME_SIZE_V</name>
+            <description>Vertical Frame Timing Configuration</description>
+            <addressOffset>0x08</addressOffset>
+            <resetValue>0x002C0464</resetValue>
+            <fields>
+                <field>
+                    <name>cr_total_v</name>
+                    <description>Total vertical line count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_blank_v</name>
+                    <description>Vertical blanking line count</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>FRAME_SIZE_CEA_861</name>
+            <description>CEA-861 Timing Configuration</description>
+            <addressOffset>0x0C</addressOffset>
+            <resetValue>0x03085783</resetValue>
+            <fields>
+                <field>
+                    <name>cr_h_duration</name>
+                    <description>Horizontal sync pulse duration (clocks)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_h_placement</name>
+                    <description>Horizontal sync placement (front/back porch)</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_v_duration</name>
+                    <description>Vertical sync pulse duration (lines)</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_v_placement</name>
+                    <description>Vertical sync placement</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PIX_DATA_RANGE</name>
+            <description>Pixel Data Range for Clipping/Scaling</description>
+            <addressOffset>0x10</addressOffset>
+            <resetValue>0xFFFF0000</resetValue>
+            <fields>
+                <field>
+                    <name>cr_data_min</name>
+                    <description>Minimum pixel data value</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_data_max</name>
+                    <description>Maximum pixel data value</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>PIX_DATA_STEP</name>
+            <description>Pixel Data Step Value</description>
+            <addressOffset>0x14</addressOffset>
+            <resetValue>0x00000001</resetValue>
+            <fields>
+                <field>
+                    <name>cr_data_step</name>
+                    <description>Pixel data step increment</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_SETTING</name>
+            <description>AXI Bus to DVP Output Settings</description>
+            <addressOffset>0x20</addressOffset>
+            <resetValue>0x00000003</resetValue>
+            <fields>
+                <field>
+                    <name>cr_axi_xlen</name>
+                    <description>AXI burst length (INCR4/8/16)</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_drain_err_clr</name>
+                    <description>Clear AXI drain error status (write-1-pulse)</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                    <modifiedWriteValues>oneToSet</modifiedWriteValues>
+                </field>
+                <field>
+                    <name>cr_axi_420_mode</name>
+                    <description>YUV 420 mode enable</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_axi_420_ud_sel</name>
+                    <description>YUV 420 UV plane order select</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_qos_sw_mode</name>
+                    <description>AXI QoS software control mode</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+                <field>
+                    <name>cr_qos_sw</name>
+                    <description>AXI QoS software value</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_START_ADDR_BY</name>
+            <description>AXI Start Address for Luminance (Y) Plane</description>
+            <addressOffset>0x24</addressOffset>
+            <fields>
+                <field>
+                    <name>cr_axi_addr_start_by</name>
+                    <description>Luminance plane buffer start address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_BURST_CNT</name>
+            <description>AXI Frame Burst Count</description>
+            <addressOffset>0x28</addressOffset>
+            <fields>
+                <field>
+                    <name>cr_axi_frame_bc</name>
+                    <description>AXI transfer burst count per frame</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_STATUS</name>
+            <description>AXI to DVP Transfer Status</description>
+            <addressOffset>0x2C</addressOffset>
+            <fields>
+                <field>
+                    <name>st_axi_fifo_cnt_by</name>
+                    <description>AXI Luminance FIFO count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>7</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_drain_error_by</name>
+                    <description>AXI Luminance drain error status</description>
+                    <bitOffset>7</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_idle_by</name>
+                    <description>AXI Luminance channel idle status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_func_by</name>
+                    <description>AXI Luminance channel functional status</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_flsh_by</name>
+                    <description>AXI Luminance channel flush status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_fifo_cnt_uv</name>
+                    <description>AXI Chrominance (UV) FIFO count</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>7</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_drain_error_uv</name>
+                    <description>AXI Chrominance drain error status</description>
+                    <bitOffset>23</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_idle_uv</name>
+                    <description>AXI Chrominance channel idle status</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_func_uv</name>
+                    <description>AXI Chrominance channel functional status</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>st_axi_state_flsh_uv</name>
+                    <description>AXI Chrominance channel flush status</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_SWAP_ADDR_BY</name>
+            <description>AXI Swap Address for Luminance (Y) Plane</description>
+            <addressOffset>0x30</addressOffset>
+            <fields>
+                <field>
+                    <name>cr_axi_addr_swap_by</name>
+                    <description>Luminance plane swap buffer address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_PREFETCH</name>
+            <description>AXI Prefetch Control</description>
+            <addressOffset>0x34</addressOffset>
+            <resetValue>0x00000028</resetValue>
+            <fields>
+                <field>
+                    <name>cr_prefetch_v</name>
+                    <description>Vertical prefetch line count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>SNSR2DVP_WAIT_POS</name>
+            <description>Sensor to DVP Wait Position (FIFO Threshold)</description>
+            <addressOffset>0x38</addressOffset>
+            <resetValue>0x0000008B</resetValue>
+            <fields>
+                <field>
+                    <name>cr_snsr_fifo_th</name>
+                    <description>Sensor FIFO threshold/Wait position</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>11</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_START_ADDR_UV</name>
+            <description>AXI Start Address for Chrominance (UV) Plane</description>
+            <addressOffset>0x40</addressOffset>
+            <fields>
+                <field>
+                    <name>cr_axi_addr_start_uv</name>
+                    <description>Chrominance plane buffer start address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+        <register>
+            <name>AXI2DVP_SWAP_ADDR_UV</name>
+            <description>AXI Swap Address for Chrominance (UV) Plane</description>
+            <addressOffset>0x44</addressOffset>
+            <fields>
+                <field>
+                    <name>cr_axi_addr_swap_uv</name>
+                    <description>Chrominance plane swap buffer address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                    <access>read-write</access>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

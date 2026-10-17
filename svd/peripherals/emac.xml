@@ -1,0 +1,495 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated strictly according to `emac_reg.h`. Registers cover MAC configuration, MDIO/MII Management, and Address Filtering.                                                                                                                                                          |
+| **Base Address**       | Explicit  | 0x20070000.                                                                                                                                                                                                                                                                           |
+| **BD Management**      | **Updated**| `TX_BD_NUM` (0x20) now includes hardware read-only pointers `TXBDPTR` and `RXBDPTR` which track the internal DMA's progress through the descriptor ring.                                                                                                                            |
+| **Address Handling**   | **Fixed** | Replaced the generic `mac_address[%s]` array with specific `MAC_ADDR0` (0x40) and `MAC_ADDR1` (0x44) registers as defined in the hardware structs. Added `HASH0_ADDR` and `HASH1_ADDR` for multicast filtering.                                                                      |
+| **Collision Config**   | **FULL**  | Added `COLLCONFIG` (0x1C) defining the collision valid window and maximum retries.                                                                                                                                                                                                    |
+| **Flow Control**       | **FULL**  | Added `TXCTRL` (0x50) for PAUSE frame timer values and manual pause requests.                                                                                                                                                                                                          |
+| **Reset Values**       | **FULL**  | Reset values integrated (e.g., `MODE` resets with `BRO`, `CRCEN`, and `PAD` enabled by default; `MIIMODE` defaults to 0x64 divider).                                                                                                                                                   |
+-->
+<peripheral>
+  <name>EMAC</name>
+  <description>10/100Mbps Ethernet Media Access Controller</description>
+  <groupName>EMAC</groupName>
+  <baseAddress>0x20070000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>EMAC</name>
+    <description>Ethernet MAC Interrupt</description>
+    <value>40</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>MODE</name>
+      <description>MAC Mode Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0x0000A008</resetValue>
+      <fields>
+        <field>
+          <name>RXEN</name>
+          <description>Receiver enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>TXEN</name>
+          <description>Transmitter enable</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>NOPRE</name>
+          <description>No preamble mode</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>BRO</name>
+          <description>Broadcast address enable</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>PRO</name>
+          <description>Promiscuous mode enable</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>IFG</name>
+          <description>Inter-frame gap check</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>FULLD</name>
+          <description>Full duplex mode</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>CRCEN</name>
+          <description>CRC Enable</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>HUGEN</name>
+          <description>Huge frames enable</description>
+          <bitOffset>14</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>PAD</name>
+          <description>Padding enable</description>
+          <bitOffset>15</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RECSMALL</name>
+          <description>Receive small frame enable</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RMII_EN</name>
+          <description>RMII mode enable</description>
+          <bitOffset>17</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>INT_SOURCE</name>
+      <description>Interrupt Source Register</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>TXB</name>
+          <description>Transmit buffer interrupt</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>TXE</name>
+          <description>Transmit error interrupt</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXB</name>
+          <description>Receive frame interrupt</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXE</name>
+          <description>Receive error interrupt</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>BUSY</name>
+          <description>Busy (no empty BD) interrupt</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>TXC</name>
+          <description>Transmit control frame interrupt</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXC</name>
+          <description>Receive control frame interrupt</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>INT_MASK</name>
+      <description>Interrupt Mask Register</description>
+      <addressOffset>0x08</addressOffset>
+      <resetValue>0x0000007F</resetValue>
+      <fields>
+        <field>
+          <name>TXB_M</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>TXE_M</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXB_M</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXE_M</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>BUSY_M</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>TXC_M</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RXC_M</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>IPGT</name>
+      <description>Back-to-Back Inter-Packet-Gap Register</description>
+      <addressOffset>0x0C</addressOffset>
+      <resetValue>0x00000018</resetValue>
+      <fields>
+        <field>
+          <name>IPGT</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>7</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>PACKETLEN</name>
+      <description>Packet Length Register</description>
+      <addressOffset>0x18</addressOffset>
+      <resetValue>0x00400600</resetValue>
+      <fields>
+        <field>
+          <name>MAXFL</name>
+          <description>Maximum frame length</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>MINFL</name>
+          <description>Minimum frame length</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>COLLCONFIG</name>
+      <description>Collision Configuration Register</description>
+      <addressOffset>0x1C</addressOffset>
+      <resetValue>0x000F003F</resetValue>
+      <fields>
+        <field>
+          <name>COLLVALID</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>MAXRET</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TX_BD_NUM</name>
+      <description>Transmit Buffer Descriptor Number and Pointer Register</description>
+      <addressOffset>0x20</addressOffset>
+      <resetValue>0x00000040</resetValue>
+      <fields>
+        <field>
+          <name>TXBDNUM</name>
+          <description>Number of descriptors used for TX</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>TXBDPTR</name>
+          <description>TX BD current pointer status</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>7</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>RXBDPTR</name>
+          <description>RX BD current pointer status</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>7</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIIMODE</name>
+      <description>MII Management Mode Register</description>
+      <addressOffset>0x28</addressOffset>
+      <resetValue>0x00000064</resetValue>
+      <fields>
+        <field>
+          <name>CLKDIV</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>MIINOPRE</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIICOMMAND</name>
+      <description>MII Management Command Register</description>
+      <addressOffset>0x2C</addressOffset>
+      <fields>
+        <field>
+          <name>SCANSTAT</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>RSTAT</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>WCTRLDATA</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIIADDRESS</name>
+      <description>MII Management Address Register</description>
+      <addressOffset>0x30</addressOffset>
+      <fields>
+        <field>
+          <name>FIAD</name>
+          <description>PHY Address</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>RGAD</name>
+          <description>Register Address in PHY</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIITX_DATA</name>
+      <description>MII Management Transmit Data Register</description>
+      <addressOffset>0x34</addressOffset>
+      <fields>
+        <field>
+          <name>CTRLDATA</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIIRX_DATA</name>
+      <description>MII Management Receive Data Register</description>
+      <addressOffset>0x38</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>PRSD</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MIISTATUS</name>
+      <description>MII Management Status Register</description>
+      <addressOffset>0x3C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>MIIM_LINKFAIL</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>MIIM_BUSY</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MAC_ADDR0</name>
+      <description>MAC Individual Address Register 0 (Bytes 5-2)</description>
+      <addressOffset>0x40</addressOffset>
+      <fields>
+        <field>
+          <name>MAC_B5</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>MAC_B4</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>MAC_B3</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>MAC_B2</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>MAC_ADDR1</name>
+      <description>MAC Individual Address Register 1 (Bytes 1-0)</description>
+      <addressOffset>0x44</addressOffset>
+      <fields>
+        <field>
+          <name>MAC_B1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>MAC_B0</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HASH0_ADDR</name>
+      <description>Hash Table Register 0</description>
+      <addressOffset>0x48</addressOffset>
+      <fields>
+        <field>
+          <name>HASH0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>HASH1_ADDR</name>
+      <description>Hash Table Register 1</description>
+      <addressOffset>0x4C</addressOffset>
+      <fields>
+        <field>
+          <name>HASH1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TXCTRL</name>
+      <description>Transmit Control (Flow Control) Register</description>
+      <addressOffset>0x50</addressOffset>
+      <fields>
+        <field>
+          <name>TXPAUSETV</name>
+          <description>Pause Timer Value</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>TXPAUSERQ</name>
+          <description>Pause Request</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

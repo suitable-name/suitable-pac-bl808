@@ -1,0 +1,228 @@
+<device schemaVersion="1.3"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="CMSIS-SVD.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+    <name>BL808_D0</name>
+    <version>1.6</version>
+    <description>Bouffalo Lab BL808 Multimedia Subsystem (D0 Core)</description>
+    <cpu>
+        <name>D0</name>
+        <revision>r0p1</revision>
+        <endian>little</endian>
+        <mpuPresent>true</mpuPresent>
+        <fpuPresent>true</fpuPresent>
+        <nvicPrioBits>3</nvicPrioBits>
+        <vendorSystickConfig>false</vendorSystickConfig>
+    </cpu>
+    <addressUnitBits>8</addressUnitBits>
+    <width>64</width>
+
+    <peripherals>
+        <!-- ====================================================================== -->
+        <!-- Multimedia Core Peripherals (Includes)                                 -->
+        <!-- These files must contain their own <interrupt> definitions if needed   -->
+        <!-- ====================================================================== -->
+        <xi:include href="peripherals/glb_d0.xml" />
+        <xi:include href="peripherals/mm_glb.xml" />
+        <xi:include href="peripherals/mm_misc.xml" />
+        <xi:include href="peripherals/dma2d.xml" />
+        <xi:include href="peripherals/cam.xml" />
+        
+        <peripheral derivedFrom="DVP0">
+            <name>DVP1</name>
+            <baseAddress>0x30012100</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT1</name>
+                <value>30</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP2</name>
+            <baseAddress>0x30012200</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT2</name>
+                <value>31</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP3</name>
+            <baseAddress>0x30012300</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT3</name>
+                <value>32</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP4</name>
+            <baseAddress>0x30012400</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT4</name>
+                <value>57</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP5</name>
+            <baseAddress>0x30012500</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT5</name>
+                <value>58</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP6</name>
+            <baseAddress>0x30012600</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT6</name>
+                <value>59</value>
+            </interrupt>
+        </peripheral>
+        <peripheral derivedFrom="DVP0">
+            <name>DVP7</name>
+            <baseAddress>0x30012700</baseAddress>
+            <interrupt>
+                <name>DVP2BUS_INT7</name>
+                <value>60</value>
+            </interrupt>
+        </peripheral>
+
+        <xi:include href="peripherals/mjpeg.xml" />
+        <xi:include href="peripherals/h264.xml" />
+        <xi:include href="peripherals/npu.xml" />
+        <xi:include href="peripherals/codec.xml" />
+        <xi:include href="peripherals/psram_uhs.xml" />
+        <xi:include href="peripherals/dsi.xml" />
+        <xi:include href="peripherals/mipi.xml" />
+        <xi:include href="peripherals/dbi.xml" />
+        <xi:include href="peripherals/dpi.xml" />
+        <xi:include href="peripherals/dvp_tsrc_axi.xml" />
+        <peripheral derivedFrom="DVP_TSRC0">
+            <name>DVP_TSRC1</name>
+            <description>DVP Timing Source and AXI Interface 1</description>
+            <baseAddress>0x30012900</baseAddress>
+        </peripheral>
+
+        <!-- ====================================================================== -->
+        <!-- Shared / Global Access                                                 -->
+        <!-- ====================================================================== -->
+        <xi:include href="peripherals/psram.xml" />
+        <xi:include href="peripherals/lz4d_d0.xml" />
+        <xi:include href="peripherals/pta.xml" />
+        <xi:include href="peripherals/ipc_d0.xml" />
+        <!-- wifi.xml is NOT included here: its interrupt definitions (BT=46,
+             M154_REQ_ACK=47, etc.) are M0-core-specific and would conflict with
+             D0 multimedia IRQs (e.g. DISPLAY=47 from dpi.xml).
+             D0 does not own WiFi/BT/M154 interrupt vectors. -->
+
+        <!-- ====================================================================== -->
+        <!-- MCU Peripheral Templates (For Derivation)                              -->
+        <!-- ====================================================================== -->
+        <xi:include href="peripherals/dma_d0.xml" />
+        <xi:include href="peripherals/uart_d0.xml" />
+        <xi:include href="peripherals/spi_d0.xml" />
+        <xi:include href="peripherals/i2c_d0.xml" />
+        <xi:include href="peripherals/timer_d0.xml" />
+
+        <!-- ====================================================================== -->
+        <!-- Derived Multimedia Instances                                           -->
+        <!-- ====================================================================== -->
+
+        <peripheral derivedFrom="DMA0">
+            <name>DMA2</name>
+            <description>Multimedia DMA Controller</description>
+            <baseAddress>0x30001000</baseAddress>
+            <interrupt>
+                <name>DMA2_INT0</name>
+                <value>40</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT1</name>
+                <value>41</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT2</name>
+                <value>42</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT3</name>
+                <value>43</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT4</name>
+                <value>44</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT5</name>
+                <value>45</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT6</name>
+                <value>46</value>
+            </interrupt>
+            <interrupt>
+                <name>DMA2_INT7</name>
+                <value>47</value>
+            </interrupt>
+        </peripheral>
+
+        <peripheral derivedFrom="UART0">
+            <name>UART3</name>
+            <description>Multimedia UART</description>
+            <baseAddress>0x30002000</baseAddress>
+            <interrupt>
+                <name>UART3</name>
+                <value>20</value>
+            </interrupt>
+        </peripheral>
+
+        <peripheral derivedFrom="SPI0">
+            <name>SPI1</name>
+            <description>Multimedia SPI</description>
+            <baseAddress>0x30008000</baseAddress>
+            <interrupt>
+                <name>SPI1</name>
+                <value>23</value>
+            </interrupt>
+        </peripheral>
+
+        <peripheral derivedFrom="I2C0">
+            <name>I2C2</name>
+            <baseAddress>0x30003000</baseAddress>
+            <interrupt>
+                <name>I2C2</name>
+                <value>21</value>
+            </interrupt>
+        </peripheral>
+
+        <peripheral derivedFrom="I2C0">
+            <name>I2C3</name>
+            <baseAddress>0x30004000</baseAddress>
+            <interrupt>
+                <name>I2C3</name>
+                <value>22</value>
+            </interrupt>
+        </peripheral>
+
+        <peripheral derivedFrom="TIMER0">
+            <name>TIMER1</name>
+            <description>Multimedia Timer</description>
+            <baseAddress>0x30009000</baseAddress>
+            <interrupt>
+                <name>TIMER1_CH0</name>
+                <value>77</value>
+            </interrupt>
+            <interrupt>
+                <name>TIMER1_CH1</name>
+                <value>78</value>
+            </interrupt>
+            <interrupt>
+                <name>TIMER1_WDT</name>
+                <value>79</value>
+            </interrupt>
+        </peripheral>
+
+        <!-- D0 Subsystem Peripherals (Audio, PDS, PWM with dedicated D0 IRQ vectors) -->
+        <xi:include href="peripherals/audio_d0.xml" />
+        <xi:include href="peripherals/pds_d0.xml" />
+        <xi:include href="peripherals/pwm_d0.xml" />
+
+    </peripherals>
+</device>

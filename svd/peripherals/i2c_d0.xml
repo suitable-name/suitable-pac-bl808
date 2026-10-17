@@ -1,0 +1,498 @@
+<peripheral>
+  <name>I2C0</name>
+  <description>I2C Master Controller 0</description>
+  <groupName>I2C</groupName>
+  <baseAddress>0x2000A300</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x100</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  
+  
+  
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <registers>
+    <register>
+      <name>I2C_CONFIG</name>
+      <description>I2C Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      
+      <resetValue>0x0000000A</resetValue>
+      <fields>
+        <field>
+          <name>cr_i2c_m_en</name>
+          <description>I2C Master function enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_pkt_dir</name>
+          <description>Packet transfer direction. 0: Write, 1: Read</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_deg_en</name>
+          <description>Enable de-glitch function</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_scl_sync_en</name>
+          <description>Enable SCL synchronization (Clock stretching support)</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_sub_addr_en</name>
+          <description>Enable sub-address field</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_sub_addr_bc</name>
+          <description>Sub-address byte count (0-3: 1-4 bytes)</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_10b_addr_en</name>
+          <description>Enable 10-bit address mode</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_slv_addr</name>
+          <description>Slave address</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>10</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_pkt_len</name>
+          <description>Packet length in bytes</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_deg_cnt</name>
+          <description>De-glitch cycle count</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_INT_STS</name>
+      <description>Interrupt Status, Mask, and Control</description>
+      <addressOffset>0x04</addressOffset>
+      
+      <resetValue>0x3F003F02</resetValue>
+      <fields>
+        <field>
+          <name>i2c_end_int</name>
+          <description>Transfer end interrupt status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2c_txf_int</name>
+          <description>TX FIFO ready interrupt status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2c_rxf_int</name>
+          <description>RX FIFO ready interrupt status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2c_nak_int</name>
+          <description>NAK received interrupt status</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2c_arb_int</name>
+          <description>Arbitration lost interrupt status</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>i2c_fer_int</name>
+          <description>FIFO error interrupt status</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_i2c_end_mask</name>
+          <description>End interrupt mask</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_txf_mask</name>
+          <description>TX FIFO interrupt mask</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_rxf_mask</name>
+          <description>RX FIFO interrupt mask</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_nak_mask</name>
+          <description>NAK interrupt mask</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_arb_mask</name>
+          <description>Arbitration lost interrupt mask</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_fer_mask</name>
+          <description>FIFO error interrupt mask</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_end_clr</name>
+          <description>Clear end interrupt</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_i2c_nak_clr</name>
+          <description>Clear NAK interrupt</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_i2c_arb_clr</name>
+          <description>Clear arbitration lost interrupt</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_i2c_end_en</name>
+          <description>End interrupt enable</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_txf_en</name>
+          <description>TX FIFO interrupt enable</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_rxf_en</name>
+          <description>RX FIFO interrupt enable</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_nak_en</name>
+          <description>NAK interrupt enable</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_arb_en</name>
+          <description>Arbitration lost interrupt enable</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_fer_en</name>
+          <description>FIFO error interrupt enable</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_SUB_ADDR</name>
+      <description>I2C Sub-address Configuration</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>cr_i2c_sub_addr_b0</name>
+          <description>Sub-address byte 0</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_sub_addr_b1</name>
+          <description>Sub-address byte 1</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_sub_addr_b2</name>
+          <description>Sub-address byte 2</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_sub_addr_b3</name>
+          <description>Sub-address byte 3</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_BUS_BUSY</name>
+      <description>I2C Bus Status</description>
+      <addressOffset>0x0C</addressOffset>
+      <fields>
+        <field>
+          <name>sts_i2c_bus_busy</name>
+          <description>I2C bus busy status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_i2c_bus_busy_clr</name>
+          <description>Clear bus busy status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_PRD_START</name>
+      <description>Start Condition Timing Phases</description>
+      <addressOffset>0x10</addressOffset>
+      
+      <resetValue>0x0F0F0F0F</resetValue>
+      <fields>
+        <field>
+          <name>cr_i2c_prd_s_ph_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_s_ph_1</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_s_ph_2</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_s_ph_3</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_PRD_STOP</name>
+      <description>Stop Condition Timing Phases</description>
+      <addressOffset>0x14</addressOffset>
+      <resetValue>0x0F0F0F0F</resetValue>
+      <fields>
+        <field>
+          <name>cr_i2c_prd_p_ph_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_p_ph_1</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_p_ph_2</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_p_ph_3</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_PRD_DATA</name>
+      <description>Data Phase Timing</description>
+      <addressOffset>0x18</addressOffset>
+      <resetValue>0x0F0F0F0F</resetValue>
+      <fields>
+        <field>
+          <name>cr_i2c_prd_d_ph_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_d_ph_1</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_d_ph_2</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_i2c_prd_d_ph_3</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_FIFO_CONFIG_0</name>
+      <description>FIFO Configuration 0</description>
+      <addressOffset>0x80</addressOffset>
+      <fields>
+        <field>
+          <name>i2c_dma_tx_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>i2c_dma_rx_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_fifo_clr</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>rx_fifo_clr</name>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>tx_fifo_overflow</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_underflow</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_overflow</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_underflow</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_FIFO_CONFIG_1</name>
+      <description>FIFO Configuration 1</description>
+      <addressOffset>0x84</addressOffset>
+      
+      <resetValue>0x00000002</resetValue>
+      <fields>
+        <field>
+          <name>tx_fifo_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_cnt</name>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_th</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>rx_fifo_th</name>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_FIFO_WDATA</name>
+      <description>FIFO Write Data Port</description>
+      <addressOffset>0x88</addressOffset>
+      <fields>
+        <field>
+          <name>i2c_fifo_wdata</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>I2C_FIFO_RDATA</name>
+      <description>FIFO Read Data Port</description>
+      <addressOffset>0x8C</addressOffset>
+      <fields>
+        <field>
+          <name>i2c_fifo_rdata</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

@@ -1,0 +1,27 @@
+[package]
+name = "bl808-lp"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bouffalo Lab Community"]
+description = "Peripheral Access Crate for Bouffalo Lab BL808 (RISC-V LP core)"
+license = "MulanPSL-2.0"
+# repository = "https://github.com/your-repo/bl808-pac"
+keywords = ["embedded", "riscv", "bouffalolab", "bl808", "pac"]
+categories = ["embedded", "hardware-support", "no-std"]
+
+[dependencies]
+# Required dependency
+vcell = { workspace = true }
+
+# Optional dependencies (Workspace inheritance + local optional flag)
+critical-section = { workspace = true, optional = true }
+riscv = { workspace = true }
+riscv-rt = { workspace = true, optional = true }
+
+[features]
+default = ["critical-section"]
+# 'rt' enables the optional dependencies AND sets the correct riscv feature
+rt = ["dep:riscv-rt", "riscv/critical-section-single-hart"]
+
+# 'critical-section' simply enables the dependency
+critical-section = ["dep:critical-section"]

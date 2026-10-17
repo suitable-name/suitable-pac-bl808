@@ -1,0 +1,718 @@
+<peripheral>
+  <name>TIMER0</name>
+  <description>32-bit Timer and Watchdog Controller 0</description>
+  <groupName>TIMER</groupName>
+  <baseAddress>0x2000A500</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x1000</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <!-- Base interrupt definitions for TIMER0 -->
+  <interrupt>
+    <name>TIMER0_CH0</name>
+    <value>52</value>
+  </interrupt>
+  <interrupt>
+    <name>TIMER0_CH1</name>
+    <value>53</value>
+  </interrupt>
+  <interrupt>
+    <name>TIMER0_WDT</name>
+    <value>54</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>TCCR</name>
+      <description>Timer Clock Source Configuration</description>
+      <addressOffset>0x00</addressOffset>
+      <resetValue>0xA5000155</resetValue>
+      <fields>
+        <field>
+          <name>cs_2</name>
+          <description>Timer 2 clock source selection</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>cs_3</name>
+          <description>Timer 3 clock source selection</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>cs_wdt</name>
+          <description>Watchdog clock source selection</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+        <field>
+          <name>ID</name>
+          <description>Timer ID (Fixed 0xA5)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TMR2_%s</name>
+      <description>Timer 2 Match Value %s</description>
+      <addressOffset>0x10</addressOffset>
+      <dim>3</dim>
+      <dimIncrement>4</dimIncrement>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>match_val</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TMR3_%s</name>
+      <description>Timer 3 Match Value %s</description>
+      <addressOffset>0x1C</addressOffset>
+      <dim>3</dim>
+      <dimIncrement>4</dimIncrement>
+      <resetValue>0xFFFFFFFF</resetValue>
+      <fields>
+        <field>
+          <name>match_val</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCR2</name>
+      <description>Timer 2 Counter Value</description>
+      <addressOffset>0x2C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr2_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCR3</name>
+      <description>Timer 3 Counter Value</description>
+      <addressOffset>0x30</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr3_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TSR2</name>
+      <description>Timer 2 Match Status</description>
+      <addressOffset>0x38</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tsr2_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tsr2_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tsr2_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TSR3</name>
+      <description>Timer 3 Match Status</description>
+      <addressOffset>0x3C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tsr3_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tsr3_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tsr3_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TIER2</name>
+      <description>Timer 2 Match Interrupt Enable</description>
+      <addressOffset>0x44</addressOffset>
+      <fields>
+        <field>
+          <name>tier2_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tier2_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tier2_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TIER3</name>
+      <description>Timer 3 Match Interrupt Enable</description>
+      <addressOffset>0x48</addressOffset>
+      <fields>
+        <field>
+          <name>tier3_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tier3_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tier3_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TPLVR2</name>
+      <description>Timer 2 Pre-Load Value</description>
+      <addressOffset>0x50</addressOffset>
+      <fields>
+        <field>
+          <name>tplvr2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TPLVR3</name>
+      <description>Timer 3 Pre-Load Value</description>
+      <addressOffset>0x54</addressOffset>
+      <fields>
+        <field>
+          <name>tplvr3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TPLCR2</name>
+      <description>Timer 2 Pre-Load Control</description>
+      <addressOffset>0x5C</addressOffset>
+      <fields>
+        <field>
+          <name>tplcr2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TPLCR3</name>
+      <description>Timer 3 Pre-Load Control</description>
+      <addressOffset>0x60</addressOffset>
+      <fields>
+        <field>
+          <name>tplcr3</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WMER</name>
+      <description>Watchdog reset/interrupt Mode</description>
+      <addressOffset>0x64</addressOffset>
+      <fields>
+        <field>
+          <name>we</name>
+          <description>Watchdog Enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wrie</name>
+          <description>Watchdog Reset/Interrupt: 0:Interrupt, 1:Reset</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WMR</name>
+      <description>Watchdog Match Value</description>
+      <addressOffset>0x68</addressOffset>
+      <resetValue>0x0000FFFF</resetValue>
+      <fields>
+        <field>
+          <name>wmr</name>
+          <description>Watchdog match counter limit</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+        <field>
+          <name>wdt_align</name>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WVR</name>
+      <description>Watchdog Counter Value</description>
+      <addressOffset>0x6C</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>wdt_cnt</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WSR</name>
+      <description>Watchdog Reset Status</description>
+      <addressOffset>0x70</addressOffset>
+      <fields>
+        <field>
+          <name>wts</name>
+          <description>Watchdog timeout status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TICR2</name>
+      <description>Timer 2 Interrupt Clear</description>
+      <addressOffset>0x78</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>tclr2_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tclr2_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tclr2_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TICR3</name>
+      <description>Timer 3 Interrupt Clear</description>
+      <addressOffset>0x7C</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>tclr3_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tclr3_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tclr3_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WICR</name>
+      <description>WDT Interrupt Clear</description>
+      <addressOffset>0x80</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>wiclr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCER</name>
+      <description>Timer Counter Enable/Clear</description>
+      <addressOffset>0x84</addressOffset>
+      <fields>
+        <field>
+          <name>timer2_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer3_en</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tcr2_cnt_clr</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tcr3_cnt_clr</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCMR</name>
+      <description>Timer Counter Mode</description>
+      <addressOffset>0x88</addressOffset>
+      <fields>
+        <field>
+          <name>timer2_mode</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer3_mode</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer2_align</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer3_align</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TILR2</name>
+      <description>Timer 2 Match Interrupt Mode</description>
+      <addressOffset>0x90</addressOffset>
+      <fields>
+        <field>
+          <name>tilr2_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tilr2_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tilr2_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TILR3</name>
+      <description>Timer 3 Match Interrupt Mode</description>
+      <addressOffset>0x94</addressOffset>
+      <fields>
+        <field>
+          <name>tilr3_0</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tilr3_1</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tilr3_2</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WCR</name>
+      <description>WDT Counter Reset</description>
+      <addressOffset>0x98</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>wcr</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WFAR</name>
+      <description>WDT Access Key1 (0xBABA)</description>
+      <addressOffset>0x9C</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>wfar</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>WSAR</name>
+      <description>WDT Access Key2 (0xEB10)</description>
+      <addressOffset>0xA0</addressOffset>
+      <access>write-only</access>
+      <fields>
+        <field>
+          <name>wsar</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>16</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCVWR2</name>
+      <description>Timer 2 Counter Latch Value</description>
+      <addressOffset>0xA8</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr2_cnt_lat</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCVWR3</name>
+      <description>Timer 3 Counter Latch Value</description>
+      <addressOffset>0xAC</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr3_cnt_lat</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCVSYN2</name>
+      <description>Timer 2 Counter Sync Value</description>
+      <addressOffset>0xB4</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr2_cnt_sync</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCVSYN3</name>
+      <description>Timer 3 Counter Sync Value</description>
+      <addressOffset>0xB8</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>tcr3_cnt_sync</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCDR</name>
+      <description>Timer and WDT Division</description>
+      <addressOffset>0xBC</addressOffset>
+      <fields>
+        <field>
+          <name>tcdr2</name>
+          <description>Timer 2 clock division factor</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>tcdr3</name>
+          <description>Timer 3 clock division factor</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>wcdr</name>
+          <description>Watchdog clock division factor</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPIO</name>
+      <description>GPIO Integration and Latch Mode</description>
+      <addressOffset>0xC0</addressOffset>
+      <fields>
+        <field>
+          <name>timer2_gpio_en</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer2_gpio_inv</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>timer3_gpio_inv</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wdt_gpio_inv</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>gpio_lat_ok</name>
+          <description>Latch captured status</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPIO_LAT1</name>
+      <description>GPIO Positive Edge Latch Value</description>
+      <addressOffset>0xC4</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>gpio_lat1</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>GPIO_LAT2</name>
+      <description>GPIO Negative Edge Latch Value</description>
+      <addressOffset>0xC8</addressOffset>
+      <access>read-only</access>
+      <fields>
+        <field>
+          <name>gpio_lat2</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>TCDR_FORCE</name>
+      <description>Timer Division Force Configuration</description>
+      <addressOffset>0xCC</addressOffset>
+      <fields>
+        <field>
+          <name>tcdr2_force</name>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tcdr3_force</name>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>wcdr_force</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

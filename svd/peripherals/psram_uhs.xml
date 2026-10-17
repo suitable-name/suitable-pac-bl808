@@ -1,0 +1,1457 @@
+<peripheral>
+    <name>PSRAM_UHS</name>
+    <description>Ultra-High Speed (UHS) PSRAM Controller</description>
+    <groupName>PSRAM</groupName>
+    <baseAddress>0x3000F000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x200</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <!-- 0x00: UHS_BASIC -->
+        <register>
+            <name>UHS_BASIC</name>
+            <description>UHS Basic Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0xA01F0000</resetValue>
+            <fields>
+                <field>
+                    <name>reg_init_en</name>
+                    <description>Initialization enable</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_af_en</name>
+                    <description>Auto-refresh enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_config_req</name>
+                    <description>Configuration request</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_config_gnt</name>
+                    <description>Configuration grant status</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>reg_mode_reg</name>
+                    <description>UHS Mode Register configuration</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_addrmb_msk</name>
+                    <description>Address Mask for MB boundary</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_linear_bnd_b</name>
+                    <description>Linear burst boundary bit</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x04: UHS_CMD -->
+        <register>
+            <name>UHS_CMD</name>
+            <description>UHS Command and Status Register</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_glbr_pulse</name>
+                    <description>Trigger Global Reset pulse</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>reg_srfi_pulse</name>
+                    <description>Trigger Self-Refresh Entry pulse</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>reg_srfo_pulse</name>
+                    <description>Trigger Self-Refresh Exit pulse</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>reg_regw_pulse</name>
+                    <description>Trigger Register Write pulse</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>reg_regr_pulse</name>
+                    <description>Trigger Register Read pulse</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>write-only</access>
+                </field>
+                <field>
+                    <name>sts_glbr_done</name>
+                    <description>Global Reset done status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_srfi_done</name>
+                    <description>Self-Refresh Entry done status</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_srfo_done</name>
+                    <description>Self-Refresh Exit done status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_regw_done</name>
+                    <description>Register Write done status</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_regr_done</name>
+                    <description>Register Read done status</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_init_done</name>
+                    <description>Initialization done status</description>
+                    <bitOffset>13</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>sts_config_read</name>
+                    <description>Configuration read-back status</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x08: UHS_FIFO_THRE -->
+        <register>
+            <name>UHS_FIFO_THRE</name>
+            <description>UHS FIFO Threshold Configuration</description>
+            <addressOffset>0x08</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mask_w_fifo_cnt</name>
+                    <description>Write FIFO count mask</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mask_r_fifo_rem</name>
+                    <description>Read FIFO remaining count mask</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x0C: UHS_MANUAL -->
+        <register>
+            <name>UHS_MANUAL</name>
+            <description>UHS Manual Control and Clock Divider Register</description>
+            <addressOffset>0x0C</addressOffset>
+            <resetValue>0x4000001C</resetValue>
+            <fields>
+                <field>
+                    <name>reg_force_ceb_low</name>
+                    <description>Force CEB low</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_force_ceb_high</name>
+                    <description>Force CEB high</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_psram_resetb</name>
+                    <description>Manual PSRAM Reset (Active Low)</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x16_mode</name>
+                    <description>Enable UHS X16 mode</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_wrap2incr_en</name>
+                    <description>Wrap to Incremental burst conversion enable</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pck_s_div</name>
+                    <description>Clock divider for S-phase</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>reg_pck_t_div</name>
+                    <description>Clock divider for T-phase</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x10: UHS_AUTO_FRESH_1 -->
+        <register>
+            <name>UHS_AUTO_FRESH_1</name>
+            <description>UHS Auto Refresh Window Configuration 1</description>
+            <addressOffset>0x10</addressOffset>
+            <resetValue>0x00027100</resetValue>
+            <fields>
+                <field>
+                    <name>reg_win_cycle</name>
+                    <description>Refresh window cycle count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>28</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x14: UHS_AUTO_FRESH_2 -->
+        <register>
+            <name>UHS_AUTO_FRESH_2</name>
+            <description>UHS Auto Refresh Window Configuration 2</description>
+            <addressOffset>0x14</addressOffset>
+            <resetValue>0x10000027</resetValue>
+            <fields>
+                <field>
+                    <name>reg_refi_cycle</name>
+                    <description>Refresh interval cycle count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+                <field>
+                    <name>reg_win_ref_cnt</name>
+                    <description>Window refresh counter limit</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>13</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x18: UHS_AUTO_FRESH_3 -->
+        <register>
+            <name>UHS_AUTO_FRESH_3</name>
+            <description>UHS Auto Refresh Threshold and Level</description>
+            <addressOffset>0x18</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_auto_ref_thre</name>
+                    <description>Auto refresh threshold</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>12</bitWidth>
+                </field>
+                <field>
+                    <name>auto_refresh_level</name>
+                    <description>Current auto refresh level</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>12</bitWidth>
+                    <access>read-only</access>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x1C: UHS_AUTO_FRESH_4 -->
+        <register>
+            <name>UHS_AUTO_FRESH_4</name>
+            <description>UHS Auto Refresh Burst Cycle</description>
+            <addressOffset>0x1C</addressOffset>
+            <resetValue>0x0000001D</resetValue>
+            <fields>
+                <field>
+                    <name>reg_bust_cycle</name>
+                    <description>Burst cycle count for refresh</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>7</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x20: UHS_PSRAM_CONFIGURE -->
+        <register>
+            <name>UHS_PSRAM_CONFIGURE</name>
+            <description>UHS PSRAM Device Parameters Configuration</description>
+            <addressOffset>0x20</addressOffset>
+            <resetValue>0x000000A5</resetValue>
+            <fields>
+                <field>
+                    <name>reg_uhs_latency</name>
+                    <description>UHS read/write latency</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_drive_st</name>
+                    <description>UHS output drive strength</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_bl_16</name>
+                    <description>Burst length 16 selection</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_bl_32</name>
+                    <description>Burst length 32 selection</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_bl_64</name>
+                    <description>Burst length 64 selection</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x24: UHS_PSRAM_STATUS -->
+        <register>
+            <name>UHS_PSRAM_STATUS</name>
+            <description>UHS PSRAM Device Parameters Status</description>
+            <addressOffset>0x24</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>sts_uhs_latency</name>
+                    <description>UHS latency status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>sts_uhs_drive_st</name>
+                    <description>UHS drive strength status</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>sts_uhs_bl_16</name>
+                    <description>UHS BL16 status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_uhs_bl_32</name>
+                    <description>UHS BL32 status</description>
+                    <bitOffset>9</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>sts_uhs_bl_64</name>
+                    <description>UHS BL64 status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x30: UHS_TIMING_CTRL -->
+        <register>
+            <name>UHS_TIMING_CTRL</name>
+            <description>UHS Hardware Timing Control</description>
+            <addressOffset>0x30</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_trc_cycle</name>
+                    <description>TRC cycle count</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_tcphr_cycle</name>
+                    <description>TCPHR cycle count</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_tcphw_cycle</name>
+                    <description>TCPHW cycle count</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_trfc_cycle</name>
+                    <description>TRFC cycle count</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0x34: UHS_RSVD_REG -->
+        <register>
+            <name>UHS_RSVD_REG</name>
+            <description>UHS Mode Register Reserved Bits</description>
+            <addressOffset>0x34</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_mr0_7</name>
+                    <description>MR0 bit 7</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mr2_2_0</name>
+                    <description>MR2 bits 2-0</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>reg_mr2_7_6</name>
+                    <description>MR2 bits 7-6</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0xC0: UHS_DBG_SEL -->
+        <register>
+            <name>UHS_DBG_SEL</name>
+            <description>UHS Debug Source Selection</description>
+            <addressOffset>0xC0</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_psram_dbg_en</name>
+                    <description>Enable UHS debug output</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_psram_dbg_sel</name>
+                    <description>Select debug signal source</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- 0xF0: UHS_DUMMY_REG -->
+        <register>
+            <name>UHS_DUMMY_REG</name>
+            <description>UHS Dummy Data Register</description>
+            <addressOffset>0xF0</addressOffset>
+            <resetValue>0xFFFF0000</resetValue>
+            <fields>
+                <field>
+                    <name>reg_psram_dummy_reg</name>
+                    <description>Dummy bits</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <!-- PHY Configuration Registers (0x100 - 0x150) -->
+        <register>
+            <name>PHY_CFG_00</name>
+            <description>PHY Pin Configuration 00 (DQS/CK/CEN)</description>
+            <addressOffset>0x100</addressOffset>
+            <resetValue>0x80080000</resetValue>
+            <fields>
+                <field>
+                    <name>dqs_rdy</name>
+                    <description>DQS ready flag</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>ck_sr</name>
+                    <description>Clock slew rate</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>clk0_polarity</name>
+                    <description>Clock polarity</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ck_dly_drv</name>
+                    <description>Clock delay drive strength</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>cen_sr</name>
+                    <description>CEN slew rate</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>cen_dly_drv</name>
+                    <description>CEN delay drive strength</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_04</name>
+            <description>PHY Pin Configuration 04 (DM1/DM0)</description>
+            <addressOffset>0x104</addressOffset>
+            <resetValue>0x80008000</resetValue>
+            <fields>
+                <field>
+                    <name>dm1_sr</name>
+                    <description>DM1 slew rate</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dm1_dly_drv</name>
+                    <description>DM1 delay drive strength</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dm0_sr</name>
+                    <description>DM0 slew rate</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dm0_dly_drv</name>
+                    <description>DM0 delay drive strength</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_08</name>
+            <description>PHY Pin Configuration 08 (DQ1/DQ0)</description>
+            <addressOffset>0x108</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq1_sr</name>
+                    <description>DQ1 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq1_dly_rx</name>
+                    <description>DQ1 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq1_dly_drv</name>
+                    <description>DQ1 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq0_sr</name>
+                    <description>DQ0 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq0_dly_rx</name>
+                    <description>DQ0 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq0_dly_drv</name>
+                    <description>DQ0 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_0C</name>
+            <description>PHY Pin Configuration 0C (DQ3/DQ2)</description>
+            <addressOffset>0x10C</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq3_sr</name>
+                    <description>DQ3 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq3_dly_rx</name>
+                    <description>DQ3 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq3_dly_drv</name>
+                    <description>DQ3 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq2_sr</name>
+                    <description>DQ2 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq2_dly_rx</name>
+                    <description>DQ2 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq2_dly_drv</name>
+                    <description>DQ2 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_10</name>
+            <description>PHY Pin Configuration 10 (DQ5/DQ4)</description>
+            <addressOffset>0x110</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq5_sr</name>
+                    <description>DQ5 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq5_dly_rx</name>
+                    <description>DQ5 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq5_dly_drv</name>
+                    <description>DQ5 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq4_sr</name>
+                    <description>DQ4 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq4_dly_rx</name>
+                    <description>DQ4 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq4_dly_drv</name>
+                    <description>DQ4 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_14</name>
+            <description>PHY Pin Configuration 14 (DQ7/DQ6)</description>
+            <addressOffset>0x114</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq7_sr</name>
+                    <description>DQ7 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq7_dly_rx</name>
+                    <description>DQ7 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq7_dly_drv</name>
+                    <description>DQ7 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq6_sr</name>
+                    <description>DQ6 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq6_dly_rx</name>
+                    <description>DQ6 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq6_dly_drv</name>
+                    <description>DQ6 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_18</name>
+            <description>PHY Pin Configuration 18 (DQ9/DQ8)</description>
+            <addressOffset>0x118</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq9_sr</name>
+                    <description>DQ9 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq9_dly_rx</name>
+                    <description>DQ9 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq9_dly_drv</name>
+                    <description>DQ9 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq8_sr</name>
+                    <description>DQ8 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq8_dly_rx</name>
+                    <description>DQ8 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq8_dly_drv</name>
+                    <description>DQ8 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_1C</name>
+            <description>PHY Pin Configuration 1C (DQ11/DQ10)</description>
+            <addressOffset>0x11C</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq11_sr</name>
+                    <description>DQ11 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq11_dly_rx</name>
+                    <description>DQ11 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq11_dly_drv</name>
+                    <description>DQ11 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq10_sr</name>
+                    <description>DQ10 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq10_dly_rx</name>
+                    <description>DQ10 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq10_dly_drv</name>
+                    <description>DQ10 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_20</name>
+            <description>PHY Pin Configuration 20 (DQ13/DQ12)</description>
+            <addressOffset>0x120</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq13_sr</name>
+                    <description>DQ13 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq13_dly_rx</name>
+                    <description>DQ13 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq13_dly_drv</name>
+                    <description>DQ13 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq12_sr</name>
+                    <description>DQ12 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq12_dly_rx</name>
+                    <description>DQ12 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq12_dly_drv</name>
+                    <description>DQ12 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_24</name>
+            <description>PHY Pin Configuration 24 (DQ15/DQ14)</description>
+            <addressOffset>0x124</addressOffset>
+            <resetValue>0x81008100</resetValue>
+            <fields>
+                <field>
+                    <name>dq15_sr</name>
+                    <description>DQ15 slew rate</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq15_dly_rx</name>
+                    <description>DQ15 RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq15_dly_drv</name>
+                    <description>DQ15 drive delay</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq14_sr</name>
+                    <description>DQ14 slew rate</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dq14_dly_rx</name>
+                    <description>DQ14 RX delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dq14_dly_drv</name>
+                    <description>DQ14 drive delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_28</name>
+            <description>PHY Pin Configuration 28 (DQS0)</description>
+            <addressOffset>0x128</addressOffset>
+            <resetValue>0x38300300</resetValue>
+            <fields>
+                <field>
+                    <name>dqs0n_dly_rx</name>
+                    <description>DQS0N RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs0_sr</name>
+                    <description>DQS0 slew rate</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dqs0_sel</name>
+                    <description>DQS0 source selection</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dqs0_dly_rx</name>
+                    <description>DQS0 RX delay</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs0_dly_drv</name>
+                    <description>DQS0 drive delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs0_diff_dly_rx</name>
+                    <description>DQS0 differential RX delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_2C</name>
+            <description>PHY Pin Configuration 2C (DQS1)</description>
+            <addressOffset>0x12C</addressOffset>
+            <resetValue>0x38300306</resetValue>
+            <fields>
+                <field>
+                    <name>ipp5un_lpddr</name>
+                    <description>LPDDR bias control</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>en_rx_fe</name>
+                    <description>RX Front-End enable</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>en_bias</name>
+                    <description>PHY bias enable</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1n_dly_rx</name>
+                    <description>DQS1N RX delay</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1_sr</name>
+                    <description>DQS1 slew rate</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1_sel</name>
+                    <description>DQS1 source selection</description>
+                    <bitOffset>14</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1_dly_rx</name>
+                    <description>DQS1 RX delay</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1_dly_drv</name>
+                    <description>DQS1 drive delay</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>dqs1_diff_dly_rx</name>
+                    <description>DQS1 differential RX delay</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_30</name>
+            <description>PHY Latency and VREF Configuration</description>
+            <addressOffset>0x130</addressOffset>
+            <resetValue>0xAA331020</resetValue>
+            <fields>
+                <field>
+                    <name>phy_wl_dq_dig</name>
+                    <description>Write Latency DQ digital</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>phy_wl_dq_ana</name>
+                    <description>Write Latency DQ analog</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>phy_wl_dig</name>
+                    <description>Write Latency digital</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>phy_wl_ana</name>
+                    <description>Write Latency analog</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>phy_rl_dig</name>
+                    <description>Read Latency digital</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>phy_rl_ana</name>
+                    <description>Read Latency analog</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>oe_timer</name>
+                    <description>Output Enable timer</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>vref_mode</name>
+                    <description>VREF mode</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>oe_ctrl_hw</name>
+                    <description>Hardware OE control enable</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>odt_sel</name>
+                    <description>ODT selection</description>
+                    <bitOffset>28</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_34</name>
+            <description>PHY Timer Configuration 1</description>
+            <addressOffset>0x134</addressOffset>
+            <resetValue>0x05000101</resetValue>
+            <fields>
+                <field>
+                    <name>reg_timer_dqs_start</name>
+                    <description>DQS start timer</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_dqs_array_stop</name>
+                    <description>DQS array stop timer</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_array_write</name>
+                    <description>Array write timer</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_array_read</name>
+                    <description>Array read timer</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_38</name>
+            <description>PHY Timer Configuration 2</description>
+            <addressOffset>0x138</addressOffset>
+            <resetValue>0x02080107</resetValue>
+            <fields>
+                <field>
+                    <name>reg_timer_auto_refresh</name>
+                    <description>Auto-refresh timer</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_reg_write</name>
+                    <description>Register write timer</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_reg_read</name>
+                    <description>Register read timer</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_dqs_stop</name>
+                    <description>DQS stop timer</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_3C</name>
+            <description>PHY Timer Configuration 3</description>
+            <addressOffset>0x13C</addressOffset>
+            <resetValue>0x02720808</resetValue>
+            <fields>
+                <field>
+                    <name>reg_timer_self_refresh1_in</name>
+                    <description>Self-refresh entry timer</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_self_refresh1_exit</name>
+                    <description>Self-refresh exit timer</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_global_rst</name>
+                    <description>Global reset timer</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>14</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_40</name>
+            <description>PHY Power and VREF Tuning</description>
+            <addressOffset>0x140</addressOffset>
+            <resetValue>0xA2FF0000</resetValue>
+            <fields>
+                <field>
+                    <name>vref_sel</name>
+                    <description>VREF source selection</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>vref_dq_sel</name>
+                    <description>VREF DQ selection</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_dmy0</name>
+                    <description>UHS dummy 0</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_dmy1</name>
+                    <description>UHS dummy 1</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_uhs_phy_ten</name>
+                    <description>PHY test enable</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>soc_en_aon</name>
+                    <description>SoC AON enable</description>
+                    <bitOffset>25</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ten_uhs_phy</name>
+                    <description>PHY enable</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>ten_uhs_phy_dig</name>
+                    <description>PHY digital enable</description>
+                    <bitOffset>27</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tx_clktree_gate_hw</name>
+                    <description>Hardware clock gate enable</description>
+                    <bitOffset>29</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>uhs_dc_tp_out_en</name>
+                    <description>UHS DC test point output enable</description>
+                    <bitOffset>30</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>uhs_phy_dqs_diff</name>
+                    <description>UHS PHY differential DQS enable</description>
+                    <bitOffset>31</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_44</name>
+            <description>PHY Timer Busy Status</description>
+            <addressOffset>0x144</addressOffset>
+            <resetValue>0x040B0308</resetValue>
+            <fields>
+                <field>
+                    <name>reg_timer_array_read_busy</name>
+                    <description>Array read busy status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_array_write_busy</name>
+                    <description>Array write busy status</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_reg_read_busy</name>
+                    <description>Register read busy status</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>reg_timer_reg_write_busy</name>
+                    <description>Register write busy status</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_48</name>
+            <description>PHY Test and Multiplexer Configuration</description>
+            <addressOffset>0x148</addressOffset>
+            <resetValue>0x00208908</resetValue>
+            <fields>
+                <field>
+                    <name>tmux</name>
+                    <description>Test Mux selection</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>chip_en_33</name>
+                    <description>Chip 3.3V enable</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>tmux_uhs_phy_dig</name>
+                    <description>Digital test mux selection</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>psram_type</name>
+                    <description>PSRAM type selection</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>pu_uhs_pw1p8</name>
+                    <description>UHS 1.8V power up</description>
+                    <bitOffset>11</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_test_div_sel</name>
+                    <description>Test divider selection</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>en_rx_fe_hw</name>
+                    <description>Hardware RX FE enable</description>
+                    <bitOffset>15</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>reg_test_mux_sel</name>
+                    <description>Test multiplexer selection</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>force_fsm</name>
+                    <description>Force FSM state</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>en_rx_fe_dly</name>
+                    <description>RX FE delay enable</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_4C</name>
+            <description>PHY ODT and Digital Output Configuration</description>
+            <addressOffset>0x14C</addressOffset>
+            <resetValue>0x00130000</resetValue>
+            <fields>
+                <field>
+                    <name>tout_uhs_phy_dig</name>
+                    <description>Digital PHY test output</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                    <access>read-only</access>
+                </field>
+                <field>
+                    <name>odt_sel_dly</name>
+                    <description>ODT selection delay</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+                <field>
+                    <name>odt_sel_hw</name>
+                    <description>Hardware ODT selection</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>PHY_CFG_50</name>
+            <description>PHY Output Enable (OE) Tuning</description>
+            <addressOffset>0x150</addressOffset>
+            <resetValue>0x01444444</resetValue>
+            <fields>
+                <field>
+                    <name>dq_oe_up_p_reg</name>
+                    <description>DQ OE Up P-channel tuning</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>dq_oe_up_n_reg</name>
+                    <description>DQ OE Up N-channel tuning</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>dq_oe_mid_p_reg</name>
+                    <description>DQ OE Mid P-channel tuning</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>dq_oe_mid_n_reg</name>
+                    <description>DQ OE Mid N-channel tuning</description>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>dq_oe_dn_p_reg</name>
+                    <description>DQ OE Down P-channel tuning</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>dq_oe_dn_n_reg</name>
+                    <description>DQ OE Down N-channel tuning</description>
+                    <bitOffset>20</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+                <field>
+                    <name>phy_wl_cen_ana</name>
+                    <description>PHY write-latency CEN analog tuning</description>
+                    <bitOffset>24</bitOffset>
+                    <bitWidth>3</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+    </registers>
+</peripheral>

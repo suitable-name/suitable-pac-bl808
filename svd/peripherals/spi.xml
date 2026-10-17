@@ -1,0 +1,505 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `spi_reg.h`. Covers Master/Slave configuration, detailed timing (Phase/Period), FIFO management, and interrupt control.                                                                                                                                            |
+| **Adaptive FIFO**      | **FULL**  | Integrated `SPI_FIFO_CONFIG_0/1` registers. Correctly identified the TX FIFO reset count of 32 (`0x20`) as specified in the header bit-fields.                                                                                                                                         |
+| **Timing Precision**   | **FULL**  | Captured four-phase duration configuration (`cr_spi_prd_s`, `cr_spi_prd_p`, `cr_spi_prd_d_ph_0`, `cr_spi_prd_d_ph_1`) and inter-frame delay (`cr_spi_prd_i`).                                                                                                                         |
+| **Interrupts**         | **FULL**  | Comprehensive mapping of Status (RO), Mask (RW), Clear (W1C), and Enable (RW) fields. Specifically, handled the non-contiguous Clear bits (0x10, 0x13, 0x14).                                                                                                                            |
+| **Data Handling**      | **FULL**  | Added `SPI_RXD_IGNR` (0x18) for ignoring specific bits in RX stream and `SPI_STO_VALUE` (0x1C) for slave-mode timeout detection.                                                                                                                                                      |
+| **I/O Management**     | **FULL**  | Integrated `BACKUP_IO_EN` (0xFC) for alternate pin-mux support and hardware deglitch logic (`cr_spi_deg_en/cnt`) in the main config register.                                                                                                                                         |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct spi_reg` bitfield annotations. Note: `SPI_PRD_0` reset is `0xFFFFFFFF` (all fields 0xF).                                                                                                                                       |
+| **Base Address**       | Explicit | 0x2000A200.                                                                                                                                                                                                                                                                           |
+-->
+<peripheral>
+  <name>SPI0</name>
+  <description>Serial Peripheral Interface Controller 0</description>
+  <groupName>SPI</groupName>
+  <baseAddress>0x2000A200</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x100</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>SPI0</name>
+    <description>SPI0 Interrupt</description>
+    <value>43</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>SPI_CONFIG</name>
+      <description>SPI Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <fields>
+        <field>
+          <name>cr_spi_m_en</name>
+          <description>Master mode enable</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_s_en</name>
+          <description>Slave mode enable</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_frame_size</name>
+          <description>Frame size: 0:8-bit, 1:16-bit, 2:24-bit, 3:32-bit</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_sclk_pol</name>
+          <description>Clock polarity (CPOL)</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_sclk_ph</name>
+          <description>Clock phase (CPHA)</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_bit_inv</name>
+          <description>Bit endianness: 0:MSB first, 1:LSB first</description>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_byte_inv</name>
+          <description>Byte endianness inversion</description>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_rxd_ignr_en</name>
+          <description>RX data ignore enable</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_m_cont_en</name>
+          <description>Master continuous transfer enable</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_s_3pin_mode</name>
+          <description>Slave 3-pin mode enable</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_deg_en</name>
+          <description>Deglitch function enable</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_deg_cnt</name>
+          <description>Deglitch cycle count</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>4</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_INT_STS</name>
+      <description>SPI Interrupt Status and Control</description>
+      <addressOffset>0x04</addressOffset>
+      <!-- spi_txf_int=1(bit1), masks bits8-13=0x3F, enables bits24-29=0x3F: 0x3F003F02 -->
+      <resetValue>0x3F003F02</resetValue>
+      <fields>
+        <field>
+          <name>spi_end_int</name>
+          <description>Transfer end interrupt status</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>spi_txf_int</name>
+          <description>TX FIFO ready interrupt status</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>spi_rxf_int</name>
+          <description>RX FIFO ready interrupt status</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>spi_sto_int</name>
+          <description>Slave-mode timeout interrupt status</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>spi_txu_int</name>
+          <description>TX underflow interrupt status</description>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>spi_fer_int</name>
+          <description>FIFO error interrupt status</description>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>cr_spi_end_mask</name>
+          <description>Mask transfer end interrupt</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_txf_mask</name>
+          <description>Mask TX FIFO ready interrupt</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_rxf_mask</name>
+          <description>Mask RX FIFO ready interrupt</description>
+          <bitOffset>10</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_sto_mask</name>
+          <description>Mask slave timeout interrupt</description>
+          <bitOffset>11</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_txu_mask</name>
+          <description>Mask TX underflow interrupt</description>
+          <bitOffset>12</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_fer_mask</name>
+          <description>Mask FIFO error interrupt</description>
+          <bitOffset>13</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_end_clr</name>
+          <description>Clear transfer end interrupt</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_spi_sto_clr</name>
+          <description>Clear slave timeout interrupt</description>
+          <bitOffset>19</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_spi_txu_clr</name>
+          <description>Clear TX underflow interrupt</description>
+          <bitOffset>20</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>cr_spi_end_en</name>
+          <description>Enable transfer end interrupt</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_txf_en</name>
+          <description>Enable TX FIFO ready interrupt</description>
+          <bitOffset>25</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_rxf_en</name>
+          <description>Enable RX FIFO ready interrupt</description>
+          <bitOffset>26</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_sto_en</name>
+          <description>Enable slave timeout interrupt</description>
+          <bitOffset>27</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_txu_en</name>
+          <description>Enable TX underflow interrupt</description>
+          <bitOffset>28</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_fer_en</name>
+          <description>Enable FIFO error interrupt</description>
+          <bitOffset>29</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_BUS_BUSY</name>
+      <description>SPI Bus Busy Status</description>
+      <addressOffset>0x08</addressOffset>
+      <fields>
+        <field>
+          <name>sts_spi_bus_busy</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_PRD_0</name>
+      <description>SPI Phase Duration Configuration 0</description>
+      <addressOffset>0x10</addressOffset>
+      <!-- Each 8-bit field resets to 0xF per struct annotation -->
+      <resetValue>0x0F0F0F0F</resetValue>
+      <fields>
+        <field>
+          <name>cr_spi_prd_s</name>
+          <description>Start condition duration (cycles)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_prd_p</name>
+          <description>Stop condition duration (cycles)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_prd_d_ph_0</name>
+          <description>Data phase 0 duration (cycles)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_prd_d_ph_1</name>
+          <description>Data phase 1 duration (cycles)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_PRD_1</name>
+      <description>SPI Phase Duration Configuration 1</description>
+      <addressOffset>0x14</addressOffset>
+      <!-- cr_spi_prd_i resets to 0xF per struct annotation -->
+      <resetValue>0x0000000F</resetValue>
+      <fields>
+        <field>
+          <name>cr_spi_prd_i</name>
+          <description>Inter-frame interval duration (cycles)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_RXD_IGNR</name>
+      <description>SPI RX Data Ignore Configuration</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>cr_spi_rxd_ignr_p</name>
+          <description>RX ignore prefix bit count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>cr_spi_rxd_ignr_s</name>
+          <description>RX ignore suffix bit count</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_STO_VALUE</name>
+      <description>SPI Slave Timeout Value</description>
+      <addressOffset>0x1C</addressOffset>
+      <!-- cr_spi_sto_value resets to 0xFFF per struct annotation -->
+      <resetValue>0x00000FFF</resetValue>
+      <fields>
+        <field>
+          <name>cr_spi_sto_value</name>
+          <description>Slave-mode timeout limit (cycles)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>12</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_FIFO_CONFIG_0</name>
+      <description>SPI FIFO Configuration 0</description>
+      <addressOffset>0x80</addressOffset>
+      <fields>
+        <field>
+          <name>spi_dma_tx_en</name>
+          <description>Enable TX DMA request</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>spi_dma_rx_en</name>
+          <description>Enable RX DMA request</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>tx_fifo_clr</name>
+          <description>Clear TX FIFO</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>rx_fifo_clr</name>
+          <description>Clear RX FIFO</description>
+          <bitOffset>3</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+          <modifiedWriteValues>oneToClear</modifiedWriteValues>
+        </field>
+        <field>
+          <name>tx_fifo_overflow</name>
+          <bitOffset>4</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_underflow</name>
+          <bitOffset>5</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_overflow</name>
+          <bitOffset>6</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_underflow</name>
+          <bitOffset>7</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_FIFO_CONFIG_1</name>
+      <description>SPI FIFO Status and Thresholds</description>
+      <addressOffset>0x84</addressOffset>
+      <!-- Fix: tx_fifo_cnt resets to 0x20 -->
+      <resetValue>0x00000020</resetValue>
+      <fields>
+        <field>
+          <name>tx_fifo_cnt</name>
+          <description>TX FIFO available data count</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>6</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>rx_fifo_cnt</name>
+          <description>RX FIFO available data count</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>6</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>tx_fifo_th</name>
+          <description>TX FIFO interrupt threshold</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+        <field>
+          <name>rx_fifo_th</name>
+          <description>RX FIFO interrupt threshold</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_FIFO_WDATA</name>
+      <description>SPI TX FIFO Data Register</description>
+      <addressOffset>0x88</addressOffset>
+      <fields>
+        <field>
+          <name>spi_fifo_wdata</name>
+          <description>Push data into TX FIFO</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>write-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_FIFO_RDATA</name>
+      <description>SPI RX FIFO Data Register</description>
+      <addressOffset>0x8C</addressOffset>
+      <fields>
+        <field>
+          <name>spi_fifo_rdata</name>
+          <description>Pop data from RX FIFO</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>SPI_BACKUP_IO_EN</name>
+      <description>SPI Backup IO Enable</description>
+      <addressOffset>0xFC</addressOffset>
+      <fields>
+        <field>
+          <name>backup_io_en</name>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+  </registers>
+</peripheral>

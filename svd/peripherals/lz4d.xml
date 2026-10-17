@@ -1,0 +1,234 @@
+<!-- 
+| Feature/Gaps           | Status    | Technical Observation                                                                                                                                                                                                                                                                 |
+| **Register Map**       | **FULL**  | Populated based on `lz4_reg.h`. Defines the hardware LZ4 decompression accelerator logic.                                                                                                                                                                                            |
+| **Address Translation**| **FULL**  | Defines Start and Base address fields for both Source and Destination. Addresses are composed of a 26-bit offset and a 6-bit base.                                                                                                                                                    |
+| **Memory Fixing**      | **FULL**  | Includes `lz4_src_fix` and `lz4_dst_fix` (0x04, 0x08) which are used to control memory alignment/stride during the decompression process.                                                                                                                                             |
+| **Interrupts**         | **FULL**  | Captures Done and Error statuses. Also includes `lz4_dst_int_en` and `lz4_dst_int_inv` (0x20) for advanced destination-specific interrupt triggering.                                                                                                                                  |
+| **Monitoring**         | **FULL**  | Includes the `lz4_monitor` register (0x28) providing visibility into the LZ4 engine's internal Control State (`lz4_cs`).                                                                                                                                                              |
+| **Reset Values**       | Added     | Reset values for all fields integrated from the `struct lz4_reg` bitfield annotations.                                                                                                                                                                                               |
+| **Base Address**       | Explicit | 0x2000AD00 (per `bl808.h`).                                                                                                                                                                                                                                                          |
+-->
+<peripheral>
+    <name>LZ4D</name>
+    <description>Hardware LZ4 Decompressor</description>
+    <groupName>LZ4D</groupName>
+    <baseAddress>0x2000AD00</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <interrupt>
+        <name>LZ4D</name>
+        <description>LZ4 Decompressor Interrupt</description>
+        <value>23</value>
+    </interrupt>
+
+    <registers>
+        <register>
+            <name>LZ4_CONFIG</name>
+            <description>LZ4 Configuration Register</description>
+            <addressOffset>0x00</addressOffset>
+            <fields>
+                <field>
+                    <name>lz4_en</name>
+                    <description>Enable LZ4 decompression</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_suspend</name>
+                    <description>Suspend LZ4 decompression</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_checksum</name>
+                    <description>Enable LZ4 checksum verification</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_SRC_FIX</name>
+            <description>Source Address Fix Configuration</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>lz4_src_fix</name>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>14</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_DST_FIX</name>
+            <description>Destination Address Fix Configuration</description>
+            <addressOffset>0x08</addressOffset>
+            <fields>
+                <field>
+                    <name>lz4_dst_fix</name>
+                    <bitOffset>12</bitOffset>
+                    <bitWidth>14</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_SRC_START</name>
+            <description>Source Start Address</description>
+            <addressOffset>0x10</addressOffset>
+            <fields>
+                <field>
+                    <name>lz4_src_start</name>
+                    <description>Source start offset address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>26</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_src_base</name>
+                    <description>Source base address pointer</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_SRC_END</name>
+            <description>Source End Address Status</description>
+            <addressOffset>0x14</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>lz4_src_end</name>
+                    <description>Final source address after decompression</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>26</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_DST_START</name>
+            <description>Destination Start Address</description>
+            <addressOffset>0x18</addressOffset>
+            <fields>
+                <field>
+                    <name>lz4_dst_start</name>
+                    <description>Destination start offset address</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>26</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_dst_base</name>
+                    <description>Destination base address pointer</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_DST_END</name>
+            <description>Destination End Address Status</description>
+            <addressOffset>0x1C</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>lz4_dst_end</name>
+                    <description>Final destination address after decompression</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>26</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_INT_EN</name>
+            <description>LZ4 Interrupt Enable Register</description>
+            <addressOffset>0x20</addressOffset>
+            <resetValue>0x00000003</resetValue>
+            <fields>
+                <field>
+                    <name>lz4_done_en</name>
+                    <description>Enable decompression done interrupt</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_err_en</name>
+                    <description>Enable decompression error interrupt</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_dst_int_en</name>
+                    <description>Destination-specific interrupt enables</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_dst_int_inv</name>
+                    <description>Destination-specific interrupt inversion</description>
+                    <bitOffset>26</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_INT_STA</name>
+            <description>LZ4 Interrupt Status Register</description>
+            <addressOffset>0x24</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>lz4_done_sta</name>
+                    <description>Decompression done status</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_err_sta</name>
+                    <description>Decompression error status</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>lz4_dst_int_sta</name>
+                    <description>Destination-specific interrupt status</description>
+                    <bitOffset>10</bitOffset>
+                    <bitWidth>6</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>LZ4_MONITOR</name>
+            <description>LZ4 Engine Monitor Register</description>
+            <addressOffset>0x28</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>lz4_cs</name>
+                    <description>LZ4 Control State monitor</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>4</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

@@ -1,0 +1,2199 @@
+<peripheral>
+  <name>NPU</name>
+  <description>Neural Processing Unit / BLAI Accelerator</description>
+  <groupName>NPU</groupName>
+  <baseAddress>0x30024000</baseAddress>
+  <addressBlock>
+    <offset>0</offset>
+    <size>0x200</size>
+    <usage>registers</usage>
+  </addressBlock>
+
+  <!-- ================================================================================== -->
+  <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+  <!-- ================================================================================== -->
+  <size>32</size>
+  <access>read-write</access>
+  <resetValue>0x00000000</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <interrupt>
+    <name>APU</name>
+    <description>AI Process Unit Interrupt</description>
+    <value>55</value>
+  </interrupt>
+
+  <registers>
+    <register>
+      <name>BALI_GENERAL_CFG</name>
+      <description>BLAI General Configuration Register</description>
+      <addressOffset>0x00</addressOffset>
+      <!-- Hardware Reset Values: reg_ftable_idx_base=0x5, reg_ftable_dat_base=0x7 (0x07050000) -->
+      <resetValue>0x07050000</resetValue>
+      <fields>
+        <field>
+          <name>reg_imgi_unsgn</name>
+          <description>Image input unsigned mode enable (1=unsigned input data)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+        <field>
+          <name>reg_img_in_mode</name>
+          <description>Image Input Mode selection</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>2</bitWidth>
+        </field>
+        <field>
+          <name>reg_ftable_idx_base</name>
+          <description>Feature Table Index Base Address (Non-zero reset value 0x5)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>reg_ftable_dat_base</name>
+          <description>Feature Table Data Base Address (Non-zero reset value 0x7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>6</bitWidth>
+        </field>
+        <field>
+          <name>axi_w_idle</name>
+          <description>AXI write channel idle status</description>
+          <bitOffset>30</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>axi_r_idle</name>
+          <description>AXI read channel idle status</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_INT_CFG</name>
+      <description>BLAI Interrupt and Control Configuration</description>
+      <addressOffset>0x04</addressOffset>
+      <fields>
+        <field>
+          <name>reg_blai_start</name>
+          <description>Start the BLAI execution (Write 1 pulse)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>reg_blai_stop</name>
+          <description>Stop the BLAI execution (Write 1 pulse)</description>
+          <bitOffset>1</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>reg_blai_resume</name>
+          <description>Resume BLAI execution from suspend (Write 1 pulse)</description>
+          <bitOffset>2</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>reg_int_clr</name>
+          <description>Clear BLAI interrupt status (Write 1 pulse)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>write-only</access>
+        </field>
+        <field>
+          <name>sts_blai_int</name>
+          <description>BLAI interrupt status (End of task)</description>
+          <bitOffset>9</bitOffset>
+          <bitWidth>1</bitWidth>
+          <access>read-only</access>
+        </field>
+        <field>
+          <name>reg_relu_n</name>
+          <description>Negative value output setting for ReLU function</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>5</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_WEIGHT_ADDR</name>
+      <description>Weight Data Base Address Pointer</description>
+      <addressOffset>0x10</addressOffset>
+      <fields>
+        <field>
+          <name>reg_weig_addr_base</name>
+          <description>Base address for weight data.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_BIAS_ADDR</name>
+      <description>Bias Data Base Address Pointer</description>
+      <addressOffset>0x14</addressOffset>
+      <fields>
+        <field>
+          <name>reg_bias_addr_base</name>
+          <description>Base address for bias data.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_INST_ADDR</name>
+      <description>Instruction Command Base Address Pointer</description>
+      <addressOffset>0x18</addressOffset>
+      <fields>
+        <field>
+          <name>reg_inst_addr_base</name>
+          <description>Base address for NPU instructions.</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>APU_DM0_ADDR</name>
+      <description>Image Data (Input/Output) Base Address Pointer (DM0)</description>
+      <addressOffset>0x1C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_img_addr_base</name>
+          <description>Base address for image data (inputs/outputs).</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>APU_DM1_ADDR</name>
+      <description>Image Memory Segment Configuration (DM1)</description>
+      <addressOffset>0x20</addressOffset>
+      <fields>
+        <field>
+          <name>reg_img_mem_seg</name>
+          <description>Image memory segmentation configuration</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>32</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <register>
+      <name>BLAI_TF_CFG0</name>
+      <description>BLAI TensorFlow Compatibility Configuration 0</description>
+      <addressOffset>0x24</addressOffset>
+      <fields>
+        <field>
+          <name>reg_tenflow_en</name>
+          <description>TensorFlow compatibility enable</description>
+          <bitOffset>31</bitOffset>
+          <bitWidth>1</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- Activation Table (256 entries: 0x100 - 0x1FC) -->
+    <!-- Grouped as 64 x 32-bit registers, each containing 4 x 8-bit activation values. -->
+
+    <register>
+      <name>BLAI_ACT_TABLE_03_00</name>
+      <description>BLAI Activation Table (Indices 0x00-0x03)</description>
+      <addressOffset>0x100</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_00</name>
+          <description>8-bit activation value (Index 0x00)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_01</name>
+          <description>8-bit activation value (Index 0x01)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_02</name>
+          <description>8-bit activation value (Index 0x02)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_03</name>
+          <description>8-bit activation value (Index 0x03)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_07_04</name>
+      <description>BLAI Activation Table (Indices 0x04-0x07)</description>
+      <addressOffset>0x104</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_04</name>
+          <description>8-bit activation value (Index 0x04)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_05</name>
+          <description>8-bit activation value (Index 0x05)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_06</name>
+          <description>8-bit activation value (Index 0x06)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_07</name>
+          <description>8-bit activation value (Index 0x07)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_0B_08</name>
+      <description>BLAI Activation Table (Indices 0x08-0x0B)</description>
+      <addressOffset>0x108</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_08</name>
+          <description>8-bit activation value (Index 0x08)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_09</name>
+          <description>8-bit activation value (Index 0x09)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_0A</name>
+          <description>8-bit activation value (Index 0x0A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_0B</name>
+          <description>8-bit activation value (Index 0x0B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_0F_0C</name>
+      <description>BLAI Activation Table (Indices 0x0C-0x0F)</description>
+      <addressOffset>0x10C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_0C</name>
+          <description>8-bit activation value (Index 0x0C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_0D</name>
+          <description>8-bit activation value (Index 0x0D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_0E</name>
+          <description>8-bit activation value (Index 0x0E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_0F</name>
+          <description>8-bit activation value (Index 0x0F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_13_10</name>
+      <description>BLAI Activation Table (Indices 0x10-0x13)</description>
+      <addressOffset>0x110</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_10</name>
+          <description>8-bit activation value (Index 0x10)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_11</name>
+          <description>8-bit activation value (Index 0x11)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_12</name>
+          <description>8-bit activation value (Index 0x12)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_13</name>
+          <description>8-bit activation value (Index 0x13)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_17_14</name>
+      <description>BLAI Activation Table (Indices 0x14-0x17)</description>
+      <addressOffset>0x114</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_14</name>
+          <description>8-bit activation value (Index 0x14)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_15</name>
+          <description>8-bit activation value (Index 0x15)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_16</name>
+          <description>8-bit activation value (Index 0x16)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_17</name>
+          <description>8-bit activation value (Index 0x17)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_1B_18</name>
+      <description>BLAI Activation Table (Indices 0x18-0x1B)</description>
+      <addressOffset>0x118</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_18</name>
+          <description>8-bit activation value (Index 0x18)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_19</name>
+          <description>8-bit activation value (Index 0x19)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_1A</name>
+          <description>8-bit activation value (Index 0x1A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_1B</name>
+          <description>8-bit activation value (Index 0x1B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_1F_1C</name>
+      <description>BLAI Activation Table (Indices 0x1C-0x1F)</description>
+      <addressOffset>0x11C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_1C</name>
+          <description>8-bit activation value (Index 0x1C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_1D</name>
+          <description>8-bit activation value (Index 0x1D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_1E</name>
+          <description>8-bit activation value (Index 0x1E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_1F</name>
+          <description>8-bit activation value (Index 0x1F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_23_20</name>
+      <description>BLAI Activation Table (Indices 0x20-0x23)</description>
+      <addressOffset>0x120</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_20</name>
+          <description>8-bit activation value (Index 0x20)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_21</name>
+          <description>8-bit activation value (Index 0x21)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_22</name>
+          <description>8-bit activation value (Index 0x22)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_23</name>
+          <description>8-bit activation value (Index 0x23)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_27_24</name>
+      <description>BLAI Activation Table (Indices 0x24-0x27)</description>
+      <addressOffset>0x124</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_24</name>
+          <description>8-bit activation value (Index 0x24)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_25</name>
+          <description>8-bit activation value (Index 0x25)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_26</name>
+          <description>8-bit activation value (Index 0x26)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_27</name>
+          <description>8-bit activation value (Index 0x27)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_2B_28</name>
+      <description>BLAI Activation Table (Indices 0x28-0x2B)</description>
+      <addressOffset>0x128</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_28</name>
+          <description>8-bit activation value (Index 0x28)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_29</name>
+          <description>8-bit activation value (Index 0x29)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_2A</name>
+          <description>8-bit activation value (Index 0x2A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_2B</name>
+          <description>8-bit activation value (Index 0x2B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_2F_2C</name>
+      <description>BLAI Activation Table (Indices 0x2C-0x2F)</description>
+      <addressOffset>0x12C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_2C</name>
+          <description>8-bit activation value (Index 0x2C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_2D</name>
+          <description>8-bit activation value (Index 0x2D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_2E</name>
+          <description>8-bit activation value (Index 0x2E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_2F</name>
+          <description>8-bit activation value (Index 0x2F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_33_30</name>
+      <description>BLAI Activation Table (Indices 0x30-0x33)</description>
+      <addressOffset>0x130</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_30</name>
+          <description>8-bit activation value (Index 0x30)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_31</name>
+          <description>8-bit activation value (Index 0x31)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_32</name>
+          <description>8-bit activation value (Index 0x32)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_33</name>
+          <description>8-bit activation value (Index 0x33)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_37_34</name>
+      <description>BLAI Activation Table (Indices 0x34-0x37)</description>
+      <addressOffset>0x134</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_34</name>
+          <description>8-bit activation value (Index 0x34)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_35</name>
+          <description>8-bit activation value (Index 0x35)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_36</name>
+          <description>8-bit activation value (Index 0x36)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_37</name>
+          <description>8-bit activation value (Index 0x37)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_3B_38</name>
+      <description>BLAI Activation Table (Indices 0x38-0x3B)</description>
+      <addressOffset>0x138</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_38</name>
+          <description>8-bit activation value (Index 0x38)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_39</name>
+          <description>8-bit activation value (Index 0x39)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_3A</name>
+          <description>8-bit activation value (Index 0x3A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_3B</name>
+          <description>8-bit activation value (Index 0x3B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_3F_3C</name>
+      <description>BLAI Activation Table (Indices 0x3C-0x3F)</description>
+      <addressOffset>0x13C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_3C</name>
+          <description>8-bit activation value (Index 0x3C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_3D</name>
+          <description>8-bit activation value (Index 0x3D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_3E</name>
+          <description>8-bit activation value (Index 0x3E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_3F</name>
+          <description>8-bit activation value (Index 0x3F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+    <!-- Manually defined registers for remaining 48 x 32-bit words (0x40 to 0xFF indices) -->
+    <register>
+      <name>BLAI_ACT_TABLE_43_40</name>
+      <description>BLAI Activation Table (Indices 0x40-0x43)</description>
+      <addressOffset>0x140</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_40</name>
+          <description>8-bit activation value (Index 0x40)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_41</name>
+          <description>8-bit activation value (Index 0x41)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_42</name>
+          <description>8-bit activation value (Index 0x42)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_43</name>
+          <description>8-bit activation value (Index 0x43)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_47_44</name>
+      <description>BLAI Activation Table (Indices 0x44-0x47)</description>
+      <addressOffset>0x144</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_44</name>
+          <description>8-bit activation value (Index 0x44)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_45</name>
+          <description>8-bit activation value (Index 0x45)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_46</name>
+          <description>8-bit activation value (Index 0x46)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_47</name>
+          <description>8-bit activation value (Index 0x47)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_4B_48</name>
+      <description>BLAI Activation Table (Indices 0x48-0x4B)</description>
+      <addressOffset>0x148</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_48</name>
+          <description>8-bit activation value (Index 0x48)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_49</name>
+          <description>8-bit activation value (Index 0x49)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_4A</name>
+          <description>8-bit activation value (Index 0x4A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_4B</name>
+          <description>8-bit activation value (Index 0x4B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_4F_4C</name>
+      <description>BLAI Activation Table (Indices 0x4C-0x4F)</description>
+      <addressOffset>0x14C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_4C</name>
+          <description>8-bit activation value (Index 0x4C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_4D</name>
+          <description>8-bit activation value (Index 0x4D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_4E</name>
+          <description>8-bit activation value (Index 0x4E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_4F</name>
+          <description>8-bit activation value (Index 0x4F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_53_50</name>
+      <description>BLAI Activation Table (Indices 0x50-0x53)</description>
+      <addressOffset>0x150</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_50</name>
+          <description>8-bit activation value (Index 0x50)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_51</name>
+          <description>8-bit activation value (Index 0x51)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_52</name>
+          <description>8-bit activation value (Index 0x52)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_53</name>
+          <description>8-bit activation value (Index 0x53)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_57_54</name>
+      <description>BLAI Activation Table (Indices 0x54-0x57)</description>
+      <addressOffset>0x154</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_54</name>
+          <description>8-bit activation value (Index 0x54)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_55</name>
+          <description>8-bit activation value (Index 0x55)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_56</name>
+          <description>8-bit activation value (Index 0x56)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_57</name>
+          <description>8-bit activation value (Index 0x57)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_5B_58</name>
+      <description>BLAI Activation Table (Indices 0x58-0x5B)</description>
+      <addressOffset>0x158</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_58</name>
+          <description>8-bit activation value (Index 0x58)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_59</name>
+          <description>8-bit activation value (Index 0x59)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_5A</name>
+          <description>8-bit activation value (Index 0x5A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_5B</name>
+          <description>8-bit activation value (Index 0x5B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_5F_5C</name>
+      <description>BLAI Activation Table (Indices 0x5C-0x5F)</description>
+      <addressOffset>0x15C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_5C</name>
+          <description>8-bit activation value (Index 0x5C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_5D</name>
+          <description>8-bit activation value (Index 0x5D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_5E</name>
+          <description>8-bit activation value (Index 0x5E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_5F</name>
+          <description>8-bit activation value (Index 0x5F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_63_60</name>
+      <description>BLAI Activation Table (Indices 0x60-0x63)</description>
+      <addressOffset>0x160</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_60</name>
+          <description>8-bit activation value (Index 0x60)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_61</name>
+          <description>8-bit activation value (Index 0x61)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_62</name>
+          <description>8-bit activation value (Index 0x62)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_63</name>
+          <description>8-bit activation value (Index 0x63)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_67_64</name>
+      <description>BLAI Activation Table (Indices 0x64-0x67)</description>
+      <addressOffset>0x164</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_64</name>
+          <description>8-bit activation value (Index 0x64)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_65</name>
+          <description>8-bit activation value (Index 0x65)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_66</name>
+          <description>8-bit activation value (Index 0x66)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_67</name>
+          <description>8-bit activation value (Index 0x67)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_6B_68</name>
+      <description>BLAI Activation Table (Indices 0x68-0x6B)</description>
+      <addressOffset>0x168</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_68</name>
+          <description>8-bit activation value (Index 0x68)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_69</name>
+          <description>8-bit activation value (Index 0x69)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_6A</name>
+          <description>8-bit activation value (Index 0x6A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_6B</name>
+          <description>8-bit activation value (Index 0x6B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_6F_6C</name>
+      <description>BLAI Activation Table (Indices 0x6C-0x6F)</description>
+      <addressOffset>0x16C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_6C</name>
+          <description>8-bit activation value (Index 0x6C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_6D</name>
+          <description>8-bit activation value (Index 0x6D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_6E</name>
+          <description>8-bit activation value (Index 0x6E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_6F</name>
+          <description>8-bit activation value (Index 0x6F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_73_70</name>
+      <description>BLAI Activation Table (Indices 0x70-0x73)</description>
+      <addressOffset>0x170</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_70</name>
+          <description>8-bit activation value (Index 0x70)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_71</name>
+          <description>8-bit activation value (Index 0x71)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_72</name>
+          <description>8-bit activation value (Index 0x72)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_73</name>
+          <description>8-bit activation value (Index 0x73)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_77_74</name>
+      <description>BLAI Activation Table (Indices 0x74-0x77)</description>
+      <addressOffset>0x174</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_74</name>
+          <description>8-bit activation value (Index 0x74)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_75</name>
+          <description>8-bit activation value (Index 0x75)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_76</name>
+          <description>8-bit activation value (Index 0x76)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_77</name>
+          <description>8-bit activation value (Index 0x77)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_7B_78</name>
+      <description>BLAI Activation Table (Indices 0x78-0x7B)</description>
+      <addressOffset>0x178</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_78</name>
+          <description>8-bit activation value (Index 0x78)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_79</name>
+          <description>8-bit activation value (Index 0x79)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_7A</name>
+          <description>8-bit activation value (Index 0x7A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_7B</name>
+          <description>8-bit activation value (Index 0x7B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_7F_7C</name>
+      <description>BLAI Activation Table (Indices 0x7C-0x7F)</description>
+      <addressOffset>0x17C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_7C</name>
+          <description>8-bit activation value (Index 0x7C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_7D</name>
+          <description>8-bit activation value (Index 0x7D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_7E</name>
+          <description>8-bit activation value (Index 0x7E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_7F</name>
+          <description>8-bit activation value (Index 0x7F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_83_80</name>
+      <description>BLAI Activation Table (Indices 0x80-0x83)</description>
+      <addressOffset>0x180</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_80</name>
+          <description>8-bit activation value (Index 0x80)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_81</name>
+          <description>8-bit activation value (Index 0x81)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_82</name>
+          <description>8-bit activation value (Index 0x82)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_83</name>
+          <description>8-bit activation value (Index 0x83)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_87_84</name>
+      <description>BLAI Activation Table (Indices 0x84-0x87)</description>
+      <addressOffset>0x184</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_84</name>
+          <description>8-bit activation value (Index 0x84)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_85</name>
+          <description>8-bit activation value (Index 0x85)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_86</name>
+          <description>8-bit activation value (Index 0x86)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_87</name>
+          <description>8-bit activation value (Index 0x87)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_8B_88</name>
+      <description>BLAI Activation Table (Indices 0x88-0x8B)</description>
+      <addressOffset>0x188</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_88</name>
+          <description>8-bit activation value (Index 0x88)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_89</name>
+          <description>8-bit activation value (Index 0x89)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_8A</name>
+          <description>8-bit activation value (Index 0x8A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_8B</name>
+          <description>8-bit activation value (Index 0x8B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_8F_8C</name>
+      <description>BLAI Activation Table (Indices 0x8C-0x8F)</description>
+      <addressOffset>0x18C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_8C</name>
+          <description>8-bit activation value (Index 0x8C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_8D</name>
+          <description>8-bit activation value (Index 0x8D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_8E</name>
+          <description>8-bit activation value (Index 0x8E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_8F</name>
+          <description>8-bit activation value (Index 0x8F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_93_90</name>
+      <description>BLAI Activation Table (Indices 0x90-0x93)</description>
+      <addressOffset>0x190</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_90</name>
+          <description>8-bit activation value (Index 0x90)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_91</name>
+          <description>8-bit activation value (Index 0x91)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_92</name>
+          <description>8-bit activation value (Index 0x92)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_93</name>
+          <description>8-bit activation value (Index 0x93)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_97_94</name>
+      <description>BLAI Activation Table (Indices 0x94-0x97)</description>
+      <addressOffset>0x194</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_94</name>
+          <description>8-bit activation value (Index 0x94)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_95</name>
+          <description>8-bit activation value (Index 0x95)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_96</name>
+          <description>8-bit activation value (Index 0x96)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_97</name>
+          <description>8-bit activation value (Index 0x97)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_9B_98</name>
+      <description>BLAI Activation Table (Indices 0x98-0x9B)</description>
+      <addressOffset>0x198</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_98</name>
+          <description>8-bit activation value (Index 0x98)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_99</name>
+          <description>8-bit activation value (Index 0x99)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_9A</name>
+          <description>8-bit activation value (Index 0x9A)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_9B</name>
+          <description>8-bit activation value (Index 0x9B)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_9F_9C</name>
+      <description>BLAI Activation Table (Indices 0x9C-0x9F)</description>
+      <addressOffset>0x19C</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_9C</name>
+          <description>8-bit activation value (Index 0x9C)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_9D</name>
+          <description>8-bit activation value (Index 0x9D)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_9E</name>
+          <description>8-bit activation value (Index 0x9E)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_9F</name>
+          <description>8-bit activation value (Index 0x9F)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_A3_A0</name>
+      <description>BLAI Activation Table (Indices 0xA0-0xA3)</description>
+      <addressOffset>0x1A0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_A0</name>
+          <description>8-bit activation value (Index 0xA0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A1</name>
+          <description>8-bit activation value (Index 0xA1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A2</name>
+          <description>8-bit activation value (Index 0xA2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A3</name>
+          <description>8-bit activation value (Index 0xA3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_A7_A4</name>
+      <description>BLAI Activation Table (Indices 0xA4-0xA7)</description>
+      <addressOffset>0x1A4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_A4</name>
+          <description>8-bit activation value (Index 0xA4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A5</name>
+          <description>8-bit activation value (Index 0xA5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A6</name>
+          <description>8-bit activation value (Index 0xA6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A7</name>
+          <description>8-bit activation value (Index 0xA7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_AB_A8</name>
+      <description>BLAI Activation Table (Indices 0xA8-0xAB)</description>
+      <addressOffset>0x1A8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_A8</name>
+          <description>8-bit activation value (Index 0xA8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_A9</name>
+          <description>8-bit activation value (Index 0xA9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_AA</name>
+          <description>8-bit activation value (Index 0xAA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_AB</name>
+          <description>8-bit activation value (Index 0xAB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_AF_AC</name>
+      <description>BLAI Activation Table (Indices 0xAC-0xAF)</description>
+      <addressOffset>0x1AC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_AC</name>
+          <description>8-bit activation value (Index 0xAC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_AD</name>
+          <description>8-bit activation value (Index 0xAD)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_AE</name>
+          <description>8-bit activation value (Index 0xAE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_AF</name>
+          <description>8-bit activation value (Index 0xAF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_B3_B0</name>
+      <description>BLAI Activation Table (Indices 0xB0-0xB3)</description>
+      <addressOffset>0x1B0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_B0</name>
+          <description>8-bit activation value (Index 0xB0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B1</name>
+          <description>8-bit activation value (Index 0xB1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B2</name>
+          <description>8-bit activation value (Index 0xB2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B3</name>
+          <description>8-bit activation value (Index 0xB3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_B7_B4</name>
+      <description>BLAI Activation Table (Indices 0xB4-0xB7)</description>
+      <addressOffset>0x1B4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_B4</name>
+          <description>8-bit activation value (Index 0xB4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B5</name>
+          <description>8-bit activation value (Index 0xB5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B6</name>
+          <description>8-bit activation value (Index 0xB6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B7</name>
+          <description>8-bit activation value (Index 0xB7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_BB_B8</name>
+      <description>BLAI Activation Table (Indices 0xB8-0xBB)</description>
+      <addressOffset>0x1B8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_B8</name>
+          <description>8-bit activation value (Index 0xB8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_B9</name>
+          <description>8-bit activation value (Index 0xB9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_BA</name>
+          <description>8-bit activation value (Index 0xBA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_BB</name>
+          <description>8-bit activation value (Index 0xBB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_BF_BC</name>
+      <description>BLAI Activation Table (Indices 0xBC-0xBF)</description>
+      <addressOffset>0x1BC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_BC</name>
+          <description>8-bit activation value (Index 0xBC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_BD</name>
+          <description>8-bit activation value (Index 0xBD)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_BE</name>
+          <description>8-bit activation value (Index 0xBE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_BF</name>
+          <description>8-bit activation value (Index 0xBF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_C3_C0</name>
+      <description>BLAI Activation Table (Indices 0xC0-0xC3)</description>
+      <addressOffset>0x1C0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_C0</name>
+          <description>8-bit activation value (Index 0xC0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C1</name>
+          <description>8-bit activation value (Index 0xC1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C2</name>
+          <description>8-bit activation value (Index 0xC2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C3</name>
+          <description>8-bit activation value (Index 0xC3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_C7_C4</name>
+      <description>BLAI Activation Table (Indices 0xC4-0xC7)</description>
+      <addressOffset>0x1C4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_C4</name>
+          <description>8-bit activation value (Index 0xC4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C5</name>
+          <description>8-bit activation value (Index 0xC5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C6</name>
+          <description>8-bit activation value (Index 0xC6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C7</name>
+          <description>8-bit activation value (Index 0xC7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_CB_C8</name>
+      <description>BLAI Activation Table (Indices 0xC8-0xCB)</description>
+      <addressOffset>0x1C8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_C8</name>
+          <description>8-bit activation value (Index 0xC8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_C9</name>
+          <description>8-bit activation value (Index 0xC9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_CA</name>
+          <description>8-bit activation value (Index 0xCA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_CB</name>
+          <description>8-bit activation value (Index 0xCB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_CF_CC</name>
+      <description>BLAI Activation Table (Indices 0xCC-0xCF)</description>
+      <addressOffset>0x1CC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_CC</name>
+          <description>8-bit activation value (Index 0xCC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_CD</name>
+          <description>8-bit activation value (Index 0xCD)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_CE</name>
+          <description>8-bit activation value (Index 0xCE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_CF</name>
+          <description>8-bit activation value (Index 0xCF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_D3_D0</name>
+      <description>BLAI Activation Table (Indices 0xD0-0xD3)</description>
+      <addressOffset>0x1D0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_D0</name>
+          <description>8-bit activation value (Index 0xD0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D1</name>
+          <description>8-bit activation value (Index 0xD1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D2</name>
+          <description>8-bit activation value (Index 0xD2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D3</name>
+          <description>8-bit activation value (Index 0xD3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_D7_D4</name>
+      <description>BLAI Activation Table (Indices 0xD4-0xD7)</description>
+      <addressOffset>0x1D4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_D4</name>
+          <description>8-bit activation value (Index 0xD4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D5</name>
+          <description>8-bit activation value (Index 0xD5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D6</name>
+          <description>8-bit activation value (Index 0xD6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D7</name>
+          <description>8-bit activation value (Index 0xD7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_DB_D8</name>
+      <description>BLAI Activation Table (Indices 0xD8-0xDB)</description>
+      <addressOffset>0x1D8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_D8</name>
+          <description>8-bit activation value (Index 0xD8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_D9</name>
+          <description>8-bit activation value (Index 0xD9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_DA</name>
+          <description>8-bit activation value (Index 0xDA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_DB</name>
+          <description>8-bit activation value (Index 0xDB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_DF_DC</name>
+      <description>BLAI Activation Table (Indices 0xDC-0xDF)</description>
+      <addressOffset>0x1DC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_DC</name>
+          <description>8-bit activation value (Index 0xDC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_DD</name>
+          <description>8-bit activation value (Index 0xDD)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_DE</name>
+          <description>8-bit activation value (Index 0xDE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_DF</name>
+          <description>8-bit activation value (Index 0xDF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_E3_E0</name>
+      <description>BLAI Activation Table (Indices 0xE0-0xE3)</description>
+      <addressOffset>0x1E0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_E0</name>
+          <description>8-bit activation value (Index 0xE0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E1</name>
+          <description>8-bit activation value (Index 0xE1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E2</name>
+          <description>8-bit activation value (Index 0xE2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E3</name>
+          <description>8-bit activation value (Index 0xE3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_E7_E4</name>
+      <description>BLAI Activation Table (Indices 0xE4-0xE7)</description>
+      <addressOffset>0x1E4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_E4</name>
+          <description>8-bit activation value (Index 0xE4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E5</name>
+          <description>8-bit activation value (Index 0xE5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E6</name>
+          <description>8-bit activation value (Index 0xE6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E7</name>
+          <description>8-bit activation value (Index 0xE7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_EB_E8</name>
+      <description>BLAI Activation Table (Indices 0xE8-0xEB)</description>
+      <addressOffset>0x1E8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_E8</name>
+          <description>8-bit activation value (Index 0xE8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_E9</name>
+          <description>8-bit activation value (Index 0xE9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_EA</name>
+          <description>8-bit activation value (Index 0xEA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_EB</name>
+          <description>8-bit activation value (Index 0xEB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_EF_EC</name>
+      <description>BLAI Activation Table (Indices 0xEC-0xEF)</description>
+      <addressOffset>0x1EC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_EC</name>
+          <description>8-bit activation value (Index 0xEC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_ED</name>
+          <description>8-bit activation value (Index 0xED)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_EE</name>
+          <description>8-bit activation value (Index 0xEE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_EF</name>
+          <description>8-bit activation value (Index 0xEF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_F3_F0</name>
+      <description>BLAI Activation Table (Indices 0xF0-0xF3)</description>
+      <addressOffset>0x1F0</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_F0</name>
+          <description>8-bit activation value (Index 0xF0)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F1</name>
+          <description>8-bit activation value (Index 0xF1)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F2</name>
+          <description>8-bit activation value (Index 0xF2)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F3</name>
+          <description>8-bit activation value (Index 0xF3)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_F7_F4</name>
+      <description>BLAI Activation Table (Indices 0xF4-0xF7)</description>
+      <addressOffset>0x1F4</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_F4</name>
+          <description>8-bit activation value (Index 0xF4)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F5</name>
+          <description>8-bit activation value (Index 0xF5)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F6</name>
+          <description>8-bit activation value (Index 0xF6)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F7</name>
+          <description>8-bit activation value (Index 0xF7)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_FB_F8</name>
+      <description>BLAI Activation Table (Indices 0xF8-0xFB)</description>
+      <addressOffset>0x1F8</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_F8</name>
+          <description>8-bit activation value (Index 0xF8)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_F9</name>
+          <description>8-bit activation value (Index 0xF9)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_FA</name>
+          <description>8-bit activation value (Index 0xFA)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_FB</name>
+          <description>8-bit activation value (Index 0xFB)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+    <register>
+      <name>BLAI_ACT_TABLE_FF_FC</name>
+      <description>BLAI Activation Table (Indices 0xFC-0xFF)</description>
+      <addressOffset>0x1FC</addressOffset>
+      <fields>
+        <field>
+          <name>reg_act_table_FC</name>
+          <description>8-bit activation value (Index 0xFC)</description>
+          <bitOffset>0</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_FD</name>
+          <description>8-bit activation value (Index 0xFD)</description>
+          <bitOffset>8</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_FE</name>
+          <description>8-bit activation value (Index 0xFE)</description>
+          <bitOffset>16</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+        <field>
+          <name>reg_act_table_FF</name>
+          <description>8-bit activation value (Index 0xFF)</description>
+          <bitOffset>24</bitOffset>
+          <bitWidth>8</bitWidth>
+        </field>
+      </fields>
+    </register>
+
+  </registers>
+</peripheral>

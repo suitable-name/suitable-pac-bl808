@@ -1,0 +1,348 @@
+<peripheral>
+    <name>PTA</name>
+    <!-- No dedicated pta_reg.h exists in the BL808 C SDK driver register headers.
+         Register map verified against:
+         bl_mcu_sdk_bl808/components/network/wifi_bt_coex/src/wifi_bt_coex_impl_bl808.c
+         which defines PTA_REG_BASE_ADDR = 0x24920400 (base 0x24920000 + offset 0x400). -->
+    <description>Packet Traffic Arbitration</description>
+    <groupName>PTA</groupName>
+    <baseAddress>0x24920000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x1000</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>revision</name>
+            <description>Peripheral silicon revision</description>
+            <addressOffset>0x400</addressOffset>
+            <access>read-only</access>
+            <fields>
+                <field>
+                    <name>patch</name>
+                    <description>Patch version number</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>minor</name>
+                    <description>Minor version number</description>
+                    <bitOffset>8</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+                <field>
+                    <name>major</name>
+                    <description>Major version number</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>8</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>config_0</name>
+            <description>Arbitration configuration register 0</description>
+            <addressOffset>0x404</addressOffset>
+            <fields>
+                <field>
+                    <name>pta_en</name>
+                    <description>Enable packet traffic arbitration</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>wlan_active</name>
+                    <description>WLAN active; 1=WLAN is the preferred radio</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>priority_en</name>
+                    <description>Enable PTI-based priority arbitration</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_wlan_tx</name>
+                    <description>Force-grant WLAN TX regardless of BT state</description>
+                    <bitOffset>16</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_wlan_rx</name>
+                    <description>Force-grant WLAN RX regardless of BT state</description>
+                    <bitOffset>17</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_bt_tx</name>
+                    <description>Force-grant BT TX regardless of WLAN state</description>
+                    <bitOffset>18</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_bt_rx</name>
+                    <description>Force-grant BT RX regardless of WLAN state</description>
+                    <bitOffset>19</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>bluetooth_transmit</name>
+            <description>Bluetooth transmit configuration</description>
+            <addressOffset>0x408</addressOffset>
+            <fields>
+                <field>
+                    <name>bt_tx_en</name>
+                    <description>Enable BT transmit arbitration</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bt_tx_prio</name>
+                    <description>Bluetooth transmit priority level</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>bt_tx_force_grant</name>
+                    <description>Force grant BT transmit regardless of WiFi state</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>bt_tx_abort</name>
+            <description>Bluetooth transmit abort configuration</description>
+            <addressOffset>0x40C</addressOffset>
+            <fields>
+                <field>
+                    <name>bt_tx_abort_en</name>
+                    <description>Enable BT TX abort on WLAN activity</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bt_tx_abort_prio</name>
+                    <description>Priority threshold below which BT TX is aborted</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>bt_tx_abort_force</name>
+                    <description>Force abort BT TX regardless of priority</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>bluetooth_receive</name>
+            <description>Bluetooth receive configuration</description>
+            <addressOffset>0x410</addressOffset>
+            <fields>
+                <field>
+                    <name>bt_rx_en</name>
+                    <description>Enable BT receive arbitration</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bt_rx_prio</name>
+                    <description>Bluetooth receive priority level</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>bt_rx_force_grant</name>
+                    <description>Force grant BT receive regardless of WiFi state</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>bt_rx_abort</name>
+            <description>Bluetooth receive abort configuration</description>
+            <addressOffset>0x414</addressOffset>
+            <fields>
+                <field>
+                    <name>bt_rx_abort_en</name>
+                    <description>Enable BT RX abort on WLAN activity</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>bt_rx_abort_prio</name>
+                    <description>Priority threshold below which BT RX is aborted</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>bt_rx_abort_force</name>
+                    <description>Force abort BT RX regardless of priority</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>wifi_transmit</name>
+            <description>WiFi transmit configuration</description>
+            <addressOffset>0x418</addressOffset>
+            <fields>
+                <field>
+                    <name>wifi_tx_en</name>
+                    <description>Enable WiFi transmit arbitration</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>wifi_tx_prio</name>
+                    <description>WiFi transmit priority level</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>wifi_tx_force_grant</name>
+                    <description>Force grant WiFi transmit regardless of BT state</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>wlan_tx_abort</name>
+            <description>WLAN transmit abort configuration</description>
+            <addressOffset>0x41C</addressOffset>
+            <fields>
+                <field>
+                    <name>wlan_tx_abort_en</name>
+                    <description>Enable WLAN TX abort on BT activity</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>wlan_tx_abort_prio</name>
+                    <description>Priority threshold below which WLAN TX is aborted</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>wlan_tx_abort_force</name>
+                    <description>Force abort WLAN TX regardless of priority</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>wifi_receive</name>
+            <description>WiFi receive configuration</description>
+            <addressOffset>0x420</addressOffset>
+            <fields>
+                <field>
+                    <name>wifi_rx_en</name>
+                    <description>Enable WiFi receive arbitration</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>wifi_rx_prio</name>
+                    <description>WiFi receive priority level</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>wifi_rx_force_grant</name>
+                    <description>Force grant WiFi receive regardless of BT state</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>wlan_rx_abort</name>
+            <description>WLAN receive abort configuration</description>
+            <addressOffset>0x424</addressOffset>
+            <fields>
+                <field>
+                    <name>wlan_rx_abort_en</name>
+                    <description>Enable WLAN RX abort on BT activity</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>wlan_rx_abort_prio</name>
+                    <description>Priority threshold below which WLAN RX is aborted</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>wlan_rx_abort_force</name>
+                    <description>Force abort WLAN RX regardless of priority</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>config_2</name>
+            <description>Arbitration configuration register 2 (PTA_REG_CONFIG2)</description>
+            <addressOffset>0x428</addressOffset>
+            <fields>
+                <field>
+                    <name>force_bk</name>
+                    <description>Force grant for Background (BK) traffic class</description>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_be</name>
+                    <description>Force grant for Best Effort (BE) traffic class</description>
+                    <bitOffset>1</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_vi</name>
+                    <description>Force grant for Video (VI) traffic class</description>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_vo</name>
+                    <description>Force grant for Voice (VO) traffic class</description>
+                    <bitOffset>3</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+                <field>
+                    <name>force_bcn</name>
+                    <description>Force grant for Beacon (BCN) traffic class</description>
+                    <bitOffset>4</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<peripheral>
+    <name>EMI_MISC</name>
+    <description>External Memory Interface Miscellaneous Configuration</description>
+    <groupName>EMI_MISC</groupName>
+    <baseAddress>0x20050000</baseAddress>
+    <addressBlock>
+        <offset>0</offset>
+        <size>0x100</size>
+        <usage>registers</usage>
+    </addressBlock>
+
+    <!-- ================================================================================== -->
+    <!-- GLOBAL PROPERTIES (Required for svd2rust generation)                               -->
+    <!-- ================================================================================== -->
+    <size>32</size>
+    <access>read-write</access>
+    <resetValue>0x00000000</resetValue>
+    <resetMask>0xFFFFFFFF</resetMask>
+
+    <registers>
+        <register>
+            <name>EMI_BUS_CTRL</name>
+            <description>EMI Bus Control</description>
+            <addressOffset>0x00</addressOffset>
+            <resetValue>0x0000FFFF</resetValue>
+            <fields>
+                <field>
+                    <name>rg_emi_pclk_force_on</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>16</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>EMI_BUS_CTRL2</name>
+            <description>EMI Bus Control 2</description>
+            <addressOffset>0x04</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_sf_harb_mode</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>1</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>EMI_BUS_THRE</name>
+            <description>EMI Bus Threshold</description>
+            <addressOffset>0x08</addressOffset>
+            <fields>
+                <field>
+                    <name>reg_x_wthre_pB</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+                <field>
+                    <name>reg_x_wthre_pA</name>
+                    <bitOffset>2</bitOffset>
+                    <bitWidth>2</bitWidth>
+                </field>
+            </fields>
+        </register>
+
+        <register>
+            <name>EMI_MISC_DUMMY</name>
+            <description>EMI Miscellaneous Dummy Register</description>
+            <addressOffset>0xFC</addressOffset>
+            <resetValue>0xFFFF0000</resetValue>
+            <fields>
+                <field>
+                    <name>dummy_reg</name>
+                    <bitOffset>0</bitOffset>
+                    <bitWidth>32</bitWidth>
+                </field>
+            </fields>
+        </register>
+    </registers>
+</peripheral>
