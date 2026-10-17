@@ -3,45 +3,6 @@
 version = 4
 
 [[package]]
-name = "bl808-d0"
-version = "0.1.0"
-dependencies = [
- "critical-section",
- "riscv",
- "riscv-rt",
- "vcell",
-]
-
-[[package]]
-name = "bl808-lp"
-version = "0.1.0"
-dependencies = [
- "critical-section",
- "riscv",
- "riscv-rt",
- "vcell",
-]
-
-[[package]]
-name = "bl808-m0"
-version = "0.1.0"
-dependencies = [
- "critical-section",
- "riscv",
- "riscv-rt",
- "vcell",
-]
-
-[[package]]
-name = "bl808-pac"
-version = "0.1.0"
-dependencies = [
- "bl808-d0",
- "bl808-lp",
- "bl808-m0",
-]
-
-[[package]]
 name = "critical-section"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -51,207 +12,207 @@ checksum = "790eea4361631c5e7d22598ecd5723ff611904e3344ce8720784c93e3d83d40b"
 name = "d0-blinky"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-codec"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-csi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dbi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dma-m2m"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dma2d"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dpi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dsi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dvp"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-dvp-tsrc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-h264"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-i2c"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-ipc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-mjpeg"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-mm-glb"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-mm-misc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-npu"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-pac-test"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-psram-uhs"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-pwm"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-spi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-timer-delay"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "d0-uart-poll"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
@@ -264,441 +225,441 @@ checksum = "361a90feb7004eca4019fb28352a9465666b24f840f5c3cddf0ff13920590b89"
 name = "lp-aon"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-audio"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-blinky"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-dma-m2m"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-efuse"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-emac"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-gpip"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-hbn"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-i2c"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-ipc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-ir"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-lz4d"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-pac-test"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-pds"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-pwm"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-sdh"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-sec-eng"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-sf-ctrl"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-spi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-timer-delay"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-uart-poll"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "lp-usb"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-aon"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-audio"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-blinky"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-cci"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-dma"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-efuse"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-emac"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-emi-misc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-gpip"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-hbn"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-i2c"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-i2s"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-ipc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-ir"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-iso11898"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-lz4d"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-mcu-misc"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-pac-test"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-pds"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-pwm"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-sdh"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-sec-eng"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-sf-ctrl"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-spi"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-timer-delay"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-uart-poll"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
 name = "m0-usb"
 version = "0.1.0"
 dependencies = [
- "bl808-pac",
  "panic-halt",
  "riscv-rt",
+ "suitable-pac-bl808",
 ]
 
 [[package]]
@@ -778,6 +739,45 @@ name = "riscv-types"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3f2ad9f15a07f4a0e1677124f9120ce7e83ab7e1ca7186af0ca9da529b62e80"
+
+[[package]]
+name = "suitable-pac-bl808"
+version = "1.0.0"
+dependencies = [
+ "suitable-pac-bl808-d0",
+ "suitable-pac-bl808-lp",
+ "suitable-pac-bl808-m0",
+]
+
+[[package]]
+name = "suitable-pac-bl808-d0"
+version = "1.0.0"
+dependencies = [
+ "critical-section",
+ "riscv",
+ "riscv-rt",
+ "vcell",
+]
+
+[[package]]
+name = "suitable-pac-bl808-lp"
+version = "1.0.0"
+dependencies = [
+ "critical-section",
+ "riscv",
+ "riscv-rt",
+ "vcell",
+]
+
+[[package]]
+name = "suitable-pac-bl808-m0"
+version = "1.0.0"
+dependencies = [
+ "critical-section",
+ "riscv",
+ "riscv-rt",
+ "vcell",
+]
 
 [[package]]
 name = "syn"

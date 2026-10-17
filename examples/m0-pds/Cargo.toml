@@ -2,8 +2,9 @@
 name = "m0-pds"
 version = "0.1.0"
 edition = "2024"
+publish = false
 
 [dependencies]
-bl808-pac = { path = "../../", features = ["m0", "rt", "critical-section"] }
+bl808-pac = { package = "suitable-pac-bl808", path = "../../", features = ["m0", "rt", "critical-section"] }
 riscv-rt = { workspace = true }
 panic-halt = "1.0.0"

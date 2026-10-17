@@ -1,11 +1,11 @@
 [package]
-name = "bl808-lp"
-version = "0.1.0"
+name = "suitable-pac-bl808-lp"
+version = "1.0.0"
 edition = "2021"
 authors = ["Bouffalo Lab Community"]
 description = "Peripheral Access Crate for Bouffalo Lab BL808 (RISC-V LP core)"
 license = "MulanPSL-2.0"
-# repository = "https://github.com/your-repo/bl808-pac"
+repository = "https://github.com/suitable-name/suitable-pac-bl808"
 keywords = ["embedded", "riscv", "bouffalolab", "bl808", "pac"]
 categories = ["embedded", "hardware-support", "no-std"]
 

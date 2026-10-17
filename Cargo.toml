@@ -1,9 +1,15 @@
 [package]
-name = "bl808-pac"
-version = "0.1.0"
+name = "suitable-pac-bl808"
+version = "1.0.0"
 edition = "2024"
 authors = ["Bouffalo Lab Community"]
 description = "Universal Wrapper PAC for Bouffalo Lab BL808 (M0/D0/LP cores)"
+license = "MulanPSL-2.0"
+repository = "https://github.com/suitable-name/suitable-pac-bl808"
+readme = "README.md"
+keywords = ["embedded", "riscv", "bouffalolab", "bl808", "pac"]
+categories = ["embedded", "hardware-support", "no-std"]
+include = ["/src/**/*", "/Cargo.toml", "/README.md", "/README_zh.md", "/LICENSE"]
 
 [workspace]
 resolver = "2"
@@ -16,20 +22,20 @@ riscv = "0.16.1"
 riscv-rt = "0.18.0"
 
 [dependencies]
-bl808-m0 = { path = "crates/bl808-m0", optional = true, default-features = false }
-bl808-d0 = { path = "crates/bl808-d0", optional = true, default-features = false }
-bl808-lp = { path = "crates/bl808-lp", optional = true, default-features = false }
+suitable-pac-bl808-m0 = { version = "1.0.0", path = "crates/bl808-m0", optional = true, default-features = false }
+suitable-pac-bl808-d0 = { version = "1.0.0", path = "crates/bl808-d0", optional = true, default-features = false }
+suitable-pac-bl808-lp = { version = "1.0.0", path = "crates/bl808-lp", optional = true, default-features = false }
 
 [features]
 default = ["critical-section"]
 
 # Core Selection
-m0 = ["dep:bl808-m0"]
-d0 = ["dep:bl808-d0"]
-lp = ["dep:bl808-lp"]
+m0 = ["dep:suitable-pac-bl808-m0"]
+d0 = ["dep:suitable-pac-bl808-d0"]
+lp = ["dep:suitable-pac-bl808-lp"]
 
-rt = ["bl808-m0?/rt", "bl808-d0?/rt", "bl808-lp?/rt"]
-critical-section = ["bl808-m0?/critical-section", "bl808-d0?/critical-section", "bl808-lp?/critical-section"]
+rt = ["suitable-pac-bl808-m0?/rt", "suitable-pac-bl808-d0?/rt", "suitable-pac-bl808-lp?/rt"]
+critical-section = ["suitable-pac-bl808-m0?/critical-section", "suitable-pac-bl808-d0?/critical-section", "suitable-pac-bl808-lp?/critical-section"]
 
 [profile.dev]
 panic = "abort"

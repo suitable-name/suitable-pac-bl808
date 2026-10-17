@@ -67,9 +67,10 @@ def make_cargo_toml(name, core_feature):
 name = "{name}"
 version = "0.1.0"
 edition = "2024"
+publish = false
 
 [dependencies]
-bl808-pac = {{ path = "../../", features = ["{core_feature}", "rt", "critical-section"] }}
+bl808-pac = {{ package = "suitable-pac-bl808", path = "../../", features = ["{core_feature}", "rt", "critical-section"] }}
 riscv-rt = {{ workspace = true }}
 panic-halt = "1.0.0"
 """
